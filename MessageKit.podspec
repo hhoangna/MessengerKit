@@ -1,0 +1,21 @@
+Pod::Spec.new do |s|
+   s.name = 'MessageKit'
+   s.version = '3.4.7'
+   s.license = { :type => "MIT", :file => "LICENSE.md" }
+
+   s.summary = 'An elegant messages UI library for iOS.'
+   s.homepage = 'https://gitlab.skcmedia.net/meepo/MessengerKit'
+   s.social_media_url = 'https://twitter.com/_SD10_'
+   s.author = { "Steven Deutsch" => "stevensdeutsch@yahoo.com" }
+
+   s.source = { :git => 'https://meepo@gitlab.skcmedia.net/meepo/MessengerKit.git', :tag => s.version }
+   s.source_files = 'Sources/**/*.swift'
+
+   s.swift_version = '5.3'
+
+   s.ios.deployment_target = '12.0'
+   s.ios.resource_bundle = { 'MessageKit' => 'Sources/Assets.xcassets' }
+
+   s.dependency 'InputBarAccessoryView', '~> 5.2.1'
+
+end

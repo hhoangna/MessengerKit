@@ -1,0 +1,34 @@
+{
+  "name": "MessageKit",
+  "version": "3.4.6",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE.md"
+  },
+  "summary": "An elegant messages UI library for iOS.",
+  "homepage": "https://gitlab.skcmedia.net/meepo/MessengerKit",
+  "social_media_url": "https://twitter.com/_SD10_",
+  "authors": {
+    "Steven Deutsch": "stevensdeutsch@yahoo.com"
+  },
+  "source": {
+    "git": "https://meepo@gitlab.skcmedia.net/meepo/MessengerKit.git",
+    "tag": "3.4.6"
+  },
+  "source_files": "Sources/**/*.swift",
+  "swift_versions": "5.3",
+  "platforms": {
+    "ios": "12.0"
+  },
+  "ios": {
+    "resource_bundles": {
+      "MessageKit": "Sources/Assets.xcassets"
+    }
+  },
+  "dependencies": {
+    "InputBarAccessoryView": [
+      "~> 5.2.1"
+    ]
+  },
+  "swift_version": "5.3"
+}
