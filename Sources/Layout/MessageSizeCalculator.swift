@@ -68,9 +68,6 @@ open class MessageSizeCalculator: CellSizeCalculator {
     public var incomingStatusViewPadding = HorizontalEdgeInsets.zero
     public var outgoingStatusViewPadding = HorizontalEdgeInsets.zero
     
-    public var incomingStatusViewSize = CGSize.zero
-    public var outgoingStatusViewSize = CGSize.zero
-
     open override func configure(attributes: UICollectionViewLayoutAttributes) {
         guard let attributes = attributes as? MessagesCollectionViewLayoutAttributes else { return }
 
@@ -276,8 +273,8 @@ open class MessageSizeCalculator: CellSizeCalculator {
     public func statusViewSize(for message: MessageType, at indexPath: IndexPath) -> CGSize {
         let layoutDelegate = messagesLayout.messagesLayoutDelegate
         let collectionView = messagesLayout.messagesCollectionView
-        let size = layoutDelegate.statusViewSize(for: message, at: indexPath, in: collectionView)
-        return size
+        let height = layoutDelegate.statusViewHeight(for: message, at: indexPath, in: collectionView)
+        return CGSize(width: messagesLayout.itemWidth, height: height)
     }
 
     public func statusViewPadding(for message: MessageType) -> HorizontalEdgeInsets {

@@ -315,16 +315,6 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
     public func setMessageOutgoingAccessoryViewPosition(_ newPosition: AccessoryPosition) {
         messageSizeCalculators().forEach { $0.outgoingAccessoryViewPosition = newPosition }
     }
-    
-    /// Set `incomingAccessoryViewSize` of all `MessageSizeCalculator`s
-    public func setMessageIncomingStatusViewSize(_ newSize: CGSize) {
-        messageSizeCalculators().forEach { $0.incomingStatusViewSize = newSize }
-    }
-
-    /// Set `outgoingAccessoryViewSize` of all `MessageSizeCalculator`s
-    public func setMessageOutgoingStatusViewSize(_ newSize: CGSize) {
-        messageSizeCalculators().forEach { $0.outgoingStatusViewSize = newSize }
-    }
 
     /// Set `incomingAccessoryViewPadding` of all `MessageSizeCalculator`s
     public func setMessageIncomingStatusViewPadding(_ newPadding: HorizontalEdgeInsets) {

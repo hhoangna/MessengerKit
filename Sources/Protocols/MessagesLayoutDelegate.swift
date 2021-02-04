@@ -57,7 +57,7 @@ public protocol MessagesLayoutDelegate: AnyObject {
     ///
     /// - Note:
     ///   The default value returned by this method is a size of `GGSize.zero`.
-    func statusViewSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize
+    func statusViewHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat
 
     /// Specifies the size to use for a typing indicator view.
     ///
@@ -144,8 +144,8 @@ public extension MessagesLayoutDelegate {
         return .zero
     }
     
-    func statusViewSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize {
-        return .zero
+    func statusViewHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        return 0
     }
 
     func typingIndicatorViewSize(in messagesCollectionView: MessagesCollectionView) -> CGSize {
