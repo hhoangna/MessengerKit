@@ -289,7 +289,7 @@ open class MessageContentCell: MessageCollectionViewCell {
         let y = messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom
         let origin = CGPoint(x: 0, y: y)
 
-        messageBottomLabel.frame = CGRect(origin: origin, size: attributes.statusViewSize)
+        statusView.frame = CGRect(origin: origin, size: attributes.statusViewSize)
     }
 
     /// Positions the cell's top label.
