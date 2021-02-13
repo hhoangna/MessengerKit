@@ -94,7 +94,6 @@ open class MessageContentCell: MessageCollectionViewCell {
     }
 
     open func setupSubviews() {
-        contentView.addSubview(statusView)
         contentView.addSubview(accessoryView)
         contentView.addSubview(cellTopLabel)
         contentView.addSubview(messageTopLabel)
@@ -103,6 +102,7 @@ open class MessageContentCell: MessageCollectionViewCell {
         contentView.addSubview(messageContainerView)
         contentView.addSubview(avatarView)
         contentView.addSubview(messageTimestampLabel)
+        contentView.addSubview(statusView)
     }
 
     open override func prepareForReuse() {
