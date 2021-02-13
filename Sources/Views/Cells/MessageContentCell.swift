@@ -286,8 +286,9 @@ open class MessageContentCell: MessageCollectionViewCell {
     /// Positions the cell's status view.
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
     open func layoutStatusView(with attributes: MessagesCollectionViewLayoutAttributes) {
+        let x = attributes.statusViewPadding.left
         let y = messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom
-        let origin = CGPoint(x: 0, y: y)
+        let origin = CGPoint(x: x, y: y)
 
         statusView.frame = CGRect(origin: origin, size: attributes.statusViewSize)
     }
