@@ -121,6 +121,7 @@ open class MessageContentCell: MessageCollectionViewCell {
         guard let attributes = layoutAttributes as? MessagesCollectionViewLayoutAttributes else { return }
         // Call this before other laying out other subviews
         layoutMessageContainerView(with: attributes)
+        layoutStatusView(with: attributes)
         layoutMessageBottomLabel(with: attributes)
         layoutCellBottomLabel(with: attributes)
         layoutCellTopLabel(with: attributes)
@@ -128,7 +129,6 @@ open class MessageContentCell: MessageCollectionViewCell {
         layoutAvatarView(with: attributes)
         layoutAccessoryView(with: attributes)
         layoutTimeLabelView(with: attributes)
-        layoutStatusView(with: attributes)
     }
 
     /// Used to configure the cell.
