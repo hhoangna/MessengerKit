@@ -270,17 +270,18 @@ open class MessageSizeCalculator: CellSizeCalculator {
     
     // MARK: - Status View
     
-    public func statusViewSize(for message: MessageType, at indexPath: IndexPath) -> CGSize {
-        let layoutDelegate = messagesLayout.messagesLayoutDelegate
-        let collectionView = messagesLayout.messagesCollectionView
-        let height = layoutDelegate.statusViewHeight(for: message, at: indexPath, in: collectionView)
-        return CGSize(width: messagesLayout.itemWidth, height: height)
-    }
-
     public func statusViewPadding(for message: MessageType) -> HorizontalEdgeInsets {
         let dataSource = messagesLayout.messagesDataSource
         let isFromCurrentSender = dataSource.isFromCurrentSender(message: message)
         return isFromCurrentSender ? outgoingStatusViewPadding : incomingStatusViewPadding
+    }
+    
+    public func statusViewSize(for message: MessageType, at indexPath: IndexPath) -> CGSize {
+        let layoutDelegate = messagesLayout.messagesLayoutDelegate
+        let collectionView = messagesLayout.messagesCollectionView
+        let height = layoutDelegate.statusViewHeight(for: message, at: indexPath, in: collectionView)
+        let width = messagesLayout.itemWidth - statusViewPadding(for: message).horizontal
+        return CGSize(width: width, height: height)
     }
 
     // MARK: - MessageContainer
