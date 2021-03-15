@@ -201,7 +201,7 @@ open class MessageContentCell: MessageCollectionViewCell {
     open override func handleHoldGesture(_ gesture: UIGestureRecognizer) {
         let touchLocation = gesture.location(in: self)
         switch true {
-        case messageContainerView.frame.contains(touchLocation) && !cellContentView(canHandle: convert(touchLocation, to: messageContainerView)):
+        case messageContainerView.frame.contains(touchLocation):
             delegate?.didHoldMessage(in: self)
         default:
             break
@@ -210,9 +210,10 @@ open class MessageContentCell: MessageCollectionViewCell {
 
     /// Handle long press gesture, return true when gestureRecognizer's touch point in `messageContainerView`'s frame
     open override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        let touchPoint = gestureRecognizer.location(in: self)
-        guard gestureRecognizer.isKind(of: UILongPressGestureRecognizer.self) else { return false }
-        return messageContainerView.frame.contains(touchPoint)
+//        let touchPoint = gestureRecognizer.location(in: self)
+//        guard gestureRecognizer.isKind(of: UILongPressGestureRecognizer.self) else { return false }
+//        return messageContainerView.frame.contains(touchPoint)
+        return false
     }
 
     /// Handle `ContentView`'s tap gesture, return false when `ContentView` doesn't needs to handle gesture
