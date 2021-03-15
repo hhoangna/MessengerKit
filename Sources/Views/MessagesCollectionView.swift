@@ -112,7 +112,7 @@ open class MessagesCollectionView: UICollectionView {
     
     @objc
     open func handleHoldGesture(_ gesture: UIGestureRecognizer) {
-        guard gesture.state == .ended else {
+        guard gesture.state == .changed else {
             return
         }
         let touchLocation = gesture.location(in: self)
