@@ -197,6 +197,16 @@ open class MessageContentCell: MessageCollectionViewCell {
             delegate?.didTapBackground(in: self)
         }
     }
+    
+    open override func handleHoldGesture(_ gesture: UIGestureRecognizer) {
+        let touchLocation = gesture.location(in: self)
+        switch true {
+        case messageContainerView.frame.contains(touchLocation) && !cellContentView(canHandle: convert(touchLocation, to: messageContainerView)):
+            delegate?.didHoldMessage(in: self)
+        default:
+            break
+        }
+    }
 
     /// Handle long press gesture, return true when gestureRecognizer's touch point in `messageContainerView`'s frame
     open override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {

@@ -26,6 +26,17 @@ import Foundation
 
 /// A protocol used by `MessageContentCell` subclasses to detect taps in the cell's subviews.
 public protocol MessageCellDelegate: MessageLabelDelegate {
+    
+    /// Triggered when a tap occurs in the `MessageContainerView`.
+    ///
+    /// - Parameters:
+    ///   - cell: The cell where the hold occurred.
+    ///
+    /// - Note:
+    /// You can get a reference to the `MessageType` for the cell by using `UICollectionView`'s
+    /// `indexPath(for: cell)` method. Then using the returned `IndexPath` with the `MessagesDataSource`
+    /// method `messageForItem(at:indexPath:messagesCollectionView)`.
+    func didHoldMessage(in cell: MessageCollectionViewCell)
 
     /// Triggered when a tap occurs in the background of the cell.
     ///
@@ -172,6 +183,8 @@ public protocol MessageCellDelegate: MessageLabelDelegate {
 }
 
 public extension MessageCellDelegate {
+    
+    func didHoldMessage(in cell: MessageCollectionViewCell) {}
 
     func didTapBackground(in cell: MessageCollectionViewCell) {}
 
