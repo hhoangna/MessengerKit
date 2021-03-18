@@ -212,23 +212,22 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         var startAnimation = false
         switch true {
         case messageContainerView.frame.contains(touchLocation):
-//            switch gesture.state {
-//            case .began:
-//                startAnimation = true
-//
-//            default:
-//                <#code#>
-//            }
-            UIView.animate(withDuration: 0.3, delay: 0, options: [.allowUserInteraction], animations: {
-                self.messageContainerView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
-            }, completion: { (finished) in
-                //
-            })
-            UIView.animate(withDuration: 0.3, delay: 0, options: [.allowUserInteraction, .curveEaseOut], animations: {
-                self.messageContainerView.transform = .identity
-            }, completion: { (finished) in
-                //
-            })
+            switch gesture.state {
+            case .began:
+                delegate?.didHoldMessage(in: self)
+            default:
+                break
+            }
+//            UIView.animate(withDuration: 0.3, delay: 0, options: [.allowUserInteraction], animations: {
+//                self.messageContainerView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+//            }, completion: { (finished) in
+//                //
+//            })
+//            UIView.animate(withDuration: 0.3, delay: 0, options: [.allowUserInteraction, .curveEaseOut], animations: {
+//                self.messageContainerView.transform = .identity
+//            }, completion: { (finished) in
+//                //
+//            })
         default:
             break
         }
