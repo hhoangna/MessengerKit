@@ -26,7 +26,7 @@ import Foundation
 import UIKit
 
 /// A subclass of `MessageCollectionViewCell` used to display text, media, and location messages.
-open class MessageContentCell: MessageCollectionViewCell {
+open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDelegate {
     
     /// The view displaying the status
     open var statusView: UIView = UIView()
@@ -85,12 +85,21 @@ open class MessageContentCell: MessageCollectionViewCell {
         super.init(frame: frame)
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         setupSubviews()
+        setupGestures()
     }
 
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         setupSubviews()
+        setupGestures()
+    }
+    
+    open func setupGestures() {
+        let panGesture = UIPanGestureRecognizer()
+        panGesture.addTarget(self, action: #selector(handlePanGesture(_:)))
+        panGesture.delegate = self
+        messageContainerView.addGestureRecognizer(panGesture)
     }
 
     open func setupSubviews() {
@@ -200,20 +209,62 @@ open class MessageContentCell: MessageCollectionViewCell {
     
     open override func handleHoldGesture(_ gesture: UIGestureRecognizer) {
         let touchLocation = gesture.location(in: self)
+        var startAnimation = false
         switch true {
         case messageContainerView.frame.contains(touchLocation):
-            delegate?.didHoldMessage(in: self)
+//            switch gesture.state {
+//            case .began:
+//                startAnimation = true
+//
+//            default:
+//                <#code#>
+//            }
+            UIView.animate(withDuration: 0.3, delay: 0, options: [.allowUserInteraction], animations: {
+                self.messageContainerView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+            }, completion: { (finished) in
+                //
+            })
+            UIView.animate(withDuration: 0.3, delay: 0, options: [.allowUserInteraction, .curveEaseOut], animations: {
+                self.messageContainerView.transform = .identity
+            }, completion: { (finished) in
+                //
+            })
+        default:
+            break
+        }
+    }
+    
+    @objc open override func handlePanGesture(_ gesture: UIGestureRecognizer) {
+        guard let panGesture = gesture as? UIPanGestureRecognizer, let parentView = panGesture.view else {
+            return
+        }
+        switch panGesture.state {
+        case .began, .changed:
+            let translation = panGesture.translation(in: messageContainerView)
+            let velocity = panGesture.velocity(in: messageContainerView)
+            print("Translation: \(translation)")
+            print("Velocity: \(velocity)")
+
         default:
             break
         }
     }
 
-    /// Handle long press gesture, return true when gestureRecognizer's touch point in `messageContainerView`'s frame
+    /// Handle pan gesture, return true when gestureRecognizer's touch point in `ContentView`'s frame
     open override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if gestureRecognizer.isKind(of: UIPanGestureRecognizer.self) {
+            guard let panGesture = gestureRecognizer as? UIPanGestureRecognizer else { return false}
+            let translation = panGesture.translation(in: self.messageContainerView)
+            if abs(translation.x) > abs(translation.y) {
+                return true
+            }
+            return false
+        } else {
+            return false
+        }
 //        let touchPoint = gestureRecognizer.location(in: self)
 //        guard gestureRecognizer.isKind(of: UILongPressGestureRecognizer.self) else { return false }
 //        return messageContainerView.frame.contains(touchPoint)
-        return false
     }
 
     /// Handle `ContentView`'s tap gesture, return false when `ContentView` doesn't needs to handle gesture

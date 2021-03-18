@@ -113,7 +113,7 @@ class ChatViewController: MessagesViewController, MessagesDataSource {
         scrollsToBottomOnKeyboardBeginsEditing = true // default false
         maintainPositionOnKeyboardFrameChanged = true // default false
 
-        showMessageTimestampOnSwipeLeft = true // default false
+        showMessageTimestampOnSwipeLeft = false // default false
         
         messagesCollectionView.refreshControl = refreshControl
     }
@@ -193,6 +193,10 @@ class ChatViewController: MessagesViewController, MessagesDataSource {
 // MARK: - MessageCellDelegate
 
 extension ChatViewController: MessageCellDelegate {
+    func didHoldMessage(in cell: MessageCollectionViewCell) {
+        print("Message held")
+    }
+    
     func didTapAvatar(in cell: MessageCollectionViewCell) {
         print("Avatar tapped")
     }
