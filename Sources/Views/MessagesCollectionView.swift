@@ -37,6 +37,8 @@ open class MessagesCollectionView: UICollectionView {
 
     open weak var messageCellDelegate: MessageCellDelegate?
 
+    open weak var messagesCollectionViewDelegate: MessagesCollectionViewDelegate?
+
     open var isTypingIndicatorHidden: Bool {
         return messagesCollectionViewFlowLayout.isTypingIndicatorViewHidden
     }
@@ -101,6 +103,7 @@ open class MessagesCollectionView: UICollectionView {
     
     @objc
     open func handleTapGesture(_ gesture: UIGestureRecognizer) {
+        messagesCollectionViewDelegate?.didTapGusture(in: self, gesture: gesture)
         guard gesture.state == .ended else { return }
         
         let touchLocation = gesture.location(in: self)
