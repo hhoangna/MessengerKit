@@ -38,7 +38,7 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
     public var messageLabelFont: UIFont = UIFont.preferredFont(forTextStyle: .body)
     public var messageLabelInsets: UIEdgeInsets = .zero
 
-    public var cellTopLabelAlignment = LabelAlignment(textAlignment: .center, textInsets: .zero)
+    public var cellTopLabelAlignment = LabelAlignment(textAlignment: .center, textInsets: UIEdgeInsets(top: 0, left: 7, bottom: 0, right: 7))
     public var cellTopLabelSize: CGSize = .zero
     
     public var cellBottomLabelAlignment = LabelAlignment(textAlignment: .center, textInsets: .zero)
