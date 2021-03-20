@@ -45,6 +45,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     /// The top label of the cell.
     open var cellTopLabel: InsetLabel = {
         let label = InsetLabel()
+        label.textInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: 7)
         label.numberOfLines = 1
         label.textAlignment = .center
         label.backgroundColor = .white
@@ -384,7 +385,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             sparateTopLine.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16)
             
         ])
-        
+        print(attributes.cellTopLabelSize.width)
         sparateTopLine.isHidden = attributes.cellTopLabelSize.height == 0
     }
     
