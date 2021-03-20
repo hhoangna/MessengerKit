@@ -385,7 +385,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             sparateTopLine.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16)
             
         ])
-        print(attributes.cellTopLabelSize.width)
         sparateTopLine.isHidden = attributes.cellTopLabelSize.height == 0
     }
     
