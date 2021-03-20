@@ -46,8 +46,20 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     open var cellTopLabel: InsetLabel = {
         let label = InsetLabel()
         label.numberOfLines = 0
+        label.textInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: 7)
         label.textAlignment = .center
+        label.backgroundColor = .white
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
         return label
+    }()
+    
+    open var sparateTopLine: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 17/255, green: 17/255, blue: 17/255, alpha: 0.1)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
     }()
     
     /// The bottom label of the cell.
@@ -104,6 +116,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
 
     open func setupSubviews() {
         contentView.addSubview(accessoryView)
+        contentView.addSubview(sparateTopLine)
         contentView.addSubview(cellTopLabel)
         contentView.addSubview(messageTopLabel)
         contentView.addSubview(messageBottomLabel)
@@ -359,6 +372,19 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     open func layoutCellTopLabel(with attributes: MessagesCollectionViewLayoutAttributes) {
         cellTopLabel.textAlignment = attributes.cellTopLabelAlignment.textAlignment
         cellTopLabel.textInsets = attributes.cellTopLabelAlignment.textInsets
+        
+        NSLayoutConstraint.activate([
+            cellTopLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            cellTopLabel.heightAnchor.constraint(equalToConstant: attributes.cellTopLabelSize.height),
+            cellTopLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
+            cellTopLabel.bottomAnchor.constraint(equalTo: messageTopLabel.topAnchor),
+            
+            sparateTopLine.heightAnchor.constraint(equalToConstant: 0.5),
+            sparateTopLine.centerYAnchor.constraint(equalTo: cellTopLabel.centerYAnchor),
+            sparateTopLine.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            sparateTopLine.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16)
+            
+        ])
 
         cellTopLabel.frame = CGRect(origin: .zero, size: attributes.cellTopLabelSize)
     }
