@@ -46,7 +46,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     open var cellTopLabel: InsetLabel = {
         let label = InsetLabel()
         label.numberOfLines = 1
-        label.textInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: 7)
         label.textAlignment = .center
         label.backgroundColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
