@@ -385,8 +385,8 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             sparateTopLine.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16)
             
         ])
-
-        cellTopLabel.frame = CGRect(origin: .zero, size: attributes.cellTopLabelSize)
+        
+        sparateTopLine.isHidden = attributes.cellTopLabelSize.height == 0
     }
     
     /// Positions the cell's bottom label.
