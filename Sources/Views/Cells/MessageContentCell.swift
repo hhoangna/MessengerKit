@@ -114,7 +114,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         let panGesture = UIPanGestureRecognizer()
         panGesture.addTarget(self, action: #selector(handlePanGesture(_:)))
         panGesture.delegate = self
-        messageContainerView.addGestureRecognizer(panGesture)
+        contentView.addGestureRecognizer(panGesture)
     }
 
     open func setupSubviews() {
@@ -285,7 +285,23 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             let velocity = panGesture.velocity(in: messageContainerView)
             print("Translation: \(translation)")
             print("Velocity: \(velocity)")
-
+            if abs(translation.x) > 200 {
+                UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.3, options: [.allowUserInteraction]) {
+                    self.messageContainerView.transform = .identity
+                } completion: { (ok) in
+                    //
+                }
+            } else {
+                UIView.animate(withDuration: 0.4) {
+                    self.messageContainerView.transform = CGAffineTransform(translationX: CGFloat(60 / velocity.x * translation.x), y: 0)
+                }
+            }
+        case .ended:
+            UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.3, options: [.allowUserInteraction]) {
+                self.messageContainerView.transform = .identity
+            } completion: { (ok) in
+                //
+            }
         default:
             break
         }
