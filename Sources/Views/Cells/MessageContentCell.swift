@@ -240,13 +240,13 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
                         countTime = 1.0
 
                         delegate?.didHoldMessage(in: self)
-                        UIView.animate(withDuration: 0.8, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.4, options: [.allowUserInteraction, .curveEaseOut]) {
+                        UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.4, options: [.allowUserInteraction, .curveEaseOut]) {
                             self.messageContainerView.transform = .identity
                         } completion: { (ok) in
                             //
                         }
                     } else {
-                        UIView.animate(withDuration: 0.6) {
+                        UIView.animate(withDuration: 0.5) {
                             self.messageContainerView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
                         }
                     }
@@ -255,7 +255,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
                 startAnimation = false
                 timer.invalidate()
                 countTime = 1.0
-                UIView.animate(withDuration: 0.8, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.4, options: [.allowUserInteraction, .curveEaseOut]) {
+                UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.4, options: [.allowUserInteraction, .curveEaseOut]) {
                     self.messageContainerView.transform = .identity
                 } completion: { (ok) in
                     //
