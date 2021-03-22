@@ -100,7 +100,8 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     
     lazy var replyIconImage: UIButton = {
         let replyIcon = UIButton()
-        replyIcon.setImage(#imageLiteral(resourceName: "icBlackReply"), for: .normal)
+        replyIcon.setImage(#imageLiteral(resourceName: "icBlackReply").withRenderingMode(.alwaysOriginal), for: .normal)
+        replyIcon.tintColor = UIColor(red: 17/255, green: 17/255, blue: 17/255, alpha: 1)
         replyIcon.isUserInteractionEnabled = false
         replyIcon.contentEdgeInsets = UIEdgeInsets(top: 3, left: 3, bottom: 3, right: 3)
         replyIcon.layer.cornerRadius = 15
@@ -325,7 +326,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             }
             
             replyIconImage.alpha = 0
-            replyIconImage.isHidden = false
+            replyIconImage.isHidden = true
         case .changed:
             if !safePanWork {
                 return
