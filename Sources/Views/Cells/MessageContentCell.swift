@@ -97,6 +97,20 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     var presentMessage: MessageType!
     var isAvailableGesture: Bool = false
     var safePanWork: Bool = false
+    
+    lazy var replyIconImage: UIButton = {
+        let replyIcon = UIButton()
+        replyIcon.setImage(#imageLiteral(resourceName: "icBlackReply"), for: .normal)
+        replyIcon.isUserInteractionEnabled = false
+        replyIcon.contentEdgeInsets = UIEdgeInsets(top: 3, left: 3, bottom: 3, right: 3)
+        replyIcon.layer.cornerRadius = 15
+        replyIcon.backgroundColor = UIColor(red: 242/255, green: 242/255, blue: 242/255, alpha: 1)
+        replyIcon.translatesAutoresizingMaskIntoConstraints = false
+        replyIcon.alpha = 0
+        
+        return replyIcon
+    }()
+    
 
     /// The `MessageCellDelegate` for the cell.
     open weak var delegate: MessageCellDelegate?
@@ -286,21 +300,43 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         guard let panGesture = gesture as? UIPanGestureRecognizer, let parentView = panGesture.view else {
             return
         }
-
+        
         switch panGesture.state {
         case .began:
             startAnimation = true
             isAvailableGesture = false
             safePanWork = messageContainerView.frame.contains(gesture.location(in: self))
+            contentView.addSubview(replyIconImage)
+            
+            if presentMessage.isOwner {
+                NSLayoutConstraint.activate([
+                    replyIconImage.trailingAnchor.constraint(equalTo: messageContainerView.trailingAnchor, constant: 30),
+                    replyIconImage.widthAnchor.constraint(equalToConstant: 30),
+                    replyIconImage.heightAnchor.constraint(equalToConstant: 30),
+                    replyIconImage.centerYAnchor.constraint(equalTo: messageContainerView.centerYAnchor)
+                ])
+            } else {
+                NSLayoutConstraint.activate([
+                    replyIconImage.leadingAnchor.constraint(equalTo: messageContainerView.leadingAnchor, constant: -30),
+                    replyIconImage.widthAnchor.constraint(equalToConstant: 30),
+                    replyIconImage.heightAnchor.constraint(equalToConstant: 30),
+                    replyIconImage.centerYAnchor.constraint(equalTo: messageContainerView.centerYAnchor)
+                ])
+            }
+            
+            replyIconImage.alpha = 0
+            replyIconImage.isHidden = false
         case .changed:
             if !safePanWork {
                 return
             }
             let translation = panGesture.translation(in: messageContainerView)
+            print(translation.x)
             if presentMessage.isOwner {
                 if translation.x < 0 {
-                    self.messageContainerView.transform = CGAffineTransform(translationX: translation.x * 0.3, y: 0)
-
+                    self.messageContainerView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+                    self.replyIconImage.transform = CGAffineTransform(translationX: max(-40, translation.x * 0.3), y: 0).scaledBy(x: min(1.0, (abs(translation.x * 0.3)) / 40), y: min(1.0, (abs(translation.x * 0.3)) / 40))
+                    
                     if abs(translation.x) >= 120 {
                         if startAnimation {
                             isAvailableGesture = true
@@ -308,13 +344,22 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
                             startAnimation = false
                         }
                     } else {
+                        if abs(translation.x) >= 60 {
+                            replyIconImage.alpha = (min(120, abs(translation.x)) - 60) / 60
+                            replyIconImage.isHidden = false
+                        } else {
+                            replyIconImage.isHidden = true
+                            replyIconImage.alpha = 0
+                        }
+                        
                         startAnimation = true
                         isAvailableGesture = false
                     }
                 }
             } else {
                 if translation.x > 0 {
-                    self.messageContainerView.transform = CGAffineTransform(translationX: translation.x * 0.3, y: 0)
+                    self.messageContainerView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+                    self.replyIconImage.transform = CGAffineTransform(translationX: min(40, translation.x * 0.3), y: 0).scaledBy(x: min(1.0, (abs(translation.x * 0.3)) / 40), y: min(1.0, (abs(translation.x * 0.3)) / 40))
 
                     if abs(translation.x) >= 120 {
                         if startAnimation {
@@ -323,6 +368,14 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
                             startAnimation = false
                         }
                     } else {
+                        if abs(translation.x) >= 60 {
+                            replyIconImage.alpha = (min(120, abs(translation.x)) - 60) / 60
+                            replyIconImage.isHidden = false
+                        } else {
+                            replyIconImage.isHidden = true
+                            replyIconImage.alpha = 0
+                        }
+                        
                         startAnimation = true
                         isAvailableGesture = false
                     }
@@ -335,8 +388,11 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             }
             UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.3, options: [.allowUserInteraction]) {
                 self.messageContainerView.transform = .identity
+                self.replyIconImage.transform = .identity
+                self.replyIconImage.alpha = 0
             } completion: { (ok) in
-                //
+                self.replyIconImage.isHidden = true
+                self.replyIconImage.removeFromSuperview()
             }
         default:
             break
