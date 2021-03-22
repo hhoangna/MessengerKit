@@ -285,6 +285,10 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         guard let panGesture = gesture as? UIPanGestureRecognizer, let parentView = panGesture.view else {
             return
         }
+
+        if !messageContainerView.frame.contains(panGesture.location(in: self)) {
+            return
+        }
                 
         switch panGesture.state {
         case .began:
