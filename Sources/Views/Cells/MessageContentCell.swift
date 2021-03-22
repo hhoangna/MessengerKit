@@ -346,7 +346,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     /// Handle pan gesture, return true when gestureRecognizer's touch point in `ContentView`'s frame
     open override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer.isKind(of: UIPanGestureRecognizer.self) {
-            guard let panGesture = gestureRecognizer as? UIPanGestureRecognizer else { return false}
+            guard let panGesture = gestureRecognizer as? UIPanGestureRecognizer, self.messageContainerView.frame.contains(panGesture.location(ofTouch: 0, in: self)) else { return false}
             let translation = panGesture.translation(in: self.messageContainerView)
             if abs(translation.x) > abs(translation.y) {
                 return true
