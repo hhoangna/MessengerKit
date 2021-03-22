@@ -87,11 +87,15 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     /// The time label of the messageBubble.
     open var messageTimestampLabel: InsetLabel = InsetLabel()
 
-    // Should only add customized subviews - don't change accessoryView itself.
+    /// Should only add customized subviews - don't change accessoryView itself.
     open var accessoryView: UIView = UIView()
+    
+    /// Customized for gesture
     var startAnimation: Bool = false
     var timer = Timer()
     var countTime: Double = 1.0
+    var presentMessage: MessageType!
+    var isAvailableGesture: Bool = false
 
     /// The `MessageCellDelegate` for the cell.
     open weak var delegate: MessageCellDelegate?
@@ -171,6 +175,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         }
 
         delegate = messagesCollectionView.messageCellDelegate
+        presentMessage = message
 
         let messageColor = displayDelegate.backgroundColor(for: message, at: indexPath, in: messagesCollectionView)
         let messageStyle = displayDelegate.messageStyle(for: message, at: indexPath, in: messagesCollectionView)
@@ -231,6 +236,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             switch gesture.state {
             case .began:
                 startAnimation = true
+                countTime = 1.0
                 timer = Timer.scheduledTimer(timeInterval: 0.05, target: self, selector: #selector(timerAnimationLongPressgesture), userInfo: nil, repeats: true)
             case .changed:
                 if startAnimation {
@@ -279,24 +285,48 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         guard let panGesture = gesture as? UIPanGestureRecognizer, let parentView = panGesture.view else {
             return
         }
+                
         switch panGesture.state {
-        case .began, .changed:
+        case .began:
+            startAnimation = true
+            isAvailableGesture = false
+        case .changed:
             let translation = panGesture.translation(in: messageContainerView)
-            let velocity = panGesture.velocity(in: messageContainerView)
-            print("Translation: \(translation)")
-            print("Velocity: \(velocity)")
-            if abs(translation.x) > 200 {
-                UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.3, options: [.allowUserInteraction]) {
-                    self.messageContainerView.transform = .identity
-                } completion: { (ok) in
-                    //
+            if presentMessage.isOwner {
+                if translation.x < 0 {
+                    self.messageContainerView.transform = CGAffineTransform(translationX: translation.x * 0.3, y: 0)
+
+                    if abs(translation.x) >= 120 {
+                        if startAnimation {
+                            isAvailableGesture = true
+                            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+                            startAnimation = false
+                        }
+                    } else {
+                        startAnimation = true
+                        isAvailableGesture = false
+                    }
                 }
             } else {
-                UIView.animate(withDuration: 0.4) {
-                    self.messageContainerView.transform = CGAffineTransform(translationX: CGFloat(60 / velocity.x * translation.x), y: 0)
+                if translation.x > 0 {
+                    self.messageContainerView.transform = CGAffineTransform(translationX: translation.x * 0.3, y: 0)
+
+                    if abs(translation.x) >= 120 {
+                        if startAnimation {
+                            isAvailableGesture = true
+                            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+                            startAnimation = false
+                        }
+                    } else {
+                        startAnimation = true
+                        isAvailableGesture = false
+                    }
                 }
             }
         case .ended:
+            if isAvailableGesture {
+                delegate?.didSwipeMessage(in: self)
+            }
             UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.3, options: [.allowUserInteraction]) {
                 self.messageContainerView.transform = .identity
             } completion: { (ok) in
