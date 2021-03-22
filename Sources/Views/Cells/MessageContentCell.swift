@@ -96,6 +96,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     var countTime: Double = 1.0
     var presentMessage: MessageType!
     var isAvailableGesture: Bool = false
+    var safePanWork: Bool = false
 
     /// The `MessageCellDelegate` for the cell.
     open weak var delegate: MessageCellDelegate?
@@ -286,15 +287,15 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             return
         }
 
-        if !messageContainerView.frame.contains(panGesture.location(in: self)) {
-            return
-        }
-                
         switch panGesture.state {
         case .began:
             startAnimation = true
             isAvailableGesture = false
+            safePanWork = messageContainerView.frame.contains(gesture.location(in: self))
         case .changed:
+            if !safePanWork {
+                return
+            }
             let translation = panGesture.translation(in: messageContainerView)
             if presentMessage.isOwner {
                 if translation.x < 0 {
@@ -328,6 +329,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
                 }
             }
         case .ended:
+            if !safePanWork { return }
             if isAvailableGesture {
                 delegate?.didSwipeMessage(in: self)
             }
