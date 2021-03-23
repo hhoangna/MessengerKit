@@ -298,7 +298,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     }
     
     @objc open override func handlePanGesture(_ gesture: UIGestureRecognizer) {
-        guard let panGesture = gesture as? UIPanGestureRecognizer, let parentView = panGesture.view else {
+        guard let panGesture = gesture as? UIPanGestureRecognizer else {
             return
         }
         
@@ -332,7 +332,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
                 return
             }
             let translation = panGesture.translation(in: messageContainerView)
-            print(translation.x)
             if presentMessage.isOwner {
                 if translation.x < 0 {
                     self.messageContainerView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
