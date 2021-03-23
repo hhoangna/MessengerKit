@@ -26,7 +26,7 @@ import Foundation
 import UIKit
 
 /// A subclass of `MessageCollectionViewCell` used to display text, media, and location messages.
-open class MessageContentCell: MessageCollectionViewCell {
+open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDelegate {
     
     /// The view displaying the status
     open var statusView: UIView = UIView()
@@ -45,9 +45,21 @@ open class MessageContentCell: MessageCollectionViewCell {
     /// The top label of the cell.
     open var cellTopLabel: InsetLabel = {
         let label = InsetLabel()
-        label.numberOfLines = 0
+        label.textInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: 7)
+        label.numberOfLines = 1
         label.textAlignment = .center
+        label.backgroundColor = .white
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
         return label
+    }()
+    
+    open var sparateTopLine: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 17/255, green: 17/255, blue: 17/255, alpha: 0.1)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
     }()
     
     /// The bottom label of the cell.
@@ -75,8 +87,31 @@ open class MessageContentCell: MessageCollectionViewCell {
     /// The time label of the messageBubble.
     open var messageTimestampLabel: InsetLabel = InsetLabel()
 
-    // Should only add customized subviews - don't change accessoryView itself.
+    /// Should only add customized subviews - don't change accessoryView itself.
     open var accessoryView: UIView = UIView()
+    
+    /// Customized for gesture
+    var startAnimation: Bool = false
+    var timer = Timer()
+    var countTime: Double = 1.0
+    var presentMessage: MessageType!
+    var isAvailableGesture: Bool = false
+    var safePanWork: Bool = false
+    
+    lazy var replyIconImage: UIButton = {
+        let replyIcon = UIButton()
+        replyIcon.setImage(#imageLiteral(resourceName: "icBlackReply").withRenderingMode(.alwaysOriginal), for: .normal)
+        replyIcon.tintColor = UIColor(red: 17/255, green: 17/255, blue: 17/255, alpha: 1)
+        replyIcon.isUserInteractionEnabled = false
+        replyIcon.contentEdgeInsets = UIEdgeInsets(top: 3, left: 3, bottom: 3, right: 3)
+        replyIcon.layer.cornerRadius = 15
+        replyIcon.backgroundColor = UIColor(red: 242/255, green: 242/255, blue: 242/255, alpha: 1)
+        replyIcon.translatesAutoresizingMaskIntoConstraints = false
+        replyIcon.alpha = 0
+        
+        return replyIcon
+    }()
+    
 
     /// The `MessageCellDelegate` for the cell.
     open weak var delegate: MessageCellDelegate?
@@ -85,16 +120,26 @@ open class MessageContentCell: MessageCollectionViewCell {
         super.init(frame: frame)
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         setupSubviews()
+        setupGestures()
     }
 
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         setupSubviews()
+        setupGestures()
+    }
+    
+    open func setupGestures() {
+        let panGesture = UIPanGestureRecognizer()
+        panGesture.addTarget(self, action: #selector(handlePanGesture(_:)))
+        panGesture.delegate = self
+        contentView.addGestureRecognizer(panGesture)
     }
 
     open func setupSubviews() {
         contentView.addSubview(accessoryView)
+        contentView.addSubview(sparateTopLine)
         contentView.addSubview(cellTopLabel)
         contentView.addSubview(messageTopLabel)
         contentView.addSubview(messageBottomLabel)
@@ -146,6 +191,7 @@ open class MessageContentCell: MessageCollectionViewCell {
         }
 
         delegate = messagesCollectionView.messageCellDelegate
+        presentMessage = message
 
         let messageColor = displayDelegate.backgroundColor(for: message, at: indexPath, in: messagesCollectionView)
         let messageStyle = displayDelegate.messageStyle(for: message, at: indexPath, in: messagesCollectionView)
@@ -202,18 +248,176 @@ open class MessageContentCell: MessageCollectionViewCell {
         let touchLocation = gesture.location(in: self)
         switch true {
         case messageContainerView.frame.contains(touchLocation):
-            delegate?.didHoldMessage(in: self)
+
+            switch gesture.state {
+            case .began:
+                startAnimation = true
+                countTime = 1.0
+                timer = Timer.scheduledTimer(timeInterval: 0.05, target: self, selector: #selector(timerAnimationLongPressgesture), userInfo: nil, repeats: true)
+            case .changed:
+                if startAnimation {
+                    if countTime < 0.6 {
+                        startAnimation = false
+                        timer.invalidate()
+                        countTime = 1.0
+
+                        delegate?.didHoldMessage(in: self)
+                        UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.4, options: [.allowUserInteraction, .curveEaseOut]) {
+                            self.messageContainerView.transform = .identity
+                        } completion: { (ok) in
+                            //
+                        }
+                    } else {
+                        UIView.animate(withDuration: 0.5) {
+                            self.messageContainerView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+                        }
+                    }
+                }
+            case .ended:
+                startAnimation = false
+                timer.invalidate()
+                countTime = 1.0
+                UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.4, options: [.allowUserInteraction, .curveEaseOut]) {
+                    self.messageContainerView.transform = .identity
+                } completion: { (ok) in
+                    //
+                }
+            default:
+                break
+            }
+        default:
+            break
+        }
+    }
+    
+    @objc func timerAnimationLongPressgesture() {
+        countTime -= 0.05
+        if countTime < 0.6 {
+            timer.invalidate()
+        }
+    }
+    
+    @objc open override func handlePanGesture(_ gesture: UIGestureRecognizer) {
+        guard let panGesture = gesture as? UIPanGestureRecognizer else {
+            return
+        }
+        
+        switch panGesture.state {
+        case .began:
+            startAnimation = true
+            isAvailableGesture = false
+            safePanWork = messageContainerView.frame.contains(gesture.location(in: self))
+            contentView.addSubview(replyIconImage)
+            
+            if presentMessage.isOwner {
+                NSLayoutConstraint.activate([
+                    replyIconImage.trailingAnchor.constraint(equalTo: messageContainerView.trailingAnchor, constant: 30),
+                    replyIconImage.widthAnchor.constraint(equalToConstant: 30),
+                    replyIconImage.heightAnchor.constraint(equalToConstant: 30),
+                    replyIconImage.centerYAnchor.constraint(equalTo: messageContainerView.centerYAnchor)
+                ])
+            } else {
+                NSLayoutConstraint.activate([
+                    replyIconImage.leadingAnchor.constraint(equalTo: messageContainerView.leadingAnchor, constant: -30),
+                    replyIconImage.widthAnchor.constraint(equalToConstant: 30),
+                    replyIconImage.heightAnchor.constraint(equalToConstant: 30),
+                    replyIconImage.centerYAnchor.constraint(equalTo: messageContainerView.centerYAnchor)
+                ])
+            }
+            
+            replyIconImage.alpha = 0
+            replyIconImage.isHidden = true
+        case .changed:
+            if !safePanWork {
+                return
+            }
+            let translation = panGesture.translation(in: messageContainerView)
+            if presentMessage.isOwner {
+                if translation.x < 0 {
+                    self.messageContainerView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+                    self.replyIconImage.transform = CGAffineTransform(translationX: max(-40, translation.x * 0.3), y: 0).scaledBy(x: min(1.0, (abs(translation.x * 0.3)) / 40), y: min(1.0, (abs(translation.x * 0.3)) / 40))
+                    
+                    if abs(translation.x) >= 120 {
+                        if startAnimation {
+                            isAvailableGesture = true
+                            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+                            startAnimation = false
+                        }
+                    } else {
+                        if abs(translation.x) >= 60 {
+                            replyIconImage.alpha = (min(120, abs(translation.x)) - 60) / 60
+                            replyIconImage.isHidden = false
+                        } else {
+                            replyIconImage.isHidden = true
+                            replyIconImage.alpha = 0
+                        }
+                        
+                        startAnimation = true
+                        isAvailableGesture = false
+                    }
+                }
+            } else {
+                if translation.x > 0 {
+                    self.messageContainerView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+                    self.replyIconImage.transform = CGAffineTransform(translationX: min(40, translation.x * 0.3), y: 0).scaledBy(x: min(1.0, (abs(translation.x * 0.3)) / 40), y: min(1.0, (abs(translation.x * 0.3)) / 40))
+
+                    if abs(translation.x) >= 120 {
+                        if startAnimation {
+                            isAvailableGesture = true
+                            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+                            startAnimation = false
+                        }
+                    } else {
+                        if abs(translation.x) >= 60 {
+                            replyIconImage.alpha = (min(120, abs(translation.x)) - 60) / 60
+                            replyIconImage.isHidden = false
+                        } else {
+                            replyIconImage.isHidden = true
+                            replyIconImage.alpha = 0
+                        }
+                        
+                        startAnimation = true
+                        isAvailableGesture = false
+                    }
+                }
+            }
+        case .ended:
+            if !safePanWork { return }
+            if isAvailableGesture {
+                delegate?.didSwipeMessage(in: self)
+            }
+            UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.3, options: [.allowUserInteraction]) {
+                self.messageContainerView.transform = .identity
+                self.replyIconImage.transform = .identity
+                self.replyIconImage.alpha = 0
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self.replyIconImage.isHidden = true
+                    self.replyIconImage.removeFromSuperview()
+                }
+            } completion: { (ok) in
+//                self.replyIconImage.isHidden = true
+//                self.replyIconImage.removeFromSuperview()
+            }
         default:
             break
         }
     }
 
-    /// Handle long press gesture, return true when gestureRecognizer's touch point in `messageContainerView`'s frame
+    /// Handle pan gesture, return true when gestureRecognizer's touch point in `ContentView`'s frame
     open override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if gestureRecognizer.isKind(of: UIPanGestureRecognizer.self) {
+            guard let panGesture = gestureRecognizer as? UIPanGestureRecognizer, self.messageContainerView.frame.contains(panGesture.location(ofTouch: 0, in: self)) else { return false}
+            let translation = panGesture.translation(in: self.messageContainerView)
+            if abs(translation.x) > abs(translation.y) {
+                return true
+            }
+            return false
+        } else {
+            return false
+        }
 //        let touchPoint = gestureRecognizer.location(in: self)
 //        guard gestureRecognizer.isKind(of: UILongPressGestureRecognizer.self) else { return false }
 //        return messageContainerView.frame.contains(touchPoint)
-        return false
     }
 
     /// Handle `ContentView`'s tap gesture, return false when `ContentView` doesn't needs to handle gesture
@@ -309,8 +513,20 @@ open class MessageContentCell: MessageCollectionViewCell {
     open func layoutCellTopLabel(with attributes: MessagesCollectionViewLayoutAttributes) {
         cellTopLabel.textAlignment = attributes.cellTopLabelAlignment.textAlignment
         cellTopLabel.textInsets = attributes.cellTopLabelAlignment.textInsets
-
-        cellTopLabel.frame = CGRect(origin: .zero, size: attributes.cellTopLabelSize)
+        
+        NSLayoutConstraint.activate([
+            cellTopLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            cellTopLabel.heightAnchor.constraint(equalToConstant: attributes.cellTopLabelSize.height),
+            cellTopLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
+            cellTopLabel.bottomAnchor.constraint(equalTo: messageTopLabel.topAnchor),
+            
+            sparateTopLine.heightAnchor.constraint(equalToConstant: 0.5),
+            sparateTopLine.centerYAnchor.constraint(equalTo: cellTopLabel.centerYAnchor),
+            sparateTopLine.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            sparateTopLine.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16)
+            
+        ])
+        sparateTopLine.isHidden = attributes.cellTopLabelSize.height == 0
     }
     
     /// Positions the cell's bottom label.

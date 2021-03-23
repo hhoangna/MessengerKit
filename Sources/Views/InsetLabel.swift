@@ -35,4 +35,9 @@ open class InsetLabel: UILabel {
         super.drawText(in: insetRect)
     }
 
+    open override var intrinsicContentSize: CGSize {
+        let size = super.intrinsicContentSize
+        return CGSize(width: size.width + textInsets.left + textInsets.right,
+                      height: size.height + textInsets.top + textInsets.bottom)
+    }
 }

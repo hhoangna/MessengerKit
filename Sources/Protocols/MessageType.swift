@@ -39,5 +39,8 @@ public protocol MessageType {
 
     /// The kind of message and its underlying kind.
     var kind: MessageKind { get }
+    
+    /// The owner of message
+    var isOwner: Bool { get }
 
 }

@@ -113,7 +113,7 @@ class ChatViewController: MessagesViewController, MessagesDataSource {
         scrollsToBottomOnKeyboardBeginsEditing = true // default false
         maintainPositionOnKeyboardFrameChanged = true // default false
 
-        showMessageTimestampOnSwipeLeft = true // default false
+        showMessageTimestampOnSwipeLeft = false // default false
         
         messagesCollectionView.refreshControl = refreshControl
     }
@@ -170,7 +170,7 @@ class ChatViewController: MessagesViewController, MessagesDataSource {
 
     func cellTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
         if indexPath.section % 3 == 0 {
-            return NSAttributedString(string: MessageKitDateFormatter.shared.string(from: message.sentDate), attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 10), NSAttributedString.Key.foregroundColor: UIColor.darkGray])
+            return NSAttributedString(string: MessageKitDateFormatter.shared.string(from: message.sentDate), attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.darkGray])
         }
         return nil
     }
@@ -193,6 +193,10 @@ class ChatViewController: MessagesViewController, MessagesDataSource {
 // MARK: - MessageCellDelegate
 
 extension ChatViewController: MessageCellDelegate {
+    func didHoldMessage(in cell: MessageCollectionViewCell) {
+        print("Message held")
+    }
+    
     func didTapAvatar(in cell: MessageCollectionViewCell) {
         print("Avatar tapped")
     }

@@ -109,6 +109,9 @@ internal struct MockMessage: MessageType {
     }
     var sentDate: Date
     var kind: MessageKind
+    var isOwner: Bool {
+        return true
+    }
 
     var user: MockUser
 

@@ -97,7 +97,7 @@ open class MessagesCollectionView: UICollectionView {
         addGestureRecognizer(tapGesture)
         
         let holdGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleHoldGesture(_:)))
-        holdGesture.minimumPressDuration = 0.7
+        holdGesture.minimumPressDuration = 0.2
         addGestureRecognizer(holdGesture)
     }
     
@@ -115,9 +115,6 @@ open class MessagesCollectionView: UICollectionView {
     
     @objc
     open func handleHoldGesture(_ gesture: UIGestureRecognizer) {
-        guard gesture.state == .changed else {
-            return
-        }
         let touchLocation = gesture.location(in: self)
         guard let indexPath = indexPathForItem(at: touchLocation) else { return }
         let cell = cellForItem(at: indexPath) as? MessageCollectionViewCell
