@@ -101,11 +101,11 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
 
     public var selectedIndexPathForMenu: IndexPath?
 
-    private var isFirstLayout: Bool = true
+    public var isFirstLayout: Bool = true
     
-    internal var isMessagesControllerBeingDismissed: Bool = false
+    public var isMessagesControllerBeingDismissed: Bool = false
 
-    internal var messageCollectionViewBottomInset: CGFloat = 0 {
+    open var messageCollectionViewBottomInset: CGFloat = 0 {
         didSet {
             messagesCollectionView.contentInset.bottom = messageCollectionViewBottomInset
             messagesCollectionView.scrollIndicatorInsets.bottom = messageCollectionViewBottomInset
@@ -159,6 +159,53 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
     open override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
         messageCollectionViewBottomInset = requiredInitialScrollViewBottomInset()
+    }
+    
+    @objc open func handleKeyboardDidChangeState(_ notification: Notification) {
+        guard !isMessagesControllerBeingDismissed else { return }
+
+        guard let keyboardStartFrameInScreenCoords = notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? CGRect else { return }
+        guard !keyboardStartFrameInScreenCoords.isEmpty || UIDevice.current.userInterfaceIdiom != .pad else {
+            // WORKAROUND for what seems to be a bug in iPad's keyboard handling in iOS 11: we receive an extra spurious frame change
+            // notification when undocking the keyboard, with a zero starting frame and an incorrect end frame. The workaround is to
+            // ignore this notification.
+            return
+        }
+
+        guard self.presentedViewController == nil else {
+            // This is important to skip notifications from child modal controllers in iOS >= 13.0
+            return
+        }
+
+        // Note that the check above does not exclude all notifications from an undocked keyboard, only the weird ones.
+        //
+        // We've tried following Apple's recommended approach of tracking UIKeyboardWillShow / UIKeyboardDidHide and ignoring frame
+        // change notifications while the keyboard is hidden or undocked (undocked keyboard is considered hidden by those events).
+        // Unfortunately, we do care about the difference between hidden and undocked, because we have an input bar which is at the
+        // bottom when the keyboard is hidden, and is tied to the keyboard when it's undocked.
+        //
+        // If we follow what Apple recommends and ignore notifications while the keyboard is hidden/undocked, we get an extra inset
+        // at the bottom when the undocked keyboard is visible (the inset that tries to compensate for the missing input bar).
+        // (Alternatives like setting newBottomInset to 0 or to the height of the input bar don't work either.)
+        //
+        // We could make it work by adding extra checks for the state of the keyboard and compensating accordingly, but it seems easier
+        // to simply check whether the current keyboard frame, whatever it is (even when undocked), covers the bottom of the collection
+        // view.
+
+        guard let keyboardEndFrameInScreenCoords = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
+        let keyboardEndFrame = view.convert(keyboardEndFrameInScreenCoords, from: view.window)
+
+        let newBottomInset = requiredScrollViewBottomInset(forKeyboardFrame: keyboardEndFrame)
+        let differenceOfBottomInset = newBottomInset - messageCollectionViewBottomInset
+
+        if maintainPositionOnKeyboardFrameChanged && differenceOfBottomInset != 0 {
+            let contentOffset = CGPoint(x: messagesCollectionView.contentOffset.x, y: messagesCollectionView.contentOffset.y + differenceOfBottomInset)
+            messagesCollectionView.setContentOffset(contentOffset, animated: false)
+        }
+
+        UIView.performWithoutAnimation {
+            messageCollectionViewBottomInset = newBottomInset
+        }
     }
 
     // MARK: - Initializers
