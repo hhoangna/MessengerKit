@@ -390,9 +390,13 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
                 self.messageContainerView.transform = .identity
                 self.replyIconImage.transform = .identity
                 self.replyIconImage.alpha = 0
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self.replyIconImage.isHidden = true
+                    self.replyIconImage.removeFromSuperview()
+                }
             } completion: { (ok) in
-                self.replyIconImage.isHidden = true
-                self.replyIconImage.removeFromSuperview()
+//                self.replyIconImage.isHidden = true
+//                self.replyIconImage.removeFromSuperview()
             }
         default:
             break
