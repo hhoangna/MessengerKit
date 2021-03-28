@@ -219,12 +219,12 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     }
 
     /// Handle tap gesture on contentView and its subviews.
-    open override func handleTapGesture(_ gesture: UIGestureRecognizer, location: CGPoint) {
+    open override func handleTapGesture(_ gesture: UIGestureRecognizer) {
         let touchLocation = gesture.location(in: self)
 
         switch true {
         case messageContainerView.frame.contains(touchLocation) && !cellContentView(canHandle: convert(touchLocation, to: messageContainerView)):
-            delegate?.didTapMessage(in: self, at: location)
+            delegate?.didTapMessage(in: self, at: touchLocation)
         case avatarView.frame.contains(touchLocation):
             delegate?.didTapAvatar(in: self)
         case cellTopLabel.frame.contains(touchLocation):
@@ -244,47 +244,51 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         }
     }
     
-    open override func handleHoldGesture(_ gesture: UIGestureRecognizer, location: CGPoint) {
+    open override func handleHoldGesture(_ gesture: UIGestureRecognizer) {
         let touchLocation = gesture.location(in: self)
         switch true {
         case messageContainerView.frame.contains(touchLocation):
-
-            switch gesture.state {
-            case .began:
-                startAnimation = true
-                countTime = 1.0
-                timer = Timer.scheduledTimer(timeInterval: 0.05, target: self, selector: #selector(timerAnimationLongPressgesture), userInfo: nil, repeats: true)
-            case .changed:
-                if startAnimation {
-                    if countTime < 0.6 {
-                        startAnimation = false
-                        timer.invalidate()
-                        countTime = 1.0
-
-                        delegate?.didHoldMessage(in: self, at: location)
-                        UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.4, options: [.allowUserInteraction, .curveEaseOut]) {
-                            self.messageContainerView.transform = .identity
-                        } completion: { (ok) in
-                            //
-                        }
-                    } else {
-                        UIView.animate(withDuration: 0.5) {
-                            self.messageContainerView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
-                        }
-                    }
-                }
-            case .ended:
-                startAnimation = false
-                timer.invalidate()
-                countTime = 1.0
-                UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.4, options: [.allowUserInteraction, .curveEaseOut]) {
-                    self.messageContainerView.transform = .identity
-                } completion: { (ok) in
-                    //
-                }
-            default:
-                break
+            if gesture.state == .began {
+                delegate?.didHoldMessage(in: self, at: touchLocation)
+            } else {
+                return
             }
+//            switch gesture.state {
+//            case .began:
+//                startAnimation = true
+//                countTime = 1.0
+//                timer = Timer.scheduledTimer(timeInterval: 0.05, target: self, selector: #selector(timerAnimationLongPressgesture), userInfo: nil, repeats: true)
+//            case .changed:
+//                if startAnimation {
+//                    if countTime < 0.6 {
+//                        startAnimation = false
+//                        timer.invalidate()
+//                        countTime = 1.0
+//
+//                        delegate?.didHoldMessage(in: self, at: touchLocation)
+//                        UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.4, options: [.allowUserInteraction, .curveEaseOut]) {
+//                            self.messageContainerView.transform = .identity
+//                        } completion: { (ok) in
+//                            //
+//                        }
+//                    } else {
+//                        UIView.animate(withDuration: 0.5) {
+//                            self.messageContainerView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+//                        }
+//                    }
+//                }
+//            case .ended:
+//                startAnimation = false
+//                timer.invalidate()
+//                countTime = 1.0
+//                UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.4, options: [.allowUserInteraction, .curveEaseOut]) {
+//                    self.messageContainerView.transform = .identity
+//                } completion: { (ok) in
+//                    //
+//                }
+//            default:
+//                break
+//            }
         default:
             break
         }
@@ -395,8 +399,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
                     self.replyIconImage.removeFromSuperview()
                 }
             } completion: { (ok) in
-//                self.replyIconImage.isHidden = true
-//                self.replyIconImage.removeFromSuperview()
+
             }
         default:
             break

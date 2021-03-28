@@ -117,7 +117,7 @@ open class MessagesCollectionView: UICollectionView {
         let touchLocation = gesture.location(in: self)
         guard let indexPath = indexPathForItem(at: touchLocation) else { return }
         let cell = cellForItem(at: indexPath) as? MessageCollectionViewCell
-        cell?.handleHoldGesture(gesture, location: touchLocation)
+        cell?.handleHoldGesture(gesture)
     }
 
     // NOTE: It's possible for small content size this wouldn't work - https://github.com/MessageKit/MessageKit/issues/725

@@ -84,11 +84,11 @@ open class LinkPreviewMessageCell: TextMessageCell {
         linkURL = nil
     }
 
-    open override func handleTapGesture(_ gesture: UIGestureRecognizer, location: CGPoint) {
+    open override func handleTapGesture(_ gesture: UIGestureRecognizer) {
         let touchLocation = gesture.location(in: linkPreviewView)
 
         guard linkPreviewView.frame.contains(touchLocation), let url = linkURL else {
-            super.handleTapGesture(gesture, location: location)
+            super.handleTapGesture(gesture)
             return
         }
         delegate?.didSelectURL(url)
