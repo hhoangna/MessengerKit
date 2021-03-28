@@ -109,7 +109,7 @@ open class MessagesCollectionView: UICollectionView {
         guard let indexPath = indexPathForItem(at: touchLocation) else { return }
         
         let cell = cellForItem(at: indexPath) as? MessageCollectionViewCell
-        cell?.handleTapGesture(gesture, location: touchLocation)
+        cell?.handleTapGesture(gesture)
     }
     
     @objc
