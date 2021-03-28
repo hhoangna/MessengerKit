@@ -261,7 +261,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
                         timer.invalidate()
                         countTime = 1.0
 
-                        delegate?.didHoldMessage(in: self)
+                        delegate?.didHoldMessage(in: self, at: touchLocation)
                         UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.4, options: [.allowUserInteraction, .curveEaseOut]) {
                             self.messageContainerView.transform = .identity
                         } completion: { (ok) in
