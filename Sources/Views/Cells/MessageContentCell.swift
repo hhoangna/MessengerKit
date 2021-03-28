@@ -219,12 +219,12 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     }
 
     /// Handle tap gesture on contentView and its subviews.
-    open override func handleTapGesture(_ gesture: UIGestureRecognizer) {
+    open override func handleTapGesture(_ gesture: UIGestureRecognizer, location: CGPoint) {
         let touchLocation = gesture.location(in: self)
 
         switch true {
         case messageContainerView.frame.contains(touchLocation) && !cellContentView(canHandle: convert(touchLocation, to: messageContainerView)):
-            delegate?.didTapMessage(in: self, at: touchLocation)
+            delegate?.didTapMessage(in: self, at: location)
         case avatarView.frame.contains(touchLocation):
             delegate?.didTapAvatar(in: self)
         case cellTopLabel.frame.contains(touchLocation):
@@ -244,7 +244,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         }
     }
     
-    open override func handleHoldGesture(_ gesture: UIGestureRecognizer) {
+    open override func handleHoldGesture(_ gesture: UIGestureRecognizer, location: CGPoint) {
         let touchLocation = gesture.location(in: self)
         switch true {
         case messageContainerView.frame.contains(touchLocation):
@@ -261,7 +261,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
                         timer.invalidate()
                         countTime = 1.0
 
-                        delegate?.didHoldMessage(in: self, at: touchLocation)
+                        delegate?.didHoldMessage(in: self, at: location)
                         UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.4, options: [.allowUserInteraction, .curveEaseOut]) {
                             self.messageContainerView.transform = .identity
                         } completion: { (ok) in

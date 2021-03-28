@@ -38,11 +38,11 @@ open class MessageCollectionViewCell: UICollectionViewCell {
     }
 
     /// Handle tap gesture on contentView and its subviews.
-    open func handleTapGesture(_ gesture: UIGestureRecognizer) {
+    open func handleTapGesture(_ gesture: UIGestureRecognizer, location: CGPoint) {
         // Should be overridden
     }
 
-    open func handleHoldGesture(_ gesture: UIGestureRecognizer) {
+    open func handleHoldGesture(_ gesture: UIGestureRecognizer, location: CGPoint) {
         // Should be overridden
     }
     
