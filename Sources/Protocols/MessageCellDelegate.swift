@@ -48,6 +48,13 @@ public protocol MessageCellDelegate: MessageLabelDelegate {
     /// `indexPath(for: cell)` method. Then using the returned `IndexPath` with the `MessagesDataSource`
     /// method `messageForItem(at:indexPath:messagesCollectionView)`.
     func didHoldMessage(in cell: MessageCollectionViewCell, at location: CGPoint)
+    
+    /// Triggered when a tap occurs in the background of the cell.
+    ///
+    /// - Parameters:
+    ///   - collectionView: Anywhere in collectionview.
+    ///
+    func didTapAnywhere(in collectionView: MessagesCollectionView)
 
     /// Triggered when a tap occurs in the background of the cell.
     ///
@@ -198,6 +205,8 @@ public extension MessageCellDelegate {
     func didSwipeMessage(in cell: MessageCollectionViewCell) {}
     
     func didHoldMessage(in cell: MessageCollectionViewCell, at location: CGPoint) {}
+    
+    func didTapAnywhere(in collectionView: MessagesCollectionView) {}
 
     func didTapBackground(in cell: MessageCollectionViewCell) {}
 
