@@ -108,6 +108,15 @@ public protocol MessagesDisplayDelegate: AnyObject {
     /// - Note:
     ///   The default image configured by this method is `?`.
     func configureStatusView(_ statusView: UIView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView)
+    
+    /// Used to configure the `ReactionView` in a `MessageContentCell` class.
+    ///
+    /// - Parameters:
+    ///   - statusView: The `StatusView` of the cell.
+    ///   - message: The `MessageType` that will be displayed by this cell.
+    ///   - indexPath: The `IndexPath` of the cell.
+    ///   - messagesCollectionView: The `MessagesCollectionView` in which this cell will be displayed.
+    func configureReactionView(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIView?
 
     // MARK: - Text Messages
 
@@ -271,6 +280,10 @@ public extension MessagesDisplayDelegate {
     func configureAccessoryView(_ accessoryView: UIView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {}
     
     func configureStatusView(_ statusView: UIView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {}
+
+    func configureReactionView(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIView? {
+        return nil
+    }
 
     // MARK: - Text Messages Defaults
 

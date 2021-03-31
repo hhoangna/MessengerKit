@@ -28,6 +28,9 @@ import UIKit
 /// A subclass of `MessageCollectionViewCell` used to display text, media, and location messages.
 open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDelegate {
     
+    /// The view displaying the reaction
+    open var reactionView: UIView = UIView()
+    
     /// The view displaying the status
     open var statusView: UIView = UIView()
 
@@ -201,6 +204,10 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         displayDelegate.configureAccessoryView(accessoryView, for: message, at: indexPath, in: messagesCollectionView)
         
         displayDelegate.configureStatusView(statusView, for: message, at: indexPath, in: messagesCollectionView)
+        
+        if let reactionView = displayDelegate.configureReactionView(for: message, at: indexPath, in: messagesCollectionView) {
+            contentView.addSubview(reactionView)
+        }
 
         messageContainerView.backgroundColor = messageColor
         messageContainerView.style = messageStyle
@@ -469,12 +476,17 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
 
     /// Positions the cell's `MessageContainerView`.
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
-    open func layoutMessageContainerView(with attributes: MessagesCollectionViewLayoutAttributes) {
+    open func layoutMessageContainerView(with attributes: MessagesCollectionViewLayoutAttributes, and reactionView: UIView? = nil) {
         var origin: CGPoint = .zero
+        var reactionSize: CGSize = .zero
+        
+        if let vReaction = reactionView {
+            reactionSize = vReaction.frame.size
+        }
 
         switch attributes.avatarPosition.vertical {
         case .messageBottom:
-            origin.y = attributes.size.height - attributes.messageContainerPadding.bottom - attributes.cellBottomLabelSize.height - attributes.messageBottomLabelSize.height - attributes.messageContainerSize.height - attributes.messageContainerPadding.top - attributes.statusViewSize.height
+            origin.y = attributes.size.height - attributes.messageContainerPadding.bottom - attributes.cellBottomLabelSize.height - attributes.messageBottomLabelSize.height - attributes.messageContainerSize.height - attributes.messageContainerPadding.top
         case .messageCenter:
             if attributes.avatarSize.height > attributes.messageContainerSize.height {
                 let messageHeight = attributes.messageContainerSize.height + attributes.messageContainerPadding.vertical
