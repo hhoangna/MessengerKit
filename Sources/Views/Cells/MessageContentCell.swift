@@ -195,7 +195,9 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
 
         let messageColor = displayDelegate.backgroundColor(for: message, at: indexPath, in: messagesCollectionView)
         let messageStyle = displayDelegate.messageStyle(for: message, at: indexPath, in: messagesCollectionView)
-        let statusView = displayDelegate.configureStatusView(for: message, at: indexPath, in: messagesCollectionView)
+        if let vStatus = displayDelegate.configureStatusView(for: message, at: indexPath, in: messagesCollectionView) {
+            self.statusView = vStatus
+        }
 
         displayDelegate.configureAvatarView(avatarView, for: message, at: indexPath, in: messagesCollectionView)
 
@@ -205,7 +207,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
 
         messageContainerView.backgroundColor = messageColor
         messageContainerView.style = messageStyle
-        self.statusView = statusView
 
         let topCellLabelText = dataSource.cellTopLabelAttributedText(for: message, at: indexPath)
         let bottomCellLabelText = dataSource.cellBottomLabelAttributedText(for: message, at: indexPath)
