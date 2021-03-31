@@ -107,7 +107,7 @@ public protocol MessagesDisplayDelegate: AnyObject {
     ///
     /// - Note:
     ///   The default image configured by this method is `?`.
-    func configureStatusView(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIView?
+    func configureStatusView(_ statusView: UIView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView)
 
     // MARK: - Text Messages
 
@@ -270,9 +270,7 @@ public extension MessagesDisplayDelegate {
 
     func configureAccessoryView(_ accessoryView: UIView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {}
     
-    func configureStatusView(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIView? {
-        return nil
-    }
+    func configureStatusView(_ statusView: UIView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {}
 
     // MARK: - Text Messages Defaults
 
