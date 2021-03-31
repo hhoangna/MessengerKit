@@ -353,6 +353,10 @@ extension AdvancedExampleViewController: MessagesDisplayDelegate {
         avatarView.layer.borderColor = UIColor.primaryColor.cgColor
     }
     
+    func configureStatusView(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIView {
+        return UIView()
+    }
+    
     func configureAccessoryView(_ accessoryView: UIView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
         // Cells are reused, so only add a button here once. For real use you would need to
         // ensure any subviews are removed if not needed

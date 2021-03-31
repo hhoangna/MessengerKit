@@ -54,7 +54,7 @@ public protocol MessageCellDelegate: MessageLabelDelegate {
     /// - Parameters:
     ///   - collectionView: Anywhere in collectionview.
     ///
-    func didTapAnywhere(in collectionView: MessagesCollectionView)
+    func didTapAnywhere()
 
     /// Triggered when a tap occurs in the background of the cell.
     ///
@@ -206,7 +206,7 @@ public extension MessageCellDelegate {
     
     func didHoldMessage(in cell: MessageCollectionViewCell, at location: CGPoint) {}
     
-    func didTapAnywhere(in collectionView: MessagesCollectionView) {}
+    func didTapAnywhere() {}
 
     func didTapBackground(in cell: MessageCollectionViewCell) {}
 

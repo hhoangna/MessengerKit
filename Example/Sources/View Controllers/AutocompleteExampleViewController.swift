@@ -338,6 +338,10 @@ extension AutocompleteExampleViewController: MessagesDisplayDelegate {
         accessoryView.backgroundColor = UIColor.primaryColor.withAlphaComponent(0.3)
     }
     
+    func configureStatusView(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIView {
+        return UIView()
+    }
+    
     func configureMediaMessageImageView(_ imageView: UIImageView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
         if case MessageKind.photo(let media) = message.kind, let imageURL = media.url {
             imageView.pin_setImage(from: imageURL)

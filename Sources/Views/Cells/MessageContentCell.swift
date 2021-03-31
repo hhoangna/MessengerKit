@@ -195,15 +195,17 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
 
         let messageColor = displayDelegate.backgroundColor(for: message, at: indexPath, in: messagesCollectionView)
         let messageStyle = displayDelegate.messageStyle(for: message, at: indexPath, in: messagesCollectionView)
+        let statusView = displayDelegate.configureStatusView(for: message, at: indexPath, in: messagesCollectionView)
 
         displayDelegate.configureAvatarView(avatarView, for: message, at: indexPath, in: messagesCollectionView)
 
         displayDelegate.configureAccessoryView(accessoryView, for: message, at: indexPath, in: messagesCollectionView)
         
-        displayDelegate.configureStatusView(statusView, for: message, at: indexPath, in: messagesCollectionView)
+//        displayDelegate.configureStatusView(statusView, for: message, at: indexPath, in: messagesCollectionView)
 
         messageContainerView.backgroundColor = messageColor
         messageContainerView.style = messageStyle
+        self.statusView = statusView
 
         let topCellLabelText = dataSource.cellTopLabelAttributedText(for: message, at: indexPath)
         let bottomCellLabelText = dataSource.cellBottomLabelAttributedText(for: message, at: indexPath)
@@ -229,18 +231,22 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             delegate?.didTapAvatar(in: self)
         case cellTopLabel.frame.contains(touchLocation):
             delegate?.didTapCellTopLabel(in: self)
+            delegate?.didTapAnywhere()
         case cellBottomLabel.frame.contains(touchLocation):
             delegate?.didTapCellBottomLabel(in: self)
         case messageTopLabel.frame.contains(touchLocation):
             delegate?.didTapMessageTopLabel(in: self)
+            delegate?.didTapAnywhere()
         case messageBottomLabel.frame.contains(touchLocation):
             delegate?.didTapMessageBottomLabel(in: self)
         case accessoryView.frame.contains(touchLocation):
             delegate?.didTapAccessoryView(in: self)
+            delegate?.didTapAnywhere()
         case statusView.frame.contains(touchLocation):
             delegate?.didTapStatusView(in: self)
         default:
             delegate?.didTapBackground(in: self)
+            delegate?.didTapAnywhere()
         }
     }
     

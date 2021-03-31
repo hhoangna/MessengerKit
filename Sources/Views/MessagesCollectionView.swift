@@ -107,7 +107,7 @@ open class MessagesCollectionView: UICollectionView {
         let touchLocation = gesture.location(in: self)
         guard let indexPath = indexPathForItem(at: touchLocation) else {
             
-            messageCellDelegate?.didTapAnywhere(in: self)
+            messageCellDelegate?.didTapAnywhere()
             return
         }
         

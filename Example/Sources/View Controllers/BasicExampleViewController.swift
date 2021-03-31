@@ -38,6 +38,10 @@ class BasicExampleViewController: ChatViewController {
 // MARK: - MessagesDisplayDelegate
 
 extension BasicExampleViewController: MessagesDisplayDelegate {
+    func configureStatusView(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIView {
+        return UIView()
+    }
+    
     
     // MARK: - Text Messages
     
