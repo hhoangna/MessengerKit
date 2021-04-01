@@ -58,6 +58,16 @@ public protocol MessagesLayoutDelegate: AnyObject {
     /// - Note:
     ///   The default value returned by this method is a size of `GGSize.zero`.
     func statusViewHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat
+    
+    /// Specifies the size to use for a reaction view.
+    ///
+    /// - Parameters:
+    ///   - section: The section number of the footer.
+    ///   - messagesCollectionView: The `MessagesCollectionView` in which this footer will be displayed.
+    ///
+    /// - Note:
+    ///   The default value returned by this method is a size of `GGSize.zero`.
+    func reactionViewSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize
 
     /// Specifies the size to use for a typing indicator view.
     ///
@@ -146,6 +156,10 @@ public extension MessagesLayoutDelegate {
     
     func statusViewHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
         return 0
+    }
+    
+    func reactionViewSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize {
+        return .zero
     }
 
     func typingIndicatorViewSize(in messagesCollectionView: MessagesCollectionView) -> CGSize {

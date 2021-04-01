@@ -170,6 +170,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         guard let attributes = layoutAttributes as? MessagesCollectionViewLayoutAttributes else { return }
         // Call this before other laying out other subviews
         layoutMessageContainerView(with: attributes)
+        layoutReactionView(with: attributes)
         layoutStatusView(with: attributes)
         layoutMessageBottomLabel(with: attributes)
         layoutCellBottomLabel(with: attributes)
@@ -206,11 +207,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         
         displayDelegate.configureStatusView(statusView, for: message, at: indexPath, in: messagesCollectionView)
         
-        if let vReaction = displayDelegate.configureReactionView(for: message, at: indexPath, in: messagesCollectionView), let attributes = messagesCollectionView.layoutAttributesForItem(at: indexPath) as? MessagesCollectionViewLayoutAttributes {
-            reactionView = vReaction
-            layoutReactionView(with: attributes)
-            layoutStatusView(with: attributes)
-        }
+        displayDelegate.configureReactionView(reactionView, for: message, at: indexPath, in: messagesCollectionView)
 
         messageContainerView.backgroundColor = messageColor
         messageContainerView.style = messageStyle
@@ -252,6 +249,10 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             delegate?.didTapAnywhere()
         case statusView.frame.contains(touchLocation):
             delegate?.didTapStatusView(in: self)
+            delegate?.didTapAnywhere()
+        case reactionView.frame.contains(touchLocation):
+            delegate?.didTapReactionView(in: self)
+            delegate?.didTapAnywhere()
         default:
             delegate?.didTapBackground(in: self)
             delegate?.didTapAnywhere()
@@ -527,7 +528,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         }
         
         var origin: CGPoint = .zero
-        let reactionSize: CGSize = CGSize(width: reactionView.frame.size.width, height: attributes.reactionViewMaxHeight)
+        let reactionSize = attributes.reactionViewSize
         let contentSizeWidth = subview.frame.size.width
         
         origin.y = messageContainerView.frame.maxY - attributes.reactionViewTopMargin

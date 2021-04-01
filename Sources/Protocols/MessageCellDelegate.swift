@@ -147,6 +147,16 @@ public protocol MessageCellDelegate: MessageLabelDelegate {
     /// `indexPath(for: cell)` method. Then using the returned `IndexPath` with the `MessagesDataSource`
     /// method `messageForItem(at:indexPath:messagesCollectionView)`.
     func didTapStatusView(in cell: MessageCollectionViewCell)
+    
+    /// Triggered when a tap occurs in the reactionView.
+    ///
+    /// - Parameters:
+    ///   - cell: The cell where the tap occurred.
+    ///
+    /// You can get a reference to the `MessageType` for the cell by using `UICollectionView`'s
+    /// `indexPath(for: cell)` method. Then using the returned `IndexPath` with the `MessagesDataSource`
+    /// method `messageForItem(at:indexPath:messagesCollectionView)`.
+    func didTapReactionView(in cell: MessageCollectionViewCell)
 
     /// Triggered when a tap occurs on the image.
     ///
@@ -235,4 +245,6 @@ public extension MessageCellDelegate {
     func didTapAccessoryView(in cell: MessageCollectionViewCell) {}
 
     func didTapStatusView(in cell: MessageCollectionViewCell) {}
+    
+    func didTapReactionView(in cell: MessageCollectionViewCell) {}
 }
