@@ -68,6 +68,10 @@ open class MessageSizeCalculator: CellSizeCalculator {
     public var incomingStatusViewPadding = HorizontalEdgeInsets.zero
     public var outgoingStatusViewPadding = HorizontalEdgeInsets.zero
     
+    public var topReactionViewMargin: CGFloat = 8
+    public var leadingReactionViewMargin: CGFloat = 12
+    public var trailingReactionViewMargin: CGFloat = 12
+    
     open override func configure(attributes: UICollectionViewLayoutAttributes) {
         guard let attributes = attributes as? MessagesCollectionViewLayoutAttributes else { return }
 
@@ -98,6 +102,10 @@ open class MessageSizeCalculator: CellSizeCalculator {
         
         attributes.statusViewSize = statusViewSize(for: message, at: indexPath)
         attributes.statusViewPadding = statusViewPadding(for: message)
+        
+        attributes.reactionViewTrailingMargin = trailingReactionViewMargin
+        attributes.reactionViewTopMargin = topReactionViewMargin
+        attributes.reactionViewLeadingMargin = leadingReactionViewMargin
     }
 
     open override func sizeForItem(at indexPath: IndexPath) -> CGSize {

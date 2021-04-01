@@ -325,6 +325,21 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
     public func setMessageOutgoingStatusViewPadding(_ newPadding: HorizontalEdgeInsets) {
         messageSizeCalculators().forEach { $0.outgoingStatusViewPadding = newPadding }
     }
+    
+    /// Set `topReactionViewMargin` of all `MessageSizeCalculator`s
+    public func setTopReactionViewMargin(_ newMargin: CGFloat) {
+        messageSizeCalculators().forEach { $0.topReactionViewMargin = newMargin }
+    }
+    
+    /// Set `leadingReactionViewMargin` of all `MessageSizeCalculator`s
+    public func setLeadingReactionViewMargin(_ newMargin: CGFloat) {
+        messageSizeCalculators().forEach { $0.leadingReactionViewMargin = newMargin }
+    }
+    
+    /// Set `trailingReactionViewMargin` of all `MessageSizeCalculator`s
+    public func setTrailingReactionViewMargin(_ newMargin: CGFloat) {
+        messageSizeCalculators().forEach { $0.trailingReactionViewMargin = newMargin }
+    }
 
     /// Get all `MessageSizeCalculator`s
     open func messageSizeCalculators() -> [MessageSizeCalculator] {
