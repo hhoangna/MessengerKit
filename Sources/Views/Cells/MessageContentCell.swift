@@ -517,32 +517,39 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     /// Positions the cell's reaction view.
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
     open func layoutReactionView(with attributes: MessagesCollectionViewLayoutAttributes) {
-        if let subview = messageContainerView.subviews.first(where: {$0.tag == 999}) {
-            var origin: CGPoint = .zero
-            let reactionSize: CGSize = CGSize(width: reactionView.frame.size.width, height: attributes.reactionViewMaxHeight)
-            let contentSizeWidth = subview.frame.size.width
-            
-            origin.y = messageContainerView.frame.maxY - attributes.reactionViewTopMargin
-            
-            switch attributes.avatarPosition.horizontal {
-            case .cellLeading:
-                if reactionSize.width > contentSizeWidth - attributes.reactionViewLeadingMargin - attributes.reactionViewTrailingMargin {
-                    origin.x = subview.frame.minX + attributes.reactionViewLeadingMargin
-                } else {
-                    origin.x = subview.frame.maxX - attributes.reactionViewTrailingMargin - reactionSize.width
-                }
-            case .cellTrailing:
-                if reactionSize.width > contentSizeWidth - attributes.reactionViewLeadingMargin - attributes.reactionViewTrailingMargin {
-                    origin.x = subview.frame.maxX - attributes.reactionViewTrailingMargin - reactionSize.width
-                } else {
-                    origin.x = subview.frame.minX + attributes.reactionViewLeadingMargin
-                }
-            default:
-                fatalError(MessageKitError.avatarPositionUnresolved)
-            }
-            
-            reactionView.frame = CGRect(origin: origin, size: reactionSize)
+        var subview = UIView()
+        if let stackview = messageContainerView.subviews.first(where: {$0.tag == 888}) as? UIStackView, let view = stackview.arrangedSubviews.first(where: {$0.tag == 999}) {
+            subview = view
+        } else if let view = messageContainerView.subviews.first(where: {$0.tag == 999}) {
+            subview = view
+        } else {
+            return
         }
+        
+        var origin: CGPoint = .zero
+        let reactionSize: CGSize = CGSize(width: reactionView.frame.size.width, height: attributes.reactionViewMaxHeight)
+        let contentSizeWidth = subview.frame.size.width
+        
+        origin.y = messageContainerView.frame.maxY - attributes.reactionViewTopMargin
+        
+        switch attributes.avatarPosition.horizontal {
+        case .cellLeading:
+            if reactionSize.width > contentSizeWidth - attributes.reactionViewLeadingMargin - attributes.reactionViewTrailingMargin {
+                origin.x = subview.frame.minX + attributes.reactionViewLeadingMargin
+            } else {
+                origin.x = subview.frame.maxX - attributes.reactionViewTrailingMargin - reactionSize.width
+            }
+        case .cellTrailing:
+            if reactionSize.width > contentSizeWidth - attributes.reactionViewLeadingMargin - attributes.reactionViewTrailingMargin {
+                origin.x = subview.frame.maxX - attributes.reactionViewTrailingMargin - reactionSize.width
+            } else {
+                origin.x = subview.frame.minX + attributes.reactionViewLeadingMargin
+            }
+        default:
+            fatalError(MessageKitError.avatarPositionUnresolved)
+        }
+        
+        reactionView.frame = CGRect(origin: origin, size: reactionSize)
     }
     
     /// Positions the cell's status view.
