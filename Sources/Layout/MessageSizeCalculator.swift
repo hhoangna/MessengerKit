@@ -71,6 +71,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
     public var topReactionViewMargin: CGFloat = 8
     public var leadingReactionViewMargin: CGFloat = 12
     public var trailingReactionViewMargin: CGFloat = 12
+    public var reactionViewMaxHeight: CGFloat = 24
     
     open override func configure(attributes: UICollectionViewLayoutAttributes) {
         guard let attributes = attributes as? MessagesCollectionViewLayoutAttributes else { return }
@@ -106,6 +107,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
         attributes.reactionViewTrailingMargin = trailingReactionViewMargin
         attributes.reactionViewTopMargin = topReactionViewMargin
         attributes.reactionViewLeadingMargin = leadingReactionViewMargin
+        attributes.reactionViewMaxHeight = reactionViewMaxHeight
     }
 
     open override func sizeForItem(at indexPath: IndexPath) -> CGSize {

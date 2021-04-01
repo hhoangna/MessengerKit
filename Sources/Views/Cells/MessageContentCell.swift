@@ -151,6 +151,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         contentView.addSubview(avatarView)
         contentView.addSubview(messageTimestampLabel)
         contentView.addSubview(statusView)
+        contentView.addSubview(reactionView)
     }
 
     open override func prepareForReuse() {
@@ -205,10 +206,10 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         
         displayDelegate.configureStatusView(statusView, for: message, at: indexPath, in: messagesCollectionView)
         
-        if let reactionView = displayDelegate.configureReactionView(for: message, at: indexPath, in: messagesCollectionView), let attributes = messagesCollectionView.layoutAttributesForItem(at: indexPath) as? MessagesCollectionViewLayoutAttributes {
-            contentView.addSubview(reactionView)
-            layoutMessageContainerView(with: attributes, and: reactionView)
-            layoutStatusView(with: attributes, and: reactionView)
+        if let vReaction = displayDelegate.configureReactionView(for: message, at: indexPath, in: messagesCollectionView), let attributes = messagesCollectionView.layoutAttributesForItem(at: indexPath) as? MessagesCollectionViewLayoutAttributes {
+            reactionView = vReaction
+            layoutReactionView(with: attributes)
+            layoutStatusView(with: attributes)
         }
 
         messageContainerView.backgroundColor = messageColor
@@ -478,7 +479,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
 
     /// Positions the cell's `MessageContainerView`.
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
-    open func layoutMessageContainerView(with attributes: MessagesCollectionViewLayoutAttributes, and reactionView: UIView? = nil) {
+    open func layoutMessageContainerView(with attributes: MessagesCollectionViewLayoutAttributes) {
         var origin: CGPoint = .zero
 
         switch attributes.avatarPosition.vertical {
@@ -511,11 +512,14 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         }
 
         messageContainerView.frame = CGRect(origin: origin, size: attributes.messageContainerSize)
-        
-        /// Positions the reactionView `ReactionView`
-        if let vReaction = reactionView, let subview = messageContainerView.subviews.first(where: {$0.tag == 999}) {
+    }
+    
+    /// Positions the cell's reaction view.
+    /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
+    open func layoutReactionView(with attributes: MessagesCollectionViewLayoutAttributes) {
+        if let subview = messageContainerView.subviews.first(where: {$0.tag == 999}) {
             var origin: CGPoint = .zero
-            let reactionSize = vReaction.frame.size
+            let reactionSize: CGSize = CGSize(width: reactionView.frame.size.width, height: attributes.reactionViewMaxHeight)
             let contentSizeWidth = subview.frame.size.width
             
             origin.y = messageContainerView.frame.maxY - attributes.reactionViewTopMargin
@@ -537,20 +541,16 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
                 fatalError(MessageKitError.avatarPositionUnresolved)
             }
             
-            vReaction.frame = CGRect(origin: origin, size: vReaction.frame.size)
+            reactionView.frame = CGRect(origin: origin, size: reactionSize)
         }
     }
     
-    
     /// Positions the cell's status view.
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
-    open func layoutStatusView(with attributes: MessagesCollectionViewLayoutAttributes, and reactionView: UIView? = nil) {
+    open func layoutStatusView(with attributes: MessagesCollectionViewLayoutAttributes) {
         let x = attributes.statusViewPadding.left
-        var y = messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom
+        let y = messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom + reactionView.frame.maxY
         
-        if let vReaction = reactionView {
-            y = messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom + vReaction.frame.maxY
-        }
         let origin = CGPoint(x: x, y: y)
 
         statusView.frame = CGRect(origin: origin, size: attributes.statusViewSize)

@@ -62,6 +62,7 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
     public var reactionViewTopMargin: CGFloat = .infinity
     public var reactionViewLeadingMargin: CGFloat = .infinity
     public var reactionViewTrailingMargin: CGFloat = .infinity
+    public var reactionViewMaxHeight: CGFloat = .infinity
 
     public var linkPreviewFonts = LinkPreviewFonts(titleFont: .preferredFont(forTextStyle: .footnote),
                                                    teaserFont: .preferredFont(forTextStyle: .caption2),
@@ -97,6 +98,7 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
         copy.reactionViewTopMargin = reactionViewTopMargin
         copy.reactionViewLeadingMargin = reactionViewLeadingMargin
         copy.reactionViewTrailingMargin = reactionViewTrailingMargin
+        copy.reactionViewMaxHeight = reactionViewMaxHeight
         
         return copy
         // swiftlint:enable force_cast
@@ -130,6 +132,7 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
                 && attributes.reactionViewTopMargin == reactionViewTopMargin
                 && attributes.reactionViewLeadingMargin == reactionViewLeadingMargin
                 && attributes.reactionViewTrailingMargin == reactionViewTrailingMargin
+                && attributes.reactionViewMaxHeight == reactionViewMaxHeight
         } else {
             return false
         }
