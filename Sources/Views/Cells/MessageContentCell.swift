@@ -518,33 +518,33 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     /// Positions the cell's reaction view.
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
     open func layoutReactionView(with attributes: MessagesCollectionViewLayoutAttributes) {
-        var subview = UIView()
-        if let stackview = messageContainerView.subviews.first(where: {$0.tag == 888}) as? UIStackView, let view = stackview.arrangedSubviews.first(where: {$0.tag == 999}) {
-            subview = view
-        } else if let view = messageContainerView.subviews.first(where: {$0.tag == 999}) {
-            subview = view
-        } else {
-            return
-        }
+//        var subview = UIView()
+//        if let stackview = messageContainerView.subviews.first(where: {$0.tag == 888}) as? UIStackView, let view = stackview.arrangedSubviews.first(where: {$0.tag == 999}) {
+//            subview = view
+//        } else if let view = messageContainerView.subviews.first(where: {$0.tag == 999}) {
+//            subview = view
+//        } else {
+//            return
+//        }
         
         var origin: CGPoint = .zero
         let reactionSize = attributes.reactionViewSize
-        let contentSizeWidth = subview.frame.size.width
+        let contentSizeWidth = messageContainerView.frame.size.width
         
         origin.y = messageContainerView.frame.maxY - attributes.reactionViewTopMargin
         
         switch attributes.avatarPosition.horizontal {
         case .cellLeading:
             if reactionSize.width > contentSizeWidth - attributes.reactionViewLeadingMargin - attributes.reactionViewTrailingMargin {
-                origin.x = subview.frame.minX + attributes.reactionViewLeadingMargin
+                origin.x = messageContainerView.frame.minX + attributes.reactionViewLeadingMargin
             } else {
-                origin.x = subview.frame.maxX - attributes.reactionViewTrailingMargin - reactionSize.width
+                origin.x = messageContainerView.frame.maxX - attributes.reactionViewTrailingMargin - reactionSize.width
             }
         case .cellTrailing:
             if reactionSize.width > contentSizeWidth - attributes.reactionViewLeadingMargin - attributes.reactionViewTrailingMargin {
-                origin.x = subview.frame.maxX - attributes.reactionViewTrailingMargin - reactionSize.width
+                origin.x = messageContainerView.frame.maxX - attributes.reactionViewTrailingMargin - reactionSize.width
             } else {
-                origin.x = subview.frame.minX + attributes.reactionViewLeadingMargin
+                origin.x = messageContainerView.frame.minX + attributes.reactionViewLeadingMargin
             }
         default:
             fatalError(MessageKitError.avatarPositionUnresolved)

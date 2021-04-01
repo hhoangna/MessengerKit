@@ -127,12 +127,13 @@ open class MessageSizeCalculator: CellSizeCalculator {
         let avatarVerticalPosition = avatarPosition(for: message).vertical
         let accessoryViewHeight = accessoryViewSize(for: message).height
         let statusViewHeight = statusViewSize(for: message, at: indexPath).height
-        let reactionViewHeight = reactionViewSize(for: message, at: indexPath).height
+        let reactionViewOrigin = reactionViewSize(for: message, at: indexPath)
+        let reactionViewHeight = reactionViewOrigin.height == 0 ? 0 : reactionViewOrigin.height - topReactionViewMargin
 
         switch avatarVerticalPosition {
         case .messageCenter:
             let totalLabelHeight: CGFloat = cellTopLabelHeight + messageTopLabelHeight
-                + messageContainerHeight + messageVerticalPadding + messageBottomLabelHeight + cellBottomLabelHeight + statusViewHeight + (reactionViewHeight - topReactionViewMargin)
+                + messageContainerHeight + messageVerticalPadding + messageBottomLabelHeight + cellBottomLabelHeight + statusViewHeight + reactionViewHeight
             let cellHeight = max(avatarHeight, totalLabelHeight)
             return max(cellHeight, accessoryViewHeight)
         case .messageBottom:
@@ -140,7 +141,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
             cellHeight += messageBottomLabelHeight
             cellHeight += cellBottomLabelHeight
             cellHeight += statusViewHeight
-            cellHeight += (reactionViewHeight - topReactionViewMargin)
+            cellHeight += reactionViewHeight
             let labelsHeight = messageContainerHeight + messageVerticalPadding + cellTopLabelHeight + messageTopLabelHeight
             cellHeight += max(labelsHeight, avatarHeight)
             return max(cellHeight, accessoryViewHeight)
@@ -148,18 +149,18 @@ open class MessageSizeCalculator: CellSizeCalculator {
             var cellHeight: CGFloat = 0
             cellHeight += cellTopLabelHeight
             cellHeight += messageTopLabelHeight
-            let labelsHeight = messageContainerHeight + messageVerticalPadding + messageBottomLabelHeight + cellBottomLabelHeight + statusViewHeight + (reactionViewHeight - topReactionViewMargin)
+            let labelsHeight = messageContainerHeight + messageVerticalPadding + messageBottomLabelHeight + cellBottomLabelHeight + statusViewHeight + reactionViewHeight
             cellHeight += max(labelsHeight, avatarHeight)
             return max(cellHeight, accessoryViewHeight)
         case .messageLabelTop:
             var cellHeight: CGFloat = 0
             cellHeight += cellTopLabelHeight
-            let messageLabelsHeight = messageContainerHeight + messageBottomLabelHeight + messageVerticalPadding + messageTopLabelHeight + cellBottomLabelHeight + statusViewHeight + (reactionViewHeight - topReactionViewMargin)
+            let messageLabelsHeight = messageContainerHeight + messageBottomLabelHeight + messageVerticalPadding + messageTopLabelHeight + cellBottomLabelHeight + statusViewHeight + reactionViewHeight
             cellHeight += max(messageLabelsHeight, avatarHeight)
             return max(cellHeight, accessoryViewHeight)
         case .cellTop, .cellBottom:
             let totalLabelHeight: CGFloat = cellTopLabelHeight + messageTopLabelHeight
-                + messageContainerHeight + messageVerticalPadding + messageBottomLabelHeight + cellBottomLabelHeight + statusViewHeight + (reactionViewHeight - topReactionViewMargin)
+                + messageContainerHeight + messageVerticalPadding + messageBottomLabelHeight + cellBottomLabelHeight + statusViewHeight + reactionViewHeight
             let cellHeight = max(avatarHeight, totalLabelHeight)
             return max(cellHeight, accessoryViewHeight)
         }
