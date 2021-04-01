@@ -59,7 +59,9 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
     public var statusViewSize: CGSize = .zero
     public var statusViewPadding: HorizontalEdgeInsets = .zero
     
-    public var reactionViewMargin: CGFloat = .infinity
+    public var reactionViewTopMargin: CGFloat = .infinity
+    public var reactionViewLeadingMargin: CGFloat = .infinity
+    public var reactionViewTrailingMargin: CGFloat = .infinity
 
     public var linkPreviewFonts = LinkPreviewFonts(titleFont: .preferredFont(forTextStyle: .footnote),
                                                    teaserFont: .preferredFont(forTextStyle: .caption2),
@@ -92,7 +94,10 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
         copy.linkPreviewFonts = linkPreviewFonts
         copy.statusViewPadding = statusViewPadding
         copy.statusViewSize = statusViewSize
-        copy.reactionViewMargin = reactionViewMargin
+        copy.reactionViewTopMargin = reactionViewTopMargin
+        copy.reactionViewLeadingMargin = reactionViewLeadingMargin
+        copy.reactionViewTrailingMargin = reactionViewTrailingMargin
+        
         return copy
         // swiftlint:enable force_cast
     }
@@ -122,7 +127,9 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
                 && attributes.linkPreviewFonts == linkPreviewFonts
                 && attributes.statusViewSize == statusViewSize
                 && attributes.statusViewPadding == statusViewPadding
-                && attributes.reactionViewMargin == reactionViewMargin
+                && attributes.reactionViewTopMargin == reactionViewTopMargin
+                && attributes.reactionViewLeadingMargin == reactionViewLeadingMargin
+                && attributes.reactionViewTrailingMargin == reactionViewTrailingMargin
         } else {
             return false
         }

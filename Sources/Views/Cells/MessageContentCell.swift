@@ -205,8 +205,10 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         
         displayDelegate.configureStatusView(statusView, for: message, at: indexPath, in: messagesCollectionView)
         
-        if let reactionView = displayDelegate.configureReactionView(for: message, at: indexPath, in: messagesCollectionView) {
+        if let reactionView = displayDelegate.configureReactionView(for: message, at: indexPath, in: messagesCollectionView), let attributes = messagesCollectionView.layoutAttributesForItem(at: indexPath) as? MessagesCollectionViewLayoutAttributes {
             contentView.addSubview(reactionView)
+            layoutMessageContainerView(with: attributes, and: reactionView)
+            layoutStatusView(with: attributes, and: reactionView)
         }
 
         messageContainerView.backgroundColor = messageColor
@@ -478,11 +480,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
     open func layoutMessageContainerView(with attributes: MessagesCollectionViewLayoutAttributes, and reactionView: UIView? = nil) {
         var origin: CGPoint = .zero
-        var reactionSize: CGSize = .zero
-        
-        if let vReaction = reactionView {
-            reactionSize = vReaction.frame.size
-        }
 
         switch attributes.avatarPosition.vertical {
         case .messageBottom:
@@ -514,14 +511,46 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         }
 
         messageContainerView.frame = CGRect(origin: origin, size: attributes.messageContainerSize)
+        
+        /// Positions the reactionView `ReactionView`
+        if let vReaction = reactionView, let subview = messageContainerView.subviews.first(where: {$0.tag == 999}) {
+            var origin: CGPoint = .zero
+            let reactionSize = vReaction.frame.size
+            let contentSizeWidth = subview.frame.size.width
+            
+            origin.y = messageContainerView.frame.maxY - attributes.reactionViewTopMargin
+            
+            switch attributes.avatarPosition.horizontal {
+            case .cellLeading:
+                if reactionSize.width > contentSizeWidth - attributes.reactionViewLeadingMargin - attributes.reactionViewTrailingMargin {
+                    origin.x = subview.frame.minX + attributes.reactionViewLeadingMargin
+                } else {
+                    origin.x = subview.frame.maxX - attributes.reactionViewTrailingMargin - reactionSize.width
+                }
+            case .cellTrailing:
+                if reactionSize.width > contentSizeWidth - attributes.reactionViewLeadingMargin - attributes.reactionViewTrailingMargin {
+                    origin.x = subview.frame.maxX - attributes.reactionViewTrailingMargin - reactionSize.width
+                } else {
+                    origin.x = subview.frame.minX + attributes.reactionViewLeadingMargin
+                }
+            default:
+                fatalError(MessageKitError.avatarPositionUnresolved)
+            }
+            
+            vReaction.frame = CGRect(origin: origin, size: vReaction.frame.size)
+        }
     }
     
     
     /// Positions the cell's status view.
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
-    open func layoutStatusView(with attributes: MessagesCollectionViewLayoutAttributes) {
+    open func layoutStatusView(with attributes: MessagesCollectionViewLayoutAttributes, and reactionView: UIView? = nil) {
         let x = attributes.statusViewPadding.left
-        let y = messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom
+        var y = messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom
+        
+        if let vReaction = reactionView {
+            y = messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom + vReaction.frame.maxY
+        }
         let origin = CGPoint(x: x, y: y)
 
         statusView.frame = CGRect(origin: origin, size: attributes.statusViewSize)
