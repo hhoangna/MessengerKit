@@ -161,8 +161,8 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         contentView.addSubview(avatarView)
         contentView.addSubview(messageTimestampLabel)
         contentView.addSubview(editIconImage)
-        contentView.addSubview(statusView)
         contentView.addSubview(reactionView)
+        contentView.addSubview(statusView)
     }
 
     open override func prepareForReuse() {
@@ -539,7 +539,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
                 case .cellLeading:
                     origin.x = messageContainerView.frame.minX + attributes.messageSubviewsSize.width + 8
                 case .cellTrailing:
-                    origin.x = messageContainerView.frame.minX - 22 - attributes.messageSubviewsSize.width
+                    origin.x = messageContainerView.frame.maxX - 22 - attributes.messageSubviewsSize.width
                 default:
                     break
                 }
@@ -625,12 +625,15 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     /// Positions the cell's status view.
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
     open func layoutStatusView(with attributes: MessagesCollectionViewLayoutAttributes) {
-        let x = attributes.statusViewPadding.left
-        let reactionViewHeight = reactionView.frame.height == 0 ? 0 : reactionView.frame.height - attributes.reactionViewTopMargin
-        let y = messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom + reactionViewHeight
-        
-        let origin = CGPoint(x: x, y: y)
+        var origin = CGPoint.zero
+        origin.x = attributes.statusViewPadding.left
 
+        if attributes.reactionViewSize == .zero {
+            origin.y = messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom
+        } else {
+            origin.y = max(messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom, reactionView.frame.maxY + 1)
+        }
+        
         statusView.frame = CGRect(origin: origin, size: attributes.statusViewSize)
     }
 
