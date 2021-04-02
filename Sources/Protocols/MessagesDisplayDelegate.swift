@@ -134,6 +134,19 @@ public protocol MessagesDisplayDelegate: AnyObject {
     ///
     ///   All other senders: UIColor.darkText
     func textColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor
+    
+    // MARK: - Font Messages
+
+    ///
+    /// - Parameters:
+    ///   - message: A `MessageType` with a `MessageKind` case of `.text` to which the color will apply.
+    ///   - indexPath: The `IndexPath` of the cell.
+    ///   - messagesCollectionView: The `MessagesCollectionView` in which this cell will be displayed.
+    ///
+    /// - Note:
+    ///   The default value returned by this method is determined by the messages `SenderType`.
+    ///
+    func textFont(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIFont
 
     /// Specifies the `DetectorType`s to check for the `MessageType`'s text against.
     ///
@@ -291,6 +304,11 @@ public extension MessagesDisplayDelegate {
         }
         return dataSource.isFromCurrentSender(message: message) ? .outgoingMessageLabel : .incomingMessageLabel
     }
+    
+    func textFont(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIFont {
+        return UIFont.systemFont(ofSize: 16)
+    }
+
 
     func enabledDetectors(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> [DetectorType] {
         return []
