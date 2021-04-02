@@ -539,7 +539,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
                 case .cellLeading:
                     origin.x = messageContainerView.frame.minX + attributes.messageSubviewsSize.width + 8
                 case .cellTrailing:
-                    origin.x = messageContainerView.frame.minX - 8 - attributes.messageSubviewsSize.width
+                    origin.x = messageContainerView.frame.minX - 22 - attributes.messageSubviewsSize.width
                 default:
                     break
                 }
@@ -552,7 +552,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
                 case .cellLeading:
                     origin.x = messageContainerView.frame.maxX + 8
                 case .cellTrailing:
-                    origin.x = messageContainerView.frame.minX - 8
+                    origin.x = messageContainerView.frame.minX - 22
                 default:
                     break
                 }
