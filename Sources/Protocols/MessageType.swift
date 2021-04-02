@@ -43,4 +43,6 @@ public protocol MessageType {
     /// The owner of message
     var isOwner: Bool { get }
 
+    /// The modified status of message
+    var isEdited: Bool { get }
 }

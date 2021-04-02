@@ -115,6 +115,17 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         return replyIcon
     }()
     
+    lazy var editIconImage: UIButton = {
+        let replyIcon = UIButton()
+        replyIcon.setImage(#imageLiteral(resourceName: "icBlackPen").withRenderingMode(.alwaysTemplate), for: .normal)
+        replyIcon.tintColor = UIColor(named: "111111")
+        replyIcon.alpha = 0.4
+        replyIcon.isUserInteractionEnabled = false
+        replyIcon.translatesAutoresizingMaskIntoConstraints = false
+        
+        return replyIcon
+    }()
+    
 
     /// The `MessageCellDelegate` for the cell.
     open weak var delegate: MessageCellDelegate?
@@ -150,6 +161,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         contentView.addSubview(messageContainerView)
         contentView.addSubview(avatarView)
         contentView.addSubview(messageTimestampLabel)
+        contentView.addSubview(editIconImage)
         contentView.addSubview(statusView)
         contentView.addSubview(reactionView)
     }
@@ -170,6 +182,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         guard let attributes = layoutAttributes as? MessagesCollectionViewLayoutAttributes else { return }
         // Call this before other laying out other subviews
         layoutMessageContainerView(with: attributes)
+        layoutEditIcon(with: attributes)
         layoutReactionView(with: attributes)
         layoutStatusView(with: attributes)
         layoutMessageBottomLabel(with: attributes)
@@ -515,18 +528,39 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         messageContainerView.frame = CGRect(origin: origin, size: attributes.messageContainerSize)
     }
     
+    open func layoutEditIcon(with attributes: MessagesCollectionViewLayoutAttributes) {
+        if presentMessage.isEdited {
+            editIconImage.isHidden = false
+            
+            if let subview = messageContainerView.subviews.first(where: {$0.tag == 999}) {
+                
+                NSLayoutConstraint.activate([
+                    editIconImage.centerXAnchor.constraint(equalTo: subview.centerXAnchor, constant: 0),
+                    editIconImage.widthAnchor.constraint(equalToConstant: 14),
+                    editIconImage.heightAnchor.constraint(equalToConstant: 14),
+                ])
+                
+                switch attributes.avatarPosition.horizontal {
+                case .cellLeading:
+                    editIconImage.trailingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 8).isActive = false
+                    editIconImage.leadingAnchor.constraint(equalTo: subview.trailingAnchor, constant: -8).isActive = true
+                case .cellTrailing:
+                    editIconImage.trailingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 8).isActive = false
+                    editIconImage.leadingAnchor.constraint(equalTo: subview.trailingAnchor, constant: -8).isActive = true
+
+                default:
+                    break
+                }
+            }
+        } else {
+            editIconImage.frame = .zero
+            editIconImage.isHidden = true
+        }
+    }
+    
     /// Positions the cell's reaction view.
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
     open func layoutReactionView(with attributes: MessagesCollectionViewLayoutAttributes) {
-//        var subview = UIView()
-//        if let stackview = messageContainerView.subviews.first(where: {$0.tag == 888}) as? UIStackView, let view = stackview.arrangedSubviews.first(where: {$0.tag == 999}) {
-//            subview = view
-//        } else if let view = messageContainerView.subviews.first(where: {$0.tag == 999}) {
-//            subview = view
-//        } else {
-//            return
-//        }
-        
         var origin: CGPoint = .zero
         let reactionSize = attributes.reactionViewSize
         let contentSizeWidth = messageContainerView.frame.size.width
@@ -643,13 +677,16 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         default:
             break
         }
+        
+        let iconEditMaxX = editIconImage.isHidden == true ? 0 : editIconImage.frame.maxX
+        let iconEditMinX = editIconImage.isHidden == true ? 0 : editIconImage.frame.width + 8
 
         // Accessory view is always on the opposite side of avatar
         switch attributes.avatarPosition.horizontal {
         case .cellLeading:
-            origin.x = messageContainerView.frame.maxX + attributes.accessoryViewPadding.left
+            origin.x = messageContainerView.frame.maxX + attributes.accessoryViewPadding.left + iconEditMaxX
         case .cellTrailing:
-            origin.x = messageContainerView.frame.minX - attributes.accessoryViewPadding.right - attributes.accessoryViewSize.width
+            origin.x = messageContainerView.frame.minX - attributes.accessoryViewPadding.right - attributes.accessoryViewSize.width - iconEditMinX
         case .natural:
             fatalError(MessageKitError.avatarPositionUnresolved)
         }
