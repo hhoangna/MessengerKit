@@ -531,26 +531,34 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     open func layoutEditIcon(with attributes: MessagesCollectionViewLayoutAttributes) {
         if attributes.messageEditedStatus {
             editIconImage.isHidden = false
-            
-            if let subview = messageContainerView.subviews.first(where: {$0.tag == 999}) {
-                
-                NSLayoutConstraint.activate([
-                    editIconImage.centerXAnchor.constraint(equalTo: subview.centerXAnchor, constant: 0),
-                    editIconImage.widthAnchor.constraint(equalToConstant: 14),
-                    editIconImage.heightAnchor.constraint(equalToConstant: 14),
-                ])
-                
+            var origin: CGPoint = .zero
+
+            if let _ = messageContainerView.subviews.first(where: {$0.tag == 999}) {
+                origin.y = messageContainerView.frame.maxY - (attributes.messageSubviewsSize.height / 2) - 7
+
                 switch attributes.avatarPosition.horizontal {
                 case .cellLeading:
-                    editIconImage.trailingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 8).isActive = false
-                    editIconImage.leadingAnchor.constraint(equalTo: subview.trailingAnchor, constant: -8).isActive = true
+                    origin.x = messageContainerView.frame.minX + attributes.messageSubviewsSize.width + 8
                 case .cellTrailing:
-                    editIconImage.trailingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 8).isActive = false
-                    editIconImage.leadingAnchor.constraint(equalTo: subview.trailingAnchor, constant: -8).isActive = true
-
+                    origin.x = messageContainerView.frame.minX - 8 - attributes.messageSubviewsSize.width
                 default:
                     break
                 }
+                
+                editIconImage.frame = CGRect(origin: origin, size: CGSize(width: 14, height: 14))
+            } else {
+                origin.y = messageContainerView.frame.minY + (messageContainerView.frame.height / 2) - 7
+
+                switch attributes.avatarPosition.horizontal {
+                case .cellLeading:
+                    origin.x = messageContainerView.frame.maxX + 8
+                case .cellTrailing:
+                    origin.x = messageContainerView.frame.minX - 8
+                default:
+                    break
+                }
+                
+                editIconImage.frame = CGRect(origin: origin, size: CGSize(width: 14, height: 14))
             }
         } else {
             editIconImage.frame = .zero
@@ -563,28 +571,56 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     open func layoutReactionView(with attributes: MessagesCollectionViewLayoutAttributes) {
         var origin: CGPoint = .zero
         let reactionSize = attributes.reactionViewSize
-        let contentSizeWidth = messageContainerView.frame.size.width
         
-        origin.y = messageContainerView.frame.maxY - attributes.reactionViewTopMargin
-        
-        switch attributes.avatarPosition.horizontal {
-        case .cellLeading:
-            if reactionSize.width > contentSizeWidth - attributes.reactionViewLeadingMargin - attributes.reactionViewTrailingMargin {
-                origin.x = messageContainerView.frame.minX + attributes.reactionViewLeadingMargin
+        if reactionSize == .zero {
+            reactionView.frame = .zero
+        } else {
+            origin.y = messageContainerView.frame.maxY - attributes.reactionViewTopMargin
+            
+            if let _ = messageContainerView.subviews.first(where: {$0.tag == 999}) {
+                let messageSubviewWidth = attributes.messageSubviewsSize.width
+
+                switch attributes.avatarPosition.horizontal {
+                case .cellLeading:
+                    if reactionSize.width > messageSubviewWidth - attributes.reactionViewLeadingMargin - attributes.reactionViewTrailingMargin {
+                        origin.x = messageContainerView.frame.minX + attributes.reactionViewLeadingMargin
+                    } else {
+                        origin.x = messageContainerView.frame.minX + messageSubviewWidth - attributes.reactionViewTrailingMargin - reactionSize.width
+                    }
+                case .cellTrailing:
+                    if reactionSize.width > messageSubviewWidth - attributes.reactionViewLeadingMargin - attributes.reactionViewTrailingMargin {
+                        origin.x = messageContainerView.frame.maxX - attributes.reactionViewTrailingMargin - reactionSize.width
+                    } else {
+                        origin.x = messageContainerView.frame.maxX - messageSubviewWidth + attributes.reactionViewLeadingMargin
+                    }
+                default:
+                    fatalError(MessageKitError.avatarPositionUnresolved)
+                }
+                
+                reactionView.frame = CGRect(origin: origin, size: reactionSize)
             } else {
-                origin.x = messageContainerView.frame.maxX - attributes.reactionViewTrailingMargin - reactionSize.width
+                let messageContainterWidth = messageContainerView.frame.width
+
+                switch attributes.avatarPosition.horizontal {
+                case .cellLeading:
+                    if reactionSize.width > messageContainterWidth - attributes.reactionViewLeadingMargin - attributes.reactionViewTrailingMargin {
+                        origin.x = messageContainerView.frame.minX + attributes.reactionViewLeadingMargin
+                    } else {
+                        origin.x = messageContainerView.frame.maxX - attributes.reactionViewTrailingMargin - reactionSize.width
+                    }
+                case .cellTrailing:
+                    if reactionSize.width > messageContainterWidth - attributes.reactionViewLeadingMargin - attributes.reactionViewTrailingMargin {
+                        origin.x = messageContainerView.frame.maxX - attributes.reactionViewTrailingMargin - reactionSize.width
+                    } else {
+                        origin.x = messageContainerView.frame.minX + attributes.reactionViewLeadingMargin
+                    }
+                default:
+                    fatalError(MessageKitError.avatarPositionUnresolved)
+                }
+                
+                reactionView.frame = CGRect(origin: origin, size: reactionSize)
             }
-        case .cellTrailing:
-            if reactionSize.width > contentSizeWidth - attributes.reactionViewLeadingMargin - attributes.reactionViewTrailingMargin {
-                origin.x = messageContainerView.frame.maxX - attributes.reactionViewTrailingMargin - reactionSize.width
-            } else {
-                origin.x = messageContainerView.frame.minX + attributes.reactionViewLeadingMargin
-            }
-        default:
-            fatalError(MessageKitError.avatarPositionUnresolved)
         }
-        
-        reactionView.frame = CGRect(origin: origin, size: reactionSize)
     }
     
     /// Positions the cell's status view.
