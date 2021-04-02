@@ -529,7 +529,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     }
     
     open func layoutEditIcon(with attributes: MessagesCollectionViewLayoutAttributes) {
-        if presentMessage.isEdited {
+        if attributes.messageEditedStatus {
             editIconImage.isHidden = false
             
             if let subview = messageContainerView.subviews.first(where: {$0.tag == 999}) {

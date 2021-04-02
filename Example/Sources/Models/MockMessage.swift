@@ -112,6 +112,9 @@ internal struct MockMessage: MessageType {
     var isOwner: Bool {
         return true
     }
+    var isEdited: Bool {
+        return false
+    }
 
     var user: MockUser
 

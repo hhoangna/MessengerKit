@@ -107,6 +107,8 @@ open class MessageSizeCalculator: CellSizeCalculator {
         attributes.reactionViewTopMargin = topReactionViewMargin
         attributes.reactionViewLeadingMargin = leadingReactionViewMargin
         attributes.reactionViewSize = reactionViewSize(for: message, at: indexPath)
+        
+        attributes.messageEditedStatus = message.isEdited
     }
 
     open override func sizeForItem(at indexPath: IndexPath) -> CGSize {
