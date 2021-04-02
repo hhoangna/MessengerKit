@@ -52,6 +52,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         label.numberOfLines = 1
         label.textAlignment = .center
         label.backgroundColor = .white
+        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -642,9 +643,12 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         cellTopLabel.textAlignment = attributes.cellTopLabelAlignment.textAlignment
         cellTopLabel.textInsets = attributes.cellTopLabelAlignment.textInsets
         
-        cellTopLabel.frame = CGRect(origin: .zero, size: attributes.cellTopLabelSize)
-                
         NSLayoutConstraint.activate([
+            cellTopLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            cellTopLabel.heightAnchor.constraint(equalToConstant: attributes.cellTopLabelSize.height),
+            cellTopLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
+            cellTopLabel.bottomAnchor.constraint(equalTo: messageTopLabel.topAnchor),
+            
             sparateTopLine.heightAnchor.constraint(equalToConstant: 0.5),
             sparateTopLine.centerYAnchor.constraint(equalTo: cellTopLabel.centerYAnchor),
             sparateTopLine.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
