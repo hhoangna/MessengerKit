@@ -117,11 +117,10 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     
     lazy var editIconImage: UIButton = {
         let replyIcon = UIButton()
-        replyIcon.setImage(#imageLiteral(resourceName: "icBlackPen").withRenderingMode(.alwaysTemplate), for: .normal)
+        replyIcon.setImage(#imageLiteral(resourceName: "icBlackPen").withRenderingMode(.alwaysOriginal), for: .normal)
         replyIcon.tintColor = UIColor(named: "111111")
         replyIcon.alpha = 0.4
         replyIcon.isUserInteractionEnabled = false
-        replyIcon.translatesAutoresizingMaskIntoConstraints = false
         
         return replyIcon
     }()
