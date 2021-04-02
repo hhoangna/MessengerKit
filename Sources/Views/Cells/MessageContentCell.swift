@@ -631,7 +631,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         if attributes.reactionViewSize == .zero {
             origin.y = messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom
         } else {
-            origin.y = max(messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom, reactionView.frame.maxY + 1)
+            origin.y = reactionView.frame.maxY + 1
         }
         
         statusView.frame = CGRect(origin: origin, size: attributes.statusViewSize)

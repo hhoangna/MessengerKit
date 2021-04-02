@@ -130,8 +130,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
         let avatarVerticalPosition = avatarPosition(for: message).vertical
         let accessoryViewHeight = accessoryViewSize(for: message).height
         let statusViewHeight = statusViewSize(for: message, at: indexPath).height
-        let reactionViewOrigin = reactionViewSize(for: message, at: indexPath)
-        let reactionViewHeight = reactionViewOrigin.height == 0 ? 0 : reactionViewOrigin.height - topReactionViewMargin
+        let reactionViewHeight = reactionViewSize(for: message, at: indexPath) == .zero ? reactionViewSize(for: message, at: indexPath).height : reactionViewSize(for: message, at: indexPath).height - topReactionViewMargin
 
         switch avatarVerticalPosition {
         case .messageCenter:
