@@ -643,7 +643,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         origin.x = attributes.statusViewPadding.left
         origin.y = messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom + reactionViewHeight
         
-        statusView.frame = CGRect(origin: origin, size: reactionViewSize)
+        statusView.frame = CGRect(origin: origin, size: attributes.statusViewSize)
     }
 
     /// Positions the cell's top label.
