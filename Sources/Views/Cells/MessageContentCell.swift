@@ -635,12 +635,13 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
     open func layoutStatusView(with attributes: MessagesCollectionViewLayoutAttributes) {
         var origin = CGPoint.zero
-        let reactionViewHeight = attributes.reactionViewSize == .zero ? attributes.reactionViewSize.height : attributes.reactionViewSize.height - attributes.reactionViewTopMargin
+        let reactionViewSize = attributes.reactionViewSize
+        let reactionViewHeight = reactionViewSize == .zero ? reactionViewSize.height : reactionViewSize.height - attributes.reactionViewTopMargin
 
         origin.x = attributes.statusViewPadding.left
         origin.y = messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom + reactionViewHeight
         
-        statusView.frame = CGRect(origin: origin, size: attributes.statusViewSize)
+        statusView.frame = CGRect(origin: origin, size: reactionViewSize)
     }
 
     /// Positions the cell's top label.
