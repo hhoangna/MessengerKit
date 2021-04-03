@@ -366,7 +366,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             if presentMessage.isOwner {
                 if translation.x < 0 {
                     self.messageContainerView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
-                    self.statusView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+                    self.reactionView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
                     self.editIconImage.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
                     self.accessoryView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
 
@@ -394,7 +394,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             } else {
                 if translation.x > 0 {
                     self.messageContainerView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
-                    self.statusView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+                    self.reactionView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
                     self.editIconImage.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
                     self.accessoryView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
                     
@@ -427,7 +427,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             }
             UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.3, options: [.allowUserInteraction]) {
                 self.messageContainerView.transform = .identity
-                self.statusView.transform = .identity
+                self.reactionView.transform = .identity
                 self.editIconImage.transform = .identity
                 self.accessoryView.transform = .identity
 
@@ -457,9 +457,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         } else {
             return false
         }
-//        let touchPoint = gestureRecognizer.location(in: self)
-//        guard gestureRecognizer.isKind(of: UILongPressGestureRecognizer.self) else { return false }
-//        return messageContainerView.frame.contains(touchPoint)
     }
 
     /// Handle `ContentView`'s tap gesture, return false when `ContentView` doesn't needs to handle gesture
