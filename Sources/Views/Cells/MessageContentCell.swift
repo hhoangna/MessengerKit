@@ -366,6 +366,10 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             if presentMessage.isOwner {
                 if translation.x < 0 {
                     self.messageContainerView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+                    self.statusView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+                    self.editIconImage.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+                    self.accessoryView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+
                     self.replyIconImage.transform = CGAffineTransform(translationX: max(-40, translation.x * 0.3), y: 0).scaledBy(x: min(1.0, (abs(translation.x * 0.3)) / 40), y: min(1.0, (abs(translation.x * 0.3)) / 40))
                     
                     if abs(translation.x) >= 120 {
@@ -390,6 +394,10 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             } else {
                 if translation.x > 0 {
                     self.messageContainerView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+                    self.statusView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+                    self.editIconImage.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+                    self.accessoryView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+                    
                     self.replyIconImage.transform = CGAffineTransform(translationX: min(40, translation.x * 0.3), y: 0).scaledBy(x: min(1.0, (abs(translation.x * 0.3)) / 40), y: min(1.0, (abs(translation.x * 0.3)) / 40))
 
                     if abs(translation.x) >= 120 {
@@ -419,6 +427,10 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             }
             UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.3, options: [.allowUserInteraction]) {
                 self.messageContainerView.transform = .identity
+                self.statusView.transform = .identity
+                self.editIconImage.transform = .identity
+                self.accessoryView.transform = .identity
+
                 self.replyIconImage.transform = .identity
                 self.replyIconImage.alpha = 0
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
