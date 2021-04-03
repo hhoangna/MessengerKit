@@ -275,47 +275,47 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         let touchLocation = gesture.location(in: self)
         switch true {
         case messageContainerView.frame.contains(touchLocation):
-            if gesture.state == .began {
-                delegate?.didHoldMessage(in: self, at: touchLocation)
-            } else {
-                return
-            }
-//            switch gesture.state {
-//            case .began:
-//                startAnimation = true
-//                countTime = 1.0
-//                timer = Timer.scheduledTimer(timeInterval: 0.05, target: self, selector: #selector(timerAnimationLongPressgesture), userInfo: nil, repeats: true)
-//            case .changed:
-//                if startAnimation {
-//                    if countTime < 0.6 {
-//                        startAnimation = false
-//                        timer.invalidate()
-//                        countTime = 1.0
-//
-//                        delegate?.didHoldMessage(in: self, at: touchLocation)
-//                        UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.4, options: [.allowUserInteraction, .curveEaseOut]) {
-//                            self.messageContainerView.transform = .identity
-//                        } completion: { (ok) in
-//                            //
-//                        }
-//                    } else {
-//                        UIView.animate(withDuration: 0.5) {
-//                            self.messageContainerView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
-//                        }
-//                    }
-//                }
-//            case .ended:
-//                startAnimation = false
-//                timer.invalidate()
-//                countTime = 1.0
-//                UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.4, options: [.allowUserInteraction, .curveEaseOut]) {
-//                    self.messageContainerView.transform = .identity
-//                } completion: { (ok) in
-//                    //
-//                }
-//            default:
-//                break
+//            if gesture.state == .began {
+//                delegate?.didHoldMessage(in: self, at: touchLocation)
+//            } else {
+//                return
 //            }
+            switch gesture.state {
+            case .began:
+                startAnimation = true
+                countTime = 1.0
+                timer = Timer.scheduledTimer(timeInterval: 0.05, target: self, selector: #selector(timerAnimationLongPressgesture), userInfo: nil, repeats: true)
+            case .changed:
+                if startAnimation {
+                    if countTime < 0.6 {
+                        startAnimation = false
+                        timer.invalidate()
+                        countTime = 1.0
+
+                        delegate?.didHoldMessage(in: self, at: touchLocation)
+                        UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.4, options: [.allowUserInteraction, .curveEaseOut]) {
+                            self.messageContainerView.transform = .identity
+                        } completion: { (ok) in
+                            //
+                        }
+                    } else {
+                        UIView.animate(withDuration: 0.5) {
+                            self.messageContainerView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+                        }
+                    }
+                }
+            case .ended:
+                startAnimation = false
+                timer.invalidate()
+                countTime = 1.0
+                UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.4, options: [.allowUserInteraction, .curveEaseOut]) {
+                    self.messageContainerView.transform = .identity
+                } completion: { (ok) in
+                    //
+                }
+            default:
+                break
+            }
         default:
             break
         }
