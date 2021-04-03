@@ -635,13 +635,10 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
     open func layoutStatusView(with attributes: MessagesCollectionViewLayoutAttributes) {
         var origin = CGPoint.zero
-        origin.x = attributes.statusViewPadding.left
+        let reactionViewHeight = attributes.reactionViewSize == .zero ? attributes.reactionViewSize.height : attributes.reactionViewSize.height - attributes.reactionViewTopMargin
 
-        if attributes.reactionViewSize == .zero {
-            origin.y = messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom
-        } else {
-            origin.y = reactionView.frame.maxY + 1
-        }
+        origin.x = attributes.statusViewPadding.left
+        origin.y = messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom + reactionViewHeight
         
         statusView.frame = CGRect(origin: origin, size: attributes.statusViewSize)
     }
