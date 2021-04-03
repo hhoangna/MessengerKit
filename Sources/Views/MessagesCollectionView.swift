@@ -1,7 +1,7 @@
 /*
  MIT License
  
- Copyright (c) 2017-2019 MessageKit
+ Copyright (c) 2017-2020 MessageKit
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -36,8 +36,6 @@ open class MessagesCollectionView: UICollectionView {
     open weak var messagesLayoutDelegate: MessagesLayoutDelegate?
 
     open weak var messageCellDelegate: MessageCellDelegate?
-
-    open weak var messagesCollectionViewDelegate: MessagesCollectionViewDelegate?
 
     open var isTypingIndicatorHidden: Bool {
         return messagesCollectionViewFlowLayout.isTypingIndicatorViewHidden
@@ -107,7 +105,7 @@ open class MessagesCollectionView: UICollectionView {
         let touchLocation = gesture.location(in: self)
         guard let indexPath = indexPathForItem(at: touchLocation) else {
             
-//            messageCellDelegate?.didTapAnywhere()
+            messageCellDelegate?.didTapAnywhere()
             return
         }
         
@@ -138,6 +136,7 @@ open class MessagesCollectionView: UICollectionView {
     
     // NOTE: This method seems to cause crash in certain cases - https://github.com/MessageKit/MessageKit/issues/725
     // Could try using `scrollToLastItem` above
+    @available(*, deprecated, message: "Scroll to bottom by using scrollToLastItem(:) instead", renamed: "scrollToLastItem")
     public func scrollToBottom(animated: Bool = false) {
         performBatchUpdates(nil) { [weak self] _ in
             guard let self = self else { return }
@@ -183,7 +182,7 @@ open class MessagesCollectionView: UICollectionView {
         return messagesCollectionViewFlowLayout.isSectionReservedForTypingIndicator(section)
     }
 
-    // MARK: View Register/Dequeue
+    // MARK: - View Register/Dequeue
 
     /// Registers a particular cell using its reuse-identifier
     public func register<T: UICollectionViewCell>(_ cellClass: T.Type) {
