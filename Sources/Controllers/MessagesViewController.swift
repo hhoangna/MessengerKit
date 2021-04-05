@@ -173,7 +173,7 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
 
     // MARK: - Notification Handle
     @objc
-    func handleKeyboardDidChangeState(_ notification: Notification) {
+    open func handleKeyboardDidChangeState(_ notification: Notification) {
         guard !isMessagesControllerBeingDismissed else { return }
 
         guard let keyboardStartFrameInScreenCoords = notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? CGRect else { return }
