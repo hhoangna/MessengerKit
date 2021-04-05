@@ -77,7 +77,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
         guard let attributes = attributes as? MessagesCollectionViewLayoutAttributes else { return }
 
         let indexPath = attributes.indexPath
-        let message = dataSource.messageForItem(at: indexPath, in: messagesLayout.messagesCollectionView)
+        let message = dataSource.messageForItem(at: indexPath, in: collectionView)
 
         attributes.avatarSize = avatarSize(for: message)
         attributes.avatarPosition = avatarPosition(for: message)
@@ -130,7 +130,8 @@ open class MessageSizeCalculator: CellSizeCalculator {
         let avatarVerticalPosition = avatarPosition(for: message).vertical
         let accessoryViewHeight = accessoryViewSize(for: message).height
         let statusViewHeight = statusViewSize(for: message, at: indexPath).height
-        let reactionViewHeight = reactionViewSize(for: message, at: indexPath) == .zero ? reactionViewSize(for: message, at: indexPath).height : reactionViewSize(for: message, at: indexPath).height - topReactionViewMargin
+        let reactionViewOrigin = reactionViewSize(for: message, at: indexPath)
+        let reactionViewHeight = reactionViewOrigin == .zero ? reactionViewOrigin.height : reactionViewOrigin.height - topReactionViewMargin
 
         switch avatarVerticalPosition {
         case .messageCenter:
@@ -316,18 +317,17 @@ open class MessageSizeCalculator: CellSizeCalculator {
         return layout
     }
     
-    public var layoutDelegate: MessagesLayoutDelegate {
+    lazy var layoutDelegate: MessagesLayoutDelegate = {
         return messagesLayout.messagesLayoutDelegate
-    }
+    }()
     
-    public var collectionView: MessagesCollectionView {
+    lazy var collectionView: MessagesCollectionView = {
         return messagesLayout.messagesCollectionView
-    }
+    }()
     
-    public var dataSource: MessagesDataSource {
+    lazy var dataSource: MessagesDataSource = {
         return messagesLayout.messagesDataSource
-    }
-
+    }()
 
     internal func labelSize(for attributedText: NSAttributedString, considering maxWidth: CGFloat) -> CGSize {
         let constraintBox = CGSize(width: maxWidth, height: .greatestFiniteMagnitude)

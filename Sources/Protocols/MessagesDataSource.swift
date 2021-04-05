@@ -135,6 +135,10 @@ public protocol MessagesDataSource: AnyObject {
 }
 
 public extension MessagesDataSource {
+    
+    func currentSender() -> SenderType {
+        return SenderType.self as! SenderType
+    }
 
     func isFromCurrentSender(message: MessageType) -> Bool {
         return message.sender.senderId == currentSender().senderId

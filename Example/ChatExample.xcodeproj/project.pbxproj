@@ -33,7 +33,6 @@
 		5074EF4E2163555900D82952 /* sound2.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 5074EF4C2163555900D82952 /* sound2.m4a */; };
 		5074EF4F2163555900D82952 /* sound1.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 5074EF4D2163555900D82952 /* sound1.m4a */; };
 		512CD041B78B8B72CBEFB439 /* Pods_ChatExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6596D36DCF8979FCD9D50547 /* Pods_ChatExample.framework */; };
-		5168957524F7AD560058C643 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5168957124F7AD560058C643 /* Assets.xcassets */; };
 		5168957624F7AD560058C643 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5168957224F7AD560058C643 /* LaunchScreen.storyboard */; };
 		63ECDABE24182A470016C349 /* MessageSubviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63ECDABD24182A470016C349 /* MessageSubviewViewController.swift */; };
 		63ECDAC2241889630016C349 /* MessageSubviewContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63ECDAC1241889630016C349 /* MessageSubviewContainerViewController.swift */; };
@@ -41,6 +40,7 @@
 		882B5E901CF7D56000B6E160 /* ChatExampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 882B5E8E1CF7D56000B6E160 /* ChatExampleUITests.swift */; };
 		882B5E951CF7D56E00B6E160 /* ChatExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 882B5E931CF7D56E00B6E160 /* ChatExampleTests.swift */; };
 		9961327FB4F9B96CFD84A126 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
+		A3580CA8261B4B0D0048AF88 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5168957124F7AD560058C643 /* Assets.xcassets */; };
 		D4036D91BB2480E403CDC2F1 /* Pods_ChatExampleUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AC6E3F5C11E39F57598DBE6 /* Pods_ChatExampleUITests.framework */; };
 		F182DD0E2148F655FC0DFF91 /* Pods_ChatExampleTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25FCE8536D329EC8856E2BA8 /* Pods_ChatExampleTests.framework */; };
 /* End PBXBuildFile section */
@@ -452,7 +452,7 @@
 			files = (
 				5074EF4F2163555900D82952 /* sound1.m4a in Resources */,
 				5168957624F7AD560058C643 /* LaunchScreen.storyboard in Resources */,
-				5168957524F7AD560058C643 /* Assets.xcassets in Resources */,
+				A3580CA8261B4B0D0048AF88 /* Assets.xcassets in Resources */,
 				5074EF4E2163555900D82952 /* sound2.m4a in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
