@@ -78,14 +78,15 @@ open class MessageSizeCalculator: CellSizeCalculator {
 
         let indexPath = attributes.indexPath
         let message = dataSource.messageForItem(at: indexPath, in: collectionView)
+        let maxWidth = messageContainerMaxWidth(for: message)
 
         attributes.avatarSize = avatarSize(for: message)
         attributes.avatarPosition = avatarPosition(for: message)
         attributes.avatarLeadingTrailingPadding = avatarLeadingTrailingPadding
 
         attributes.messageContainerPadding = messageContainerPadding(for: message)
-        attributes.messageContainerSize = messageContainerSize(for: message)
-        attributes.messageSubviewsSize = messageSubviewSize(for: message)
+        attributes.messageContainerSize = messageContainerSize(for: message, maxWidth: maxWidth)
+        attributes.messageSubviewsSize = messageSubviewSize(for: message, maxWidth: maxWidth)
         attributes.cellTopLabelSize = cellTopLabelSize(for: message, at: indexPath)
         attributes.cellTopLabelAlignment = cellTopLabelAlignment(for: message)
         attributes.cellBottomLabelSize = cellBottomLabelSize(for: message, at: indexPath)
@@ -290,7 +291,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
         return isFromCurrentSender ? outgoingMessagePadding : incomingMessagePadding
     }
 
-    open func messageContainerSize(for message: MessageType) -> CGSize {
+    open func messageContainerSize(for message: MessageType, maxWidth: CGFloat = 0) -> CGSize {
         // Returns .zero by default
         return .zero
     }
@@ -303,7 +304,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
         return messagesLayout.itemWidth - avatarWidth - messagePadding.horizontal - accessoryWidth - accessoryPadding.horizontal - avatarLeadingTrailingPadding
     }
     
-    open func messageSubviewSize(for message: MessageType) -> CGSize {
+    open func messageSubviewSize(for message: MessageType, maxWidth: CGFloat) -> CGSize {
         return .zero
     }
 
