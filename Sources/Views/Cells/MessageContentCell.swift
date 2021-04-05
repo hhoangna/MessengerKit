@@ -44,7 +44,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     }()
 
     /// The container used for styling and holding the message's content view.
-    lazy var messageContainerView: MessageContainerView = {
+    open var messageContainerView: MessageContainerView = {
         let containerView = MessageContainerView()
         containerView.clipsToBounds = true
         containerView.layer.masksToBounds = true
