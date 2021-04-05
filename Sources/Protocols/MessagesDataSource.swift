@@ -141,7 +141,7 @@ public extension MessagesDataSource {
     }
 
     func isFromCurrentSender(message: MessageType) -> Bool {
-        return message.sender.senderId == currentSender().senderId
+        return message.isOwner
     }
 
     func numberOfItems(inSection section: Int, in messagesCollectionView: MessagesCollectionView) -> Int {

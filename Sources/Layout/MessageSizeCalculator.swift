@@ -172,7 +172,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
     // MARK: - Avatar
 
     open func avatarPosition(for message: MessageType) -> AvatarPosition {
-        let isFromCurrentSender = dataSource.isFromCurrentSender(message: message)
+        let isFromCurrentSender = message.isOwner
         var position = isFromCurrentSender ? outgoingAvatarPosition : incomingAvatarPosition
 
         switch position.horizontal {
@@ -185,7 +185,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
     }
 
     open func avatarSize(for message: MessageType) -> CGSize {
-        let isFromCurrentSender = dataSource.isFromCurrentSender(message: message)
+        let isFromCurrentSender = message.isOwner
         return isFromCurrentSender ? outgoingAvatarSize : incomingAvatarSize
     }
 
@@ -197,7 +197,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
     }
 
     open func cellTopLabelAlignment(for message: MessageType) -> LabelAlignment {
-        let isFromCurrentSender = dataSource.isFromCurrentSender(message: message)
+        let isFromCurrentSender = message.isOwner
         return isFromCurrentSender ? outgoingCellTopLabelAlignment : incomingCellTopLabelAlignment
     }
     
@@ -209,7 +209,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
     }
     
     open func messageTopLabelAlignment(for message: MessageType) -> LabelAlignment {
-        let isFromCurrentSender = dataSource.isFromCurrentSender(message: message)
+        let isFromCurrentSender = message.isOwner
         return isFromCurrentSender ? outgoingMessageTopLabelAlignment : incomingMessageTopLabelAlignment
     }
 
@@ -231,7 +231,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
     }
     
     open func cellBottomLabelAlignment(for message: MessageType) -> LabelAlignment {
-        let isFromCurrentSender = dataSource.isFromCurrentSender(message: message)
+        let isFromCurrentSender = message.isOwner
         return isFromCurrentSender ? outgoingCellBottomLabelAlignment : incomingCellBottomLabelAlignment
     }
 
@@ -243,31 +243,31 @@ open class MessageSizeCalculator: CellSizeCalculator {
     }
 
     open func messageBottomLabelAlignment(for message: MessageType) -> LabelAlignment {
-        let isFromCurrentSender = dataSource.isFromCurrentSender(message: message)
+        let isFromCurrentSender = message.isOwner
         return isFromCurrentSender ? outgoingMessageBottomLabelAlignment : incomingMessageBottomLabelAlignment
     }
 
     // MARK: - Accessory View
 
     public func accessoryViewSize(for message: MessageType) -> CGSize {
-        let isFromCurrentSender = dataSource.isFromCurrentSender(message: message)
+        let isFromCurrentSender = message.isOwner
         return isFromCurrentSender ? outgoingAccessoryViewSize : incomingAccessoryViewSize
     }
 
     public func accessoryViewPadding(for message: MessageType) -> HorizontalEdgeInsets {
-        let isFromCurrentSender = dataSource.isFromCurrentSender(message: message)
+        let isFromCurrentSender = message.isOwner
         return isFromCurrentSender ? outgoingAccessoryViewPadding : incomingAccessoryViewPadding
     }
     
     public func accessoryViewPosition(for message: MessageType) -> AccessoryPosition {
-        let isFromCurrentSender = dataSource.isFromCurrentSender(message: message)
+        let isFromCurrentSender = message.isOwner
         return isFromCurrentSender ? outgoingAccessoryViewPosition : incomingAccessoryViewPosition
     }
     
     // MARK: - Status View
     
     public func statusViewPadding(for message: MessageType) -> HorizontalEdgeInsets {
-        let isFromCurrentSender = dataSource.isFromCurrentSender(message: message)
+        let isFromCurrentSender = message.isOwner
         return isFromCurrentSender ? outgoingStatusViewPadding : incomingStatusViewPadding
     }
     
@@ -286,8 +286,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
     // MARK: - MessageContainer
 
     open func messageContainerPadding(for message: MessageType) -> UIEdgeInsets {
-        let dataSource = messagesLayout.messagesDataSource
-        let isFromCurrentSender = dataSource.isFromCurrentSender(message: message)
+        let isFromCurrentSender = message.isOwner
         return isFromCurrentSender ? outgoingMessagePadding : incomingMessagePadding
     }
 

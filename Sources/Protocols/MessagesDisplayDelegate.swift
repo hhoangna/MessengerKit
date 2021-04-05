@@ -271,10 +271,7 @@ public extension MessagesDisplayDelegate {
         case .emoji:
             return .clear
         default:
-            guard let dataSource = messagesCollectionView.messagesDataSource else {
-                return .white
-            }
-            return dataSource.isFromCurrentSender(message: message) ? .outgoingMessageBackground : .incomingMessageBackground
+            return message.isOwner ? .outgoingMessageBackground : .incomingMessageBackground
         }
     }
     
@@ -299,10 +296,7 @@ public extension MessagesDisplayDelegate {
     // MARK: - Text Messages Defaults
 
     func textColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
-        guard let dataSource = messagesCollectionView.messagesDataSource else {
-            fatalError(MessageKitError.nilMessagesDataSource)
-        }
-        return dataSource.isFromCurrentSender(message: message) ? .outgoingMessageLabel : .incomingMessageLabel
+        return message.isOwner ? .outgoingMessageLabel : .incomingMessageLabel
     }
     
     func textFont(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIFont {
@@ -344,10 +338,7 @@ public extension MessagesDisplayDelegate {
     }
 
     func audioTintColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
-        guard let dataSource = messagesCollectionView.messagesDataSource else {
-            fatalError(MessageKitError.nilMessagesDataSource)
-        }
-        return dataSource.isFromCurrentSender(message: message) ? .outgoingAudioMessageTint : .incomingAudioMessageTint
+        return message.isOwner ? .outgoingAudioMessageTint : .incomingAudioMessageTint
     }
 
     func audioProgressTextFormat(_ duration: Float, for audioCell: AudioMessageCell, in messageCollectionView: MessagesCollectionView) -> String {
