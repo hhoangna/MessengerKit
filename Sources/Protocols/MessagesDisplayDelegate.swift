@@ -105,8 +105,6 @@ public protocol MessagesDisplayDelegate: AnyObject {
     ///   - indexPath: The `IndexPath` of the cell.
     ///   - messagesCollectionView: The `MessagesCollectionView` in which this cell will be displayed.
     ///
-    /// - Note:
-    ///   The default image configured by this method is `?`.
     func configureStatusView(_ statusView: UIView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView)
     
     /// Used to configure the `ReactionView` in a `MessageContentCell` class.

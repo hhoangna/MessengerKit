@@ -225,10 +225,8 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
 
         displayDelegate.configureAccessoryView(accessoryView, for: message, at: indexPath, in: messagesCollectionView)
         
-//        displayDelegate.configureStatusView(statusView, for: message, at: indexPath, in: messagesCollectionView)
-//        
-//        displayDelegate.configureReactionView(reactionView, for: message, at: indexPath, in: messagesCollectionView)
-
+        displayDelegate.configureStatusView(statusView, for: message, at: indexPath, in: messagesCollectionView)
+        
         messageContainerView.backgroundColor = messageColor
         messageContainerView.style = messageStyle
 

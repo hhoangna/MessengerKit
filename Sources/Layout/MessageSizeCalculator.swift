@@ -108,7 +108,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
         attributes.reactionViewTrailingMargin = trailingReactionViewMargin
         attributes.reactionViewTopMargin = topReactionViewMargin
         attributes.reactionViewLeadingMargin = leadingReactionViewMargin
-        attributes.reactionViewSize = layoutDelegate.reactionViewSize(for: message, at: indexPath, in: collectionView)
+        attributes.reactionViewSize = reactionViewSize(for: message, at: indexPath)
         
         attributes.messageEditedStatus = message.isEdited
     }
@@ -131,8 +131,8 @@ open class MessageSizeCalculator: CellSizeCalculator {
         let avatarVerticalPosition = avatarPosition(for: message).vertical
         let accessoryViewHeight = accessoryViewSize(for: message).height
         let statusViewHeight = statusViewSize(for: message, at: indexPath).height
-        let reactionViewOrigin = layoutDelegate.reactionViewSize(for: message, at: indexPath, in: collectionView)
-        let reactionViewHeight = reactionViewOrigin == .zero ? reactionViewOrigin.height : reactionViewOrigin.height - topReactionViewMargin
+        let reactionViewOrigin = reactionViewSize(for: message, at: indexPath)
+        let reactionViewHeight = reactionViewOrigin.width == 0 ? reactionViewOrigin.height : reactionViewOrigin.height - topReactionViewMargin
 
         switch avatarVerticalPosition {
         case .messageCenter:
@@ -276,6 +276,11 @@ open class MessageSizeCalculator: CellSizeCalculator {
         let height = layoutDelegate.statusViewHeight(for: message, at: indexPath, in: collectionView)
         let width = messagesLayout.itemWidth - statusViewPadding(for: message).horizontal
         return CGSize(width: width, height: height)
+    }
+    
+    public func reactionViewSize(for message: MessageType, at indexPath: IndexPath) -> CGSize {
+        let width = layoutDelegate.reactionViewWidth(for: message, at: indexPath, in: collectionView)
+        return CGSize(width: width, height: reactionViewMaxHeight)
     }
 
     // MARK: - MessageContainer

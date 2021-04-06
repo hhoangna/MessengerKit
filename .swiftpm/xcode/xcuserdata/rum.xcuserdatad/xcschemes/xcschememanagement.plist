@@ -10,5 +10,23 @@
 			<integer>0</integer>
 		</dict>
 	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>MessageKit</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>MessageKitTests</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>MessageKit_MessageKit</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+	</dict>
 </dict>
 </plist>
