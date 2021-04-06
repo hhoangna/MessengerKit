@@ -595,7 +595,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
     open func layoutReactionView(with attributes: MessagesCollectionViewLayoutAttributes) {
         
-        if attributes.messageReaction {
+        if !attributes.messageReaction {
             reactionView.frame = .zero
         } else {
             var origin: CGPoint = .zero
