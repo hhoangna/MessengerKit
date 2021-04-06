@@ -61,9 +61,9 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
     public var statusViewSize: CGSize = .zero
     public var statusViewPadding: HorizontalEdgeInsets = .zero
     
-    public var reactionViewTopMargin: CGFloat = .infinity
-    public var reactionViewLeadingMargin: CGFloat = .infinity
-    public var reactionViewTrailingMargin: CGFloat = .infinity
+    public var reactionViewTopMargin: CGFloat = 8
+    public var reactionViewLeadingMargin: CGFloat = 12
+    public var reactionViewTrailingMargin: CGFloat = 12
     public var reactionViewSize: CGSize = .zero
     
     public var messageEditedStatus: Bool = false

@@ -132,9 +132,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     var presentMessage: MessageType!
     var isAvailableGesture: Bool = false
     var safePanWork: Bool = false
-    
-    
-    
+
     lazy var heightReactionAdded: CGFloat = 0
 
     /// The `MessageCellDelegate` for the cell.

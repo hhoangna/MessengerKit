@@ -105,13 +105,17 @@ open class MessageSizeCalculator: CellSizeCalculator {
         attributes.statusViewSize = statusViewSize(for: message, at: indexPath)
         attributes.statusViewPadding = statusViewPadding(for: message)
         
-        attributes.reactionViewTrailingMargin = trailingReactionViewMargin
-        attributes.reactionViewTopMargin = topReactionViewMargin
-        attributes.reactionViewLeadingMargin = leadingReactionViewMargin
-        attributes.reactionViewSize = reactionViewSize(for: message, at: indexPath)
-        
         attributes.messageEditedStatus = message.isEdited
-        attributes.messageReaction = message.hasReaction > 0
+
+        if message.hasReaction > 0 {
+            attributes.reactionViewTrailingMargin = trailingReactionViewMargin
+            attributes.reactionViewTopMargin = topReactionViewMargin
+            attributes.reactionViewLeadingMargin = leadingReactionViewMargin
+            attributes.reactionViewSize = reactionViewSize(for: message, at: indexPath)
+            attributes.messageReaction = true
+        } else {
+            attributes.messageReaction = false
+        }
     }
 
     open override func sizeForItem(at indexPath: IndexPath) -> CGSize {
@@ -121,7 +125,6 @@ open class MessageSizeCalculator: CellSizeCalculator {
     }
 
     open func cellContentHeight(for message: MessageType, at indexPath: IndexPath) -> CGFloat {
-
         let messageContainerHeight = messageContainerSize(for: message).height
         let cellBottomLabelHeight = cellBottomLabelSize(for: message, at: indexPath).height
         let messageBottomLabelHeight = messageBottomLabelSize(for: message, at: indexPath).height
@@ -279,12 +282,8 @@ open class MessageSizeCalculator: CellSizeCalculator {
     }
     
     public func reactionViewSize(for message: MessageType, at indexPath: IndexPath) -> CGSize {
-        if message.hasReaction > 0 {
-            let width = layoutDelegate.reactionViewWidth(for: message, at: indexPath, in: collectionView)
-            return CGSize(width: width, height: reactionViewMaxHeight)
-        } else {
-            return .zero
-        }
+        let width = layoutDelegate.reactionViewWidth(for: message, at: indexPath, in: collectionView)
+        return CGSize(width: width, height: reactionViewMaxHeight)
     }
 
     // MARK: - MessageContainer
