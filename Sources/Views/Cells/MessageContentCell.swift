@@ -215,11 +215,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         guard let displayDelegate = messagesCollectionView.messagesDisplayDelegate else {
             fatalError(MessageKitError.nilMessagesDisplayDelegate)
         }
-        
-        guard let attributes = messagesCollectionView.layoutAttributesForItem(at: indexPath) as? MessagesCollectionViewLayoutAttributes else {
-            fatalError(MessageKitError.nilMessagesLayoutDelegate)
-        }
-
+    
         delegate = messagesCollectionView.messageCellDelegate
         presentMessage = message
 
@@ -593,7 +589,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
     open func layoutReactionView(with attributes: MessagesCollectionViewLayoutAttributes, reactionSize: CGSize) {
         
-        if size == .zero {
+        if reactionSize == .zero {
             reactionView.frame = .zero
         } else {
             var origin: CGPoint = .zero
