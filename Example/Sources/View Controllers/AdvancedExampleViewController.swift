@@ -278,6 +278,14 @@ final class AdvancedExampleViewController: ChatViewController {
         }
         return nil
     }
+    
+    func statusViewHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        return 10
+    }
+    
+    func reactionViewSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize {
+        return CGSize(width: 30, height: 20)
+    }
 }
 
 // MARK: - MessagesDisplayDelegate
@@ -381,6 +389,18 @@ extension AdvancedExampleViewController: MessagesDisplayDelegate {
         } else {
             imageView.pin_cancelImageDownload()
         }
+    }
+    
+    func configureStatusView(_ statusView: UIView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+        let view = UIView(frame: statusView.bounds)
+        view.backgroundColor = .yellow
+        statusView.addSubview(view)
+    }
+    
+    func configureReactionView(_ reactionView: UIView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+        let view = UIView(frame: reactionView.bounds)
+        view.backgroundColor = .red
+        reactionView.addSubview(view)
     }
     
     // MARK: - Location Messages
