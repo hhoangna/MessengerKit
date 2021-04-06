@@ -42,8 +42,16 @@ open class KeyboardManager: NSObject, UIGestureRecognizerDelegate {
     /// A flag that indicates if a portion of the keyboard is visible on the screen
     private(set) public var isKeyboardHidden: Bool = true
     
+    /// A flag that indicates if the additional bottom space should be applied to
+    /// the interactive dismissal of the keyboard
+    public var shouldApplyAdditionBottomSpaceToInteractiveDismissal: Bool = false
+
     // MARK: - Properties [Private]
     
+    /// The additional bottom space specified for laying out the input accessory view
+    /// when binding to it
+    private var additionalBottomSpace: (() -> CGFloat)?
+
     /// The `NSLayoutConstraintSet` that holds the `inputAccessoryView` to the bottom if its superview
     private var constraints: NSLayoutConstraintSet?
     
@@ -143,6 +151,7 @@ open class KeyboardManager: NSObject, UIGestureRecognizerDelegate {
             fatalError("`inputAccessoryView` must have a superview")
         }
         self.inputAccessoryView = inputAccessoryView
+        self.additionalBottomSpace = additionalBottomSpace
         inputAccessoryView.translatesAutoresizingMaskIntoConstraints = false
         constraints = NSLayoutConstraintSet(
             bottom: inputAccessoryView.bottomAnchor.constraint(equalTo: superview.bottomAnchor),
@@ -276,6 +285,9 @@ open class KeyboardManager: NSObject, UIGestureRecognizerDelegate {
             let view = recognizer.view,
             let window = UIApplication.shared.windows.first
             else { return }
+
+        // if there's no difference in frames for the `cachedNotification`, no adjustment is necessary. This is true when the keyboard is completely dismissed, or our pan doesn't intersect below the keyboard
+        guard cachedNotification?.startFrame != cachedNotification?.endFrame else { return }
         
         let location = recognizer.location(in: view)
         let absoluteLocation = view.convert(location, to: window)
@@ -283,7 +295,18 @@ open class KeyboardManager: NSObject, UIGestureRecognizerDelegate {
         frame.origin.y = max(absoluteLocation.y, window.bounds.height - frame.height)
         frame.size.height = window.bounds.height - frame.origin.y
         keyboardNotification.endFrame = frame
-        callbacks[.willChangeFrame]?(keyboardNotification)
+
+        var yCoordinateDirectlyAboveKeyboard = -frame.height
+
+        if shouldApplyAdditionBottomSpaceToInteractiveDismissal,
+           let additionalBottomSpace = additionalBottomSpace {
+            yCoordinateDirectlyAboveKeyboard -= additionalBottomSpace()
+        }
+
+        /// If a tab bar is shown, letting this number becoming > 0 makes it so the accessoryview disappears below the tab bar. setting the max value to 0 prevents that
+        let aboveKeyboardAndAboveTabBar = min(0, yCoordinateDirectlyAboveKeyboard)
+        self.constraints?.bottom?.constant = aboveKeyboardAndAboveTabBar
+        self.inputAccessoryView?.superview?.layoutIfNeeded()
     }
     
     /// Only receive a `UITouch` event when the `scrollView`'s keyboard dismiss mode is interactive

@@ -37,8 +37,10 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
     public var messageContainerPadding: UIEdgeInsets = .zero
     public var messageLabelFont: UIFont = UIFont.preferredFont(forTextStyle: .body)
     public var messageLabelInsets: UIEdgeInsets = .zero
+    
+    public var messageSubviewsSize: CGSize = .zero
 
-    public var cellTopLabelAlignment = LabelAlignment(textAlignment: .center, textInsets: .zero)
+    public var cellTopLabelAlignment = LabelAlignment(textAlignment: .center, textInsets: UIEdgeInsets(top: 0, left: 7, bottom: 0, right: 7))
     public var cellTopLabelSize: CGSize = .zero
     
     public var cellBottomLabelAlignment = LabelAlignment(textAlignment: .center, textInsets: .zero)
@@ -58,6 +60,13 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
     
     public var statusViewSize: CGSize = .zero
     public var statusViewPadding: HorizontalEdgeInsets = .zero
+    
+    public var reactionViewTopMargin: CGFloat = .infinity
+    public var reactionViewLeadingMargin: CGFloat = .infinity
+    public var reactionViewTrailingMargin: CGFloat = .infinity
+    public var reactionViewSize: CGSize = .zero
+    
+    public var messageEditedStatus: Bool = false
 
     public var linkPreviewFonts = LinkPreviewFonts(titleFont: .preferredFont(forTextStyle: .footnote),
                                                    teaserFont: .preferredFont(forTextStyle: .caption2),
@@ -72,6 +81,7 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
         copy.avatarPosition = avatarPosition
         copy.avatarLeadingTrailingPadding = avatarLeadingTrailingPadding
         copy.messageContainerSize = messageContainerSize
+        copy.messageSubviewsSize = messageSubviewsSize
         copy.messageContainerPadding = messageContainerPadding
         copy.messageLabelFont = messageLabelFont
         copy.messageLabelInsets = messageLabelInsets
@@ -90,6 +100,12 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
         copy.linkPreviewFonts = linkPreviewFonts
         copy.statusViewPadding = statusViewPadding
         copy.statusViewSize = statusViewSize
+        copy.reactionViewTopMargin = reactionViewTopMargin
+        copy.reactionViewLeadingMargin = reactionViewLeadingMargin
+        copy.reactionViewTrailingMargin = reactionViewTrailingMargin
+        copy.reactionViewSize = reactionViewSize
+        copy.messageEditedStatus = messageEditedStatus
+        
         return copy
         // swiftlint:enable force_cast
     }
@@ -101,6 +117,7 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
                 && attributes.avatarPosition == avatarPosition
                 && attributes.avatarLeadingTrailingPadding == avatarLeadingTrailingPadding
                 && attributes.messageContainerSize == messageContainerSize
+                && attributes.messageSubviewsSize == messageSubviewsSize
                 && attributes.messageContainerPadding == messageContainerPadding
                 && attributes.messageLabelFont == messageLabelFont
                 && attributes.messageLabelInsets == messageLabelInsets
@@ -119,6 +136,11 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
                 && attributes.linkPreviewFonts == linkPreviewFonts
                 && attributes.statusViewSize == statusViewSize
                 && attributes.statusViewPadding == statusViewPadding
+                && attributes.reactionViewTopMargin == reactionViewTopMargin
+                && attributes.reactionViewLeadingMargin == reactionViewLeadingMargin
+                && attributes.reactionViewTrailingMargin == reactionViewTrailingMargin
+                && attributes.reactionViewSize == reactionViewSize
+                && attributes.messageEditedStatus == messageEditedStatus
         } else {
             return false
         }

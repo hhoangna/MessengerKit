@@ -26,7 +26,10 @@ import Foundation
 import UIKit
 
 /// A subclass of `MessageCollectionViewCell` used to display text, media, and location messages.
-open class MessageContentCell: MessageCollectionViewCell {
+open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDelegate {
+    
+    /// The view displaying the reaction
+    open var reactionView: UIView = UIView()
     
     /// The view displaying the status
     open var statusView: UIView = UIView()
@@ -45,9 +48,21 @@ open class MessageContentCell: MessageCollectionViewCell {
     /// The top label of the cell.
     open var cellTopLabel: InsetLabel = {
         let label = InsetLabel()
-        label.numberOfLines = 0
+        label.textInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: 7)
+        label.numberOfLines = 1
         label.textAlignment = .center
+        label.backgroundColor = .white
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
         return label
+    }()
+    
+    open var sparateTopLine: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 17/255, green: 17/255, blue: 17/255, alpha: 0.1)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
     }()
     
     /// The bottom label of the cell.
@@ -77,6 +92,39 @@ open class MessageContentCell: MessageCollectionViewCell {
 
     // Should only add customized subviews - don't change accessoryView itself.
     open var accessoryView: UIView = UIView()
+    
+    /// Customized for gesture
+    var startAnimation: Bool = false
+    var timer = Timer()
+    var countTime: Double = 1.0
+    var presentMessage: MessageType!
+    var isAvailableGesture: Bool = false
+    var safePanWork: Bool = false
+    
+    lazy var replyIconImage: UIButton = {
+        let replyIcon = UIButton()
+        replyIcon.setImage(#imageLiteral(resourceName: "icBlackReply").withRenderingMode(.alwaysOriginal), for: .normal)
+        replyIcon.tintColor = UIColor(red: 17/255, green: 17/255, blue: 17/255, alpha: 1)
+        replyIcon.isUserInteractionEnabled = false
+        replyIcon.contentEdgeInsets = UIEdgeInsets(top: 3, left: 3, bottom: 3, right: 3)
+        replyIcon.layer.cornerRadius = 15
+        replyIcon.backgroundColor = UIColor(red: 242/255, green: 242/255, blue: 242/255, alpha: 1)
+        replyIcon.translatesAutoresizingMaskIntoConstraints = false
+        replyIcon.alpha = 0
+        
+        return replyIcon
+    }()
+    
+    lazy var editIconImage: UIButton = {
+        let replyIcon = UIButton()
+        replyIcon.setImage(#imageLiteral(resourceName: "icBlackPen").withRenderingMode(.alwaysOriginal), for: .normal)
+        replyIcon.tintColor = UIColor(named: "111111")
+        replyIcon.alpha = 0.4
+        replyIcon.isUserInteractionEnabled = false
+        
+        return replyIcon
+    }()
+    
 
     /// The `MessageCellDelegate` for the cell.
     open weak var delegate: MessageCellDelegate?
@@ -85,17 +133,26 @@ open class MessageContentCell: MessageCollectionViewCell {
         super.init(frame: frame)
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         setupSubviews()
+        setupGestures()
     }
 
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         setupSubviews()
+        setupGestures()
+    }
+    
+    open func setupGestures() {
+        let panGesture = UIPanGestureRecognizer()
+        panGesture.addTarget(self, action: #selector(handlePanGesture(_:)))
+        panGesture.delegate = self
+        contentView.addGestureRecognizer(panGesture)
     }
 
     open func setupSubviews() {
-        contentView.addSubview(statusView)
         contentView.addSubview(accessoryView)
+        contentView.addSubview(sparateTopLine)
         contentView.addSubview(cellTopLabel)
         contentView.addSubview(messageTopLabel)
         contentView.addSubview(messageBottomLabel)
@@ -103,6 +160,9 @@ open class MessageContentCell: MessageCollectionViewCell {
         contentView.addSubview(messageContainerView)
         contentView.addSubview(avatarView)
         contentView.addSubview(messageTimestampLabel)
+        contentView.addSubview(editIconImage)
+        contentView.addSubview(reactionView)
+        contentView.addSubview(statusView)
     }
 
     open override func prepareForReuse() {
@@ -121,6 +181,9 @@ open class MessageContentCell: MessageCollectionViewCell {
         guard let attributes = layoutAttributes as? MessagesCollectionViewLayoutAttributes else { return }
         // Call this before other laying out other subviews
         layoutMessageContainerView(with: attributes)
+        layoutEditIcon(with: attributes)
+        layoutReactionView(with: attributes)
+        layoutStatusView(with: attributes)
         layoutMessageBottomLabel(with: attributes)
         layoutCellBottomLabel(with: attributes)
         layoutCellTopLabel(with: attributes)
@@ -128,7 +191,6 @@ open class MessageContentCell: MessageCollectionViewCell {
         layoutAvatarView(with: attributes)
         layoutAccessoryView(with: attributes)
         layoutTimeLabelView(with: attributes)
-        layoutStatusView(with: attributes)
     }
 
     /// Used to configure the cell.
@@ -146,6 +208,7 @@ open class MessageContentCell: MessageCollectionViewCell {
         }
 
         delegate = messagesCollectionView.messageCellDelegate
+        presentMessage = message
 
         let messageColor = displayDelegate.backgroundColor(for: message, at: indexPath, in: messagesCollectionView)
         let messageStyle = displayDelegate.messageStyle(for: message, at: indexPath, in: messagesCollectionView)
@@ -155,6 +218,8 @@ open class MessageContentCell: MessageCollectionViewCell {
         displayDelegate.configureAccessoryView(accessoryView, for: message, at: indexPath, in: messagesCollectionView)
         
         displayDelegate.configureStatusView(statusView, for: message, at: indexPath, in: messagesCollectionView)
+        
+        displayDelegate.configureReactionView(reactionView, for: message, at: indexPath, in: messagesCollectionView)
 
         messageContainerView.backgroundColor = messageColor
         messageContainerView.style = messageStyle
@@ -178,31 +243,220 @@ open class MessageContentCell: MessageCollectionViewCell {
 
         switch true {
         case messageContainerView.frame.contains(touchLocation) && !cellContentView(canHandle: convert(touchLocation, to: messageContainerView)):
-            delegate?.didTapMessage(in: self)
+            delegate?.didTapMessage(in: self, at: touchLocation)
         case avatarView.frame.contains(touchLocation):
             delegate?.didTapAvatar(in: self)
         case cellTopLabel.frame.contains(touchLocation):
             delegate?.didTapCellTopLabel(in: self)
+            delegate?.didTapAnywhere()
         case cellBottomLabel.frame.contains(touchLocation):
             delegate?.didTapCellBottomLabel(in: self)
         case messageTopLabel.frame.contains(touchLocation):
             delegate?.didTapMessageTopLabel(in: self)
+            delegate?.didTapAnywhere()
         case messageBottomLabel.frame.contains(touchLocation):
             delegate?.didTapMessageBottomLabel(in: self)
         case accessoryView.frame.contains(touchLocation):
             delegate?.didTapAccessoryView(in: self)
+            delegate?.didTapAnywhere()
         case statusView.frame.contains(touchLocation):
             delegate?.didTapStatusView(in: self)
+            delegate?.didTapAnywhere()
+        case reactionView.frame.contains(touchLocation):
+            delegate?.didTapReactionView(in: self)
+            delegate?.didTapAnywhere()
         default:
             delegate?.didTapBackground(in: self)
+            delegate?.didTapAnywhere()
+        }
+    }
+    
+    open override func handleHoldGesture(_ gesture: UIGestureRecognizer) {
+        let touchLocation = gesture.location(in: self)
+        switch true {
+        case messageContainerView.frame.contains(touchLocation):
+            if gesture.state == .began {
+                delegate?.didHoldMessage(in: self, at: touchLocation)
+            } else {
+                return
+            }
+//            switch gesture.state {
+//            case .began:
+//                startAnimation = true
+//                countTime = 1.0
+//                timer = Timer.scheduledTimer(timeInterval: 0.05, target: self, selector: #selector(timerAnimationLongPressgesture), userInfo: nil, repeats: true)
+//            case .changed:
+//                if startAnimation {
+//                    if countTime < 0.6 {
+//                        startAnimation = false
+//                        timer.invalidate()
+//                        countTime = 1.0
+//
+//                        delegate?.didHoldMessage(in: self, at: touchLocation)
+//                        UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.4, options: [.allowUserInteraction, .curveEaseOut]) {
+//                            self.messageContainerView.transform = .identity
+//                        } completion: { (ok) in
+//                            //
+//                        }
+//                    } else {
+//                        UIView.animate(withDuration: 0.5) {
+//                            self.messageContainerView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+//                        }
+//                    }
+//                }
+//            case .ended:
+//                startAnimation = false
+//                timer.invalidate()
+//                countTime = 1.0
+//                UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.4, options: [.allowUserInteraction, .curveEaseOut]) {
+//                    self.messageContainerView.transform = .identity
+//                } completion: { (ok) in
+//                    //
+//                }
+//            default:
+//                break
+//            }
+        default:
+            break
+        }
+    }
+    
+    @objc func timerAnimationLongPressgesture() {
+        countTime -= 0.05
+        if countTime < 0.6 {
+            timer.invalidate()
+        }
+    }
+    
+    @objc open override func handlePanGesture(_ gesture: UIGestureRecognizer) {
+        guard let panGesture = gesture as? UIPanGestureRecognizer else {
+            return
+        }
+        
+        switch panGesture.state {
+        case .began:
+            startAnimation = true
+            isAvailableGesture = false
+            safePanWork = messageContainerView.frame.contains(gesture.location(in: self))
+            contentView.addSubview(replyIconImage)
+            
+            if presentMessage.isOwner {
+                NSLayoutConstraint.activate([
+                    replyIconImage.trailingAnchor.constraint(equalTo: messageContainerView.trailingAnchor, constant: 30),
+                    replyIconImage.widthAnchor.constraint(equalToConstant: 30),
+                    replyIconImage.heightAnchor.constraint(equalToConstant: 30),
+                    replyIconImage.centerYAnchor.constraint(equalTo: messageContainerView.centerYAnchor)
+                ])
+            } else {
+                NSLayoutConstraint.activate([
+                    replyIconImage.leadingAnchor.constraint(equalTo: messageContainerView.leadingAnchor, constant: -30),
+                    replyIconImage.widthAnchor.constraint(equalToConstant: 30),
+                    replyIconImage.heightAnchor.constraint(equalToConstant: 30),
+                    replyIconImage.centerYAnchor.constraint(equalTo: messageContainerView.centerYAnchor)
+                ])
+            }
+            
+            replyIconImage.alpha = 0
+            replyIconImage.isHidden = true
+        case .changed:
+            if !safePanWork {
+                return
+            }
+            let translation = panGesture.translation(in: messageContainerView)
+            if presentMessage.isOwner {
+                if translation.x < 0 {
+                    self.messageContainerView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+                    self.reactionView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+                    self.editIconImage.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+                    self.accessoryView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+
+                    self.replyIconImage.transform = CGAffineTransform(translationX: max(-40, translation.x * 0.3), y: 0).scaledBy(x: min(1.0, (abs(translation.x * 0.3)) / 40), y: min(1.0, (abs(translation.x * 0.3)) / 40))
+                    
+                    if abs(translation.x) >= 120 {
+                        if startAnimation {
+                            isAvailableGesture = true
+                            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+                            startAnimation = false
+                        }
+                    } else {
+                        if abs(translation.x) >= 60 {
+                            replyIconImage.alpha = (min(120, abs(translation.x)) - 60) / 60
+                            replyIconImage.isHidden = false
+                        } else {
+                            replyIconImage.isHidden = true
+                            replyIconImage.alpha = 0
+                        }
+                        
+                        startAnimation = true
+                        isAvailableGesture = false
+                    }
+                }
+            } else {
+                if translation.x > 0 {
+                    self.messageContainerView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+                    self.reactionView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+                    self.editIconImage.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+                    self.accessoryView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+                    
+                    self.replyIconImage.transform = CGAffineTransform(translationX: min(40, translation.x * 0.3), y: 0).scaledBy(x: min(1.0, (abs(translation.x * 0.3)) / 40), y: min(1.0, (abs(translation.x * 0.3)) / 40))
+
+                    if abs(translation.x) >= 120 {
+                        if startAnimation {
+                            isAvailableGesture = true
+                            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+                            startAnimation = false
+                        }
+                    } else {
+                        if abs(translation.x) >= 60 {
+                            replyIconImage.alpha = (min(120, abs(translation.x)) - 60) / 60
+                            replyIconImage.isHidden = false
+                        } else {
+                            replyIconImage.isHidden = true
+                            replyIconImage.alpha = 0
+                        }
+                        
+                        startAnimation = true
+                        isAvailableGesture = false
+                    }
+                }
+            }
+        case .ended:
+            if !safePanWork { return }
+            if isAvailableGesture {
+                delegate?.didSwipeMessage(in: self)
+            }
+            UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.3, options: [.allowUserInteraction]) {
+                self.messageContainerView.transform = .identity
+                self.reactionView.transform = .identity
+                self.editIconImage.transform = .identity
+                self.accessoryView.transform = .identity
+
+                self.replyIconImage.transform = .identity
+                self.replyIconImage.alpha = 0
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self.replyIconImage.isHidden = true
+                    self.replyIconImage.removeFromSuperview()
+                }
+            } completion: { (ok) in
+
+            }
+        default:
+            break
         }
     }
 
-    /// Handle long press gesture, return true when gestureRecognizer's touch point in `messageContainerView`'s frame
+    /// Handle pan gesture, return true when gestureRecognizer's touch point in `ContentView`'s frame
     open override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        let touchPoint = gestureRecognizer.location(in: self)
-        guard gestureRecognizer.isKind(of: UILongPressGestureRecognizer.self) else { return false }
-        return messageContainerView.frame.contains(touchPoint)
+        if gestureRecognizer.isKind(of: UIPanGestureRecognizer.self) {
+            guard let panGesture = gestureRecognizer as? UIPanGestureRecognizer, self.messageContainerView.frame.contains(panGesture.location(ofTouch: 0, in: self)) else { return false}
+            let translation = panGesture.translation(in: self.messageContainerView)
+            if abs(translation.x) > abs(translation.y) {
+                return true
+            }
+            return false
+        } else {
+            return false
+        }
     }
 
     /// Handle `ContentView`'s tap gesture, return false when `ContentView` doesn't needs to handle gesture
@@ -249,10 +503,12 @@ open class MessageContentCell: MessageCollectionViewCell {
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
     open func layoutMessageContainerView(with attributes: MessagesCollectionViewLayoutAttributes) {
         var origin: CGPoint = .zero
+        let reactionViewSize = attributes.reactionViewSize
+        let reactionViewHeight = reactionViewSize == .zero ? reactionViewSize.height : reactionViewSize.height - attributes.reactionViewTopMargin
 
         switch attributes.avatarPosition.vertical {
         case .messageBottom:
-            origin.y = attributes.size.height - attributes.messageContainerPadding.bottom - attributes.cellBottomLabelSize.height - attributes.messageBottomLabelSize.height - attributes.messageContainerSize.height - attributes.messageContainerPadding.top
+            origin.y = attributes.size.height - attributes.messageContainerPadding.bottom - attributes.cellBottomLabelSize.height - attributes.messageBottomLabelSize.height - attributes.messageContainerSize.height - attributes.messageContainerPadding.top - reactionViewHeight
         case .messageCenter:
             if attributes.avatarSize.height > attributes.messageContainerSize.height {
                 let messageHeight = attributes.messageContainerSize.height + attributes.messageContainerPadding.vertical
@@ -282,14 +538,112 @@ open class MessageContentCell: MessageCollectionViewCell {
         messageContainerView.frame = CGRect(origin: origin, size: attributes.messageContainerSize)
     }
     
+    open func layoutEditIcon(with attributes: MessagesCollectionViewLayoutAttributes) {
+        if attributes.messageEditedStatus {
+            editIconImage.isHidden = false
+            var origin: CGPoint = .zero
+
+            if let _ = messageContainerView.subviews.first(where: {$0.tag == 999}) {
+                origin.y = messageContainerView.frame.maxY - (attributes.messageSubviewsSize.height / 2) - 7
+
+                switch attributes.avatarPosition.horizontal {
+                case .cellLeading:
+                    origin.x = messageContainerView.frame.minX + attributes.messageSubviewsSize.width + 8
+                case .cellTrailing:
+                    origin.x = messageContainerView.frame.maxX - 22 - attributes.messageSubviewsSize.width
+                default:
+                    break
+                }
+                
+                editIconImage.frame = CGRect(origin: origin, size: CGSize(width: 14, height: 14))
+            } else {
+                origin.y = messageContainerView.frame.minY + (messageContainerView.frame.height / 2) - 7
+
+                switch attributes.avatarPosition.horizontal {
+                case .cellLeading:
+                    origin.x = messageContainerView.frame.maxX + 8
+                case .cellTrailing:
+                    origin.x = messageContainerView.frame.minX - 22
+                default:
+                    break
+                }
+                
+                editIconImage.frame = CGRect(origin: origin, size: CGSize(width: 14, height: 14))
+            }
+        } else {
+            editIconImage.frame = .zero
+            editIconImage.isHidden = true
+        }
+    }
+    
+    /// Positions the cell's reaction view.
+    /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
+    open func layoutReactionView(with attributes: MessagesCollectionViewLayoutAttributes) {
+        var origin: CGPoint = .zero
+        let reactionSize = attributes.reactionViewSize
+        
+        if reactionSize == .zero {
+            reactionView.frame = .zero
+        } else {
+            origin.y = messageContainerView.frame.maxY - attributes.reactionViewTopMargin
+            
+            if let _ = messageContainerView.subviews.first(where: {$0.tag == 999}) {
+                let messageSubviewWidth = attributes.messageSubviewsSize.width
+
+                switch attributes.avatarPosition.horizontal {
+                case .cellLeading:
+                    if reactionSize.width > messageSubviewWidth - attributes.reactionViewLeadingMargin - attributes.reactionViewTrailingMargin {
+                        origin.x = messageContainerView.frame.minX + attributes.reactionViewLeadingMargin
+                    } else {
+                        origin.x = messageContainerView.frame.minX + messageSubviewWidth - attributes.reactionViewTrailingMargin - reactionSize.width
+                    }
+                case .cellTrailing:
+                    if reactionSize.width > messageSubviewWidth - attributes.reactionViewLeadingMargin - attributes.reactionViewTrailingMargin {
+                        origin.x = messageContainerView.frame.maxX - attributes.reactionViewTrailingMargin - reactionSize.width
+                    } else {
+                        origin.x = messageContainerView.frame.maxX - messageSubviewWidth + attributes.reactionViewLeadingMargin
+                    }
+                default:
+                    fatalError(MessageKitError.avatarPositionUnresolved)
+                }
+                
+                reactionView.frame = CGRect(origin: origin, size: reactionSize)
+            } else {
+                let messageContainterWidth = messageContainerView.frame.width
+
+                switch attributes.avatarPosition.horizontal {
+                case .cellLeading:
+                    if reactionSize.width > messageContainterWidth - attributes.reactionViewLeadingMargin - attributes.reactionViewTrailingMargin {
+                        origin.x = messageContainerView.frame.minX + attributes.reactionViewLeadingMargin
+                    } else {
+                        origin.x = messageContainerView.frame.maxX - attributes.reactionViewTrailingMargin - reactionSize.width
+                    }
+                case .cellTrailing:
+                    if reactionSize.width > messageContainterWidth - attributes.reactionViewLeadingMargin - attributes.reactionViewTrailingMargin {
+                        origin.x = messageContainerView.frame.maxX - attributes.reactionViewTrailingMargin - reactionSize.width
+                    } else {
+                        origin.x = messageContainerView.frame.minX + attributes.reactionViewLeadingMargin
+                    }
+                default:
+                    fatalError(MessageKitError.avatarPositionUnresolved)
+                }
+                
+                reactionView.frame = CGRect(origin: origin, size: reactionSize)
+            }
+        }
+    }
     
     /// Positions the cell's status view.
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
     open func layoutStatusView(with attributes: MessagesCollectionViewLayoutAttributes) {
-        let y = messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom
-        let origin = CGPoint(x: 0, y: y)
+        var origin = CGPoint.zero
+        let reactionViewSize = attributes.reactionViewSize
+        let reactionViewHeight = reactionViewSize == .zero ? reactionViewSize.height : reactionViewSize.height - attributes.reactionViewTopMargin
 
-        messageBottomLabel.frame = CGRect(origin: origin, size: attributes.statusViewSize)
+        origin.x = attributes.statusViewPadding.left
+        origin.y = messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom + reactionViewHeight
+        
+        statusView.frame = CGRect(origin: origin, size: attributes.statusViewSize)
     }
 
     /// Positions the cell's top label.
@@ -297,8 +651,19 @@ open class MessageContentCell: MessageCollectionViewCell {
     open func layoutCellTopLabel(with attributes: MessagesCollectionViewLayoutAttributes) {
         cellTopLabel.textAlignment = attributes.cellTopLabelAlignment.textAlignment
         cellTopLabel.textInsets = attributes.cellTopLabelAlignment.textInsets
-
-        cellTopLabel.frame = CGRect(origin: .zero, size: attributes.cellTopLabelSize)
+        
+        NSLayoutConstraint.activate([
+            cellTopLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            cellTopLabel.heightAnchor.constraint(equalToConstant: attributes.cellTopLabelSize.height),
+            cellTopLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
+            cellTopLabel.bottomAnchor.constraint(equalTo: messageTopLabel.topAnchor),
+            
+            sparateTopLine.heightAnchor.constraint(equalToConstant: 0.5),
+            sparateTopLine.centerYAnchor.constraint(equalTo: cellTopLabel.centerYAnchor),
+            sparateTopLine.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            sparateTopLine.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16)
+        ])
+        sparateTopLine.isHidden = attributes.cellTopLabelSize.height == 0
     }
     
     /// Positions the cell's bottom label.
@@ -358,13 +723,16 @@ open class MessageContentCell: MessageCollectionViewCell {
         default:
             break
         }
+        
+        let iconEditMaxX = editIconImage.isHidden == true ? 0 : editIconImage.frame.maxX
+        let iconEditMinX = editIconImage.isHidden == true ? 0 : editIconImage.frame.width + 8
 
         // Accessory view is always on the opposite side of avatar
         switch attributes.avatarPosition.horizontal {
         case .cellLeading:
-            origin.x = messageContainerView.frame.maxX + attributes.accessoryViewPadding.left
+            origin.x = messageContainerView.frame.maxX + attributes.accessoryViewPadding.left + iconEditMaxX
         case .cellTrailing:
-            origin.x = messageContainerView.frame.minX - attributes.accessoryViewPadding.right - attributes.accessoryViewSize.width
+            origin.x = messageContainerView.frame.minX - attributes.accessoryViewPadding.right - attributes.accessoryViewSize.width - iconEditMinX
         case .natural:
             fatalError(MessageKitError.avatarPositionUnresolved)
         }
@@ -376,7 +744,8 @@ open class MessageContentCell: MessageCollectionViewCell {
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
     open func layoutTimeLabelView(with attributes: MessagesCollectionViewLayoutAttributes) {
         let paddingLeft: CGFloat = 10
-        let origin = CGPoint(x: contentView.frame.size.width + paddingLeft, y: contentView.frame.size.height * 0.5)
+        let origin = CGPoint(x: UIScreen.main.bounds.width + paddingLeft,
+                             y: messageContainerView.frame.minY + messageContainerView.frame.height * 0.5 - messageTimestampLabel.font.ascender * 0.5)
         let size = CGSize(width: attributes.messageTimeLabelSize.width, height: attributes.messageTimeLabelSize.height)
         messageTimestampLabel.frame = CGRect(origin: origin, size: size)
     }

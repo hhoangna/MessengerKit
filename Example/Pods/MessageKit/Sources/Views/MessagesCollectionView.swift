@@ -1,7 +1,7 @@
 /*
  MIT License
  
- Copyright (c) 2017-2019 MessageKit
+ Copyright (c) 2017-2020 MessageKit
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -93,6 +93,9 @@ open class MessagesCollectionView: UICollectionView {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTapGesture(_:)))
         tapGesture.delaysTouchesBegan = true
         addGestureRecognizer(tapGesture)
+        
+        let holdGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleHoldGesture(_:)))
+        addGestureRecognizer(holdGesture)
     }
     
     @objc
@@ -100,10 +103,22 @@ open class MessagesCollectionView: UICollectionView {
         guard gesture.state == .ended else { return }
         
         let touchLocation = gesture.location(in: self)
-        guard let indexPath = indexPathForItem(at: touchLocation) else { return }
+        guard let indexPath = indexPathForItem(at: touchLocation) else {
+            
+            messageCellDelegate?.didTapAnywhere()
+            return
+        }
         
         let cell = cellForItem(at: indexPath) as? MessageCollectionViewCell
         cell?.handleTapGesture(gesture)
+    }
+    
+    @objc
+    open func handleHoldGesture(_ gesture: UIGestureRecognizer) {
+        let touchLocation = gesture.location(in: self)
+        guard let indexPath = indexPathForItem(at: touchLocation) else { return }
+        let cell = cellForItem(at: indexPath) as? MessageCollectionViewCell
+        cell?.handleHoldGesture(gesture)
     }
 
     // NOTE: It's possible for small content size this wouldn't work - https://github.com/MessageKit/MessageKit/issues/725
@@ -121,6 +136,7 @@ open class MessagesCollectionView: UICollectionView {
     
     // NOTE: This method seems to cause crash in certain cases - https://github.com/MessageKit/MessageKit/issues/725
     // Could try using `scrollToLastItem` above
+    @available(*, deprecated, message: "Scroll to bottom by using scrollToLastItem(:) instead", renamed: "scrollToLastItem")
     public func scrollToBottom(animated: Bool = false) {
         performBatchUpdates(nil) { [weak self] _ in
             guard let self = self else { return }
@@ -166,7 +182,7 @@ open class MessagesCollectionView: UICollectionView {
         return messagesCollectionViewFlowLayout.isSectionReservedForTypingIndicator(section)
     }
 
-    // MARK: View Register/Dequeue
+    // MARK: - View Register/Dequeue
 
     /// Registers a particular cell using its reuse-identifier
     public func register<T: UICollectionViewCell>(_ cellClass: T.Type) {

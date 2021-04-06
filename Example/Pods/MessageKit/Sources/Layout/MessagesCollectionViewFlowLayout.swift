@@ -315,16 +315,6 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
     public func setMessageOutgoingAccessoryViewPosition(_ newPosition: AccessoryPosition) {
         messageSizeCalculators().forEach { $0.outgoingAccessoryViewPosition = newPosition }
     }
-    
-    /// Set `incomingAccessoryViewSize` of all `MessageSizeCalculator`s
-    public func setMessageIncomingStatusViewSize(_ newSize: CGSize) {
-        messageSizeCalculators().forEach { $0.incomingStatusViewSize = newSize }
-    }
-
-    /// Set `outgoingAccessoryViewSize` of all `MessageSizeCalculator`s
-    public func setMessageOutgoingStatusViewSize(_ newSize: CGSize) {
-        messageSizeCalculators().forEach { $0.outgoingStatusViewSize = newSize }
-    }
 
     /// Set `incomingAccessoryViewPadding` of all `MessageSizeCalculator`s
     public func setMessageIncomingStatusViewPadding(_ newPadding: HorizontalEdgeInsets) {
@@ -334,6 +324,21 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
     /// Set `outgoingAccessoryViewPadding` of all `MessageSizeCalculator`s
     public func setMessageOutgoingStatusViewPadding(_ newPadding: HorizontalEdgeInsets) {
         messageSizeCalculators().forEach { $0.outgoingStatusViewPadding = newPadding }
+    }
+    
+    /// Set `topReactionViewMargin` of all `MessageSizeCalculator`s
+    public func setTopReactionViewMargin(_ newMargin: CGFloat) {
+        messageSizeCalculators().forEach { $0.topReactionViewMargin = newMargin }
+    }
+    
+    /// Set `leadingReactionViewMargin` of all `MessageSizeCalculator`s
+    public func setLeadingReactionViewMargin(_ newMargin: CGFloat) {
+        messageSizeCalculators().forEach { $0.leadingReactionViewMargin = newMargin }
+    }
+    
+    /// Set `trailingReactionViewMargin` of all `MessageSizeCalculator`s
+    public func setTrailingReactionViewMargin(_ newMargin: CGFloat) {
+        messageSizeCalculators().forEach { $0.trailingReactionViewMargin = newMargin }
     }
 
     /// Get all `MessageSizeCalculator`s
