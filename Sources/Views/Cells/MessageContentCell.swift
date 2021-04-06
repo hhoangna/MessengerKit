@@ -645,8 +645,8 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
     open func layoutStatusView(with attributes: MessagesCollectionViewLayoutAttributes) {
         var origin = CGPoint.zero
-        let reactionViewSize = attributes.reactionViewSize
-        let reactionViewHeight = reactionViewSize == .zero ? reactionViewSize.height : reactionViewSize.height - attributes.reactionViewTopMargin
+        let reactionViewSize = reactionView.frame.size
+        let reactionViewHeight = reactionViewSize.width == 0 ? 0 : reactionViewSize.height - attributes.reactionViewTopMargin
 
         origin.x = attributes.statusViewPadding.left
         origin.y = messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom + reactionViewHeight
