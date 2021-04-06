@@ -227,6 +227,8 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         
         displayDelegate.configureStatusView(statusView, for: message, at: indexPath, in: messagesCollectionView)
         
+        displayDelegate.configureReactionView(reactionView, for: message, at: indexPath, in: messagesCollectionView)
+        
         messageContainerView.backgroundColor = messageColor
         messageContainerView.style = messageStyle
 
@@ -510,7 +512,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     open func layoutMessageContainerView(with attributes: MessagesCollectionViewLayoutAttributes) {
         var origin: CGPoint = .zero
         let reactionViewSize = attributes.reactionViewSize
-        let reactionViewHeight = reactionViewSize == .zero ? reactionViewSize.height : reactionViewSize.height - attributes.reactionViewTopMargin
+        let reactionViewHeight = reactionViewSize.width == 0 ? 0 : reactionViewSize.height - attributes.reactionViewTopMargin
 
         switch attributes.avatarPosition.vertical {
         case .messageBottom:
@@ -588,7 +590,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         var origin: CGPoint = .zero
         let reactionSize = attributes.reactionViewSize
         
-        if reactionSize == .zero {
+        if reactionSize.width == 0 {
             reactionView.frame = .zero
         } else {
             origin.y = messageContainerView.frame.maxY - attributes.reactionViewTopMargin
