@@ -125,8 +125,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     var isAvailableGesture: Bool = false
     var safePanWork: Bool = false
 
-    var heightReactionAdded: CGFloat = 0
-
     /// The `MessageCellDelegate` for the cell.
     open weak var delegate: MessageCellDelegate?
 
@@ -180,11 +178,21 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     open override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
         super.apply(layoutAttributes)
         guard let attributes = layoutAttributes as? MessagesCollectionViewLayoutAttributes else { return }
+        var heightReactionAdded: CGFloat = 0
+        var reactionSize: CGSize = .zero
+        
+        if attributes.messageReaction {
+            reactionSize = attributes.reactionViewSize
+            heightReactionAdded = reactionSize.height - attributes.reactionViewTopMargin
+        } else {
+            heightReactionAdded = 0
+        }
+
         // Call this before other laying out other subviews
-        layoutMessageContainerView(with: attributes)
+        layoutMessageContainerView(with: attributes, reactionAdded: heightReactionAdded)
         layoutEditIcon(with: attributes)
-        layoutReactionView(with: attributes)
-        layoutStatusView(with: attributes)
+        layoutReactionView(with: attributes, reactionSize: reactionSize)
+        layoutStatusView(with: attributes, reactionAdded: heightReactionAdded)
         layoutMessageBottomLabel(with: attributes)
         layoutCellBottomLabel(with: attributes)
         layoutCellTopLabel(with: attributes)
@@ -226,10 +234,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
 
         if message.hasReaction > 0 {
             displayDelegate.configureReactionView(reactionView, for: message, at: indexPath, in: messagesCollectionView)
-            let reactionSize = attributes.reactionViewSize
-            heightReactionAdded = reactionSize.height - attributes.reactionViewTopMargin
-        } else {
-            heightReactionAdded = 0
         }
         
         messageContainerView.backgroundColor = messageColor
@@ -512,12 +516,12 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
 
     /// Positions the cell's `MessageContainerView`.
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
-    open func layoutMessageContainerView(with attributes: MessagesCollectionViewLayoutAttributes) {
+    open func layoutMessageContainerView(with attributes: MessagesCollectionViewLayoutAttributes, reactionAdded: CGFloat) {
         var origin: CGPoint = .zero
         
         switch attributes.avatarPosition.vertical {
         case .messageBottom:
-            origin.y = attributes.size.height - attributes.messageContainerPadding.bottom - attributes.cellBottomLabelSize.height - attributes.messageBottomLabelSize.height - attributes.messageContainerSize.height - attributes.messageContainerPadding.top - heightReactionAdded
+            origin.y = attributes.size.height - attributes.messageContainerPadding.bottom - attributes.cellBottomLabelSize.height - attributes.messageBottomLabelSize.height - attributes.messageContainerSize.height - attributes.messageContainerPadding.top - reactionAdded
         case .messageCenter:
             if attributes.avatarSize.height > attributes.messageContainerSize.height {
                 let messageHeight = attributes.messageContainerSize.height + attributes.messageContainerPadding.vertical
@@ -587,13 +591,12 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     
     /// Positions the cell's reaction view.
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
-    open func layoutReactionView(with attributes: MessagesCollectionViewLayoutAttributes) {
+    open func layoutReactionView(with attributes: MessagesCollectionViewLayoutAttributes, reactionSize: CGSize) {
         
-        if !attributes.messageReaction {
+        if size == .zero {
             reactionView.frame = .zero
         } else {
             var origin: CGPoint = .zero
-            let reactionSize = attributes.reactionViewSize
 
             origin.y = messageContainerView.frame.maxY - attributes.reactionViewTopMargin
             
@@ -645,11 +648,11 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     
     /// Positions the cell's status view.
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
-    open func layoutStatusView(with attributes: MessagesCollectionViewLayoutAttributes) {
+    open func layoutStatusView(with attributes: MessagesCollectionViewLayoutAttributes, reactionAdded: CGFloat) {
         var origin = CGPoint.zero
 
         origin.x = attributes.statusViewPadding.left
-        origin.y = messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom + heightReactionAdded
+        origin.y = messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom + reactionAdded
         
         statusView.frame = CGRect(origin: origin, size: attributes.statusViewSize)
     }
