@@ -227,7 +227,9 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         
         displayDelegate.configureStatusView(statusView, for: message, at: indexPath, in: messagesCollectionView)
         
-        displayDelegate.configureReactionView(reactionView, for: message, at: indexPath, in: messagesCollectionView)
+        if let vReaction = displayDelegate.configureReactionView(for: message, at: indexPath, in: messagesCollectionView) {
+            reactionView = vReaction
+        }
         
         messageContainerView.backgroundColor = messageColor
         messageContainerView.style = messageStyle

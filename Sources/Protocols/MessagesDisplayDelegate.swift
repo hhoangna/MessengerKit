@@ -114,7 +114,7 @@ public protocol MessagesDisplayDelegate: AnyObject {
     ///   - message: The `MessageType` that will be displayed by this cell.
     ///   - indexPath: The `IndexPath` of the cell.
     ///   - messagesCollectionView: The `MessagesCollectionView` in which this cell will be displayed.
-    func configureReactionView<T: UIView>(_ reactionView: T?, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView)
+    func configureReactionView(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIView?
 
     // MARK: - Text Messages
 
@@ -289,7 +289,9 @@ public extension MessagesDisplayDelegate {
     
     func configureStatusView(_ statusView: UIView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {}
 
-    func configureReactionView<T: UIView>(_ reactionView: T?, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {}
+    func configureReactionView(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIView? {
+        return nil
+    }
 
     // MARK: - Text Messages Defaults
 
