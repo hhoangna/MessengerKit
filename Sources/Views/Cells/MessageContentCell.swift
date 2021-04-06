@@ -29,19 +29,13 @@ import UIKit
 open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDelegate {
     
     /// The view displaying the reaction
-    lazy var reactionView: UIView = {
-        return UIView()
-    }()
+    open var reactionView: UIView = UIView()
     
     /// The view displaying the status
-    lazy var statusView: UIView = {
-        return UIView()
-    }()
+    open var statusView: UIView = UIView()
 
     /// The image view displaying the avatar.
-    lazy var avatarView: AvatarView = {
-        return AvatarView()
-    }()
+    open var avatarView: AvatarView = AvatarView()
 
     /// The container used for styling and holding the message's content view.
     open var messageContainerView: MessageContainerView = {
@@ -52,7 +46,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     }()
 
     /// The top label of the cell.
-    lazy var cellTopLabel: InsetLabel = {
+    open var cellTopLabel: InsetLabel = {
         let label = InsetLabel()
         label.textInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: 7)
         label.numberOfLines = 1
@@ -63,7 +57,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         return label
     }()
     
-    lazy var sparateTopLine: UIView = {
+    open var sparateTopLine: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor(red: 17/255, green: 17/255, blue: 17/255, alpha: 0.1)
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -72,7 +66,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     }()
     
     /// The bottom label of the cell.
-    lazy var cellBottomLabel: InsetLabel = {
+    open var cellBottomLabel: InsetLabel = {
         let label = InsetLabel()
         label.numberOfLines = 0
         label.textAlignment = .center
@@ -80,26 +74,24 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     }()
     
     /// The top label of the messageBubble.
-    lazy var messageTopLabel: InsetLabel = {
+    open var messageTopLabel: InsetLabel = {
         let label = InsetLabel()
         label.numberOfLines = 0
         return label
     }()
 
     /// The bottom label of the messageBubble.
-    lazy var messageBottomLabel: InsetLabel = {
+    open var messageBottomLabel: InsetLabel = {
         let label = InsetLabel()
         label.numberOfLines = 0
         return label
     }()
 
     /// The time label of the messageBubble.
-    lazy var messageTimestampLabel: InsetLabel = InsetLabel()
+    open var messageTimestampLabel: InsetLabel = InsetLabel()
 
     // Should only add customized subviews - don't change accessoryView itself.
-    lazy var accessoryView: UIView = {
-        return UIView()
-    }()
+    open var accessoryView: UIView = UIView()
     
     lazy var replyIconImage: UIButton = {
         let replyIcon = UIButton()
@@ -133,7 +125,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     var isAvailableGesture: Bool = false
     var safePanWork: Bool = false
 
-    lazy var heightReactionAdded: CGFloat = 0
+    var heightReactionAdded: CGFloat = 0
 
     /// The `MessageCellDelegate` for the cell.
     open weak var delegate: MessageCellDelegate?
