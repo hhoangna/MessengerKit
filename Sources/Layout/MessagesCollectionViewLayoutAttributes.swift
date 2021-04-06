@@ -67,6 +67,7 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
     public var reactionViewSize: CGSize = .zero
     
     public var messageEditedStatus: Bool = false
+    public var messageReaction: Bool = false
 
     public var linkPreviewFonts = LinkPreviewFonts(titleFont: .preferredFont(forTextStyle: .footnote),
                                                    teaserFont: .preferredFont(forTextStyle: .caption2),
@@ -105,6 +106,7 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
         copy.reactionViewTrailingMargin = reactionViewTrailingMargin
         copy.reactionViewSize = reactionViewSize
         copy.messageEditedStatus = messageEditedStatus
+        copy.messageReaction = messageReaction
         
         return copy
         // swiftlint:enable force_cast
@@ -141,6 +143,7 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
                 && attributes.reactionViewTrailingMargin == reactionViewTrailingMargin
                 && attributes.reactionViewSize == reactionViewSize
                 && attributes.messageEditedStatus == messageEditedStatus
+                && attributes.messageReaction == messageReaction
         } else {
             return false
         }

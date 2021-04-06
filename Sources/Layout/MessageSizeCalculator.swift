@@ -111,6 +111,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
         attributes.reactionViewSize = reactionViewSize(for: message, at: indexPath)
         
         attributes.messageEditedStatus = message.isEdited
+        attributes.messageReaction = message.hasReaction > 0
     }
 
     open override func sizeForItem(at indexPath: IndexPath) -> CGSize {
@@ -131,8 +132,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
         let avatarVerticalPosition = avatarPosition(for: message).vertical
         let accessoryViewHeight = accessoryViewSize(for: message).height
         let statusViewHeight = statusViewSize(for: message, at: indexPath).height
-        let reactionViewOrigin = reactionViewSize(for: message, at: indexPath)
-        let reactionViewHeight = reactionViewOrigin.width == 0 ? 0 : reactionViewOrigin.height - topReactionViewMargin
+        let reactionViewHeight = message.hasReaction > 0 ? reactionViewSize(for: message, at: indexPath).height - topReactionViewMargin : 0
 
         switch avatarVerticalPosition {
         case .messageCenter:
@@ -279,8 +279,12 @@ open class MessageSizeCalculator: CellSizeCalculator {
     }
     
     public func reactionViewSize(for message: MessageType, at indexPath: IndexPath) -> CGSize {
-        let width = layoutDelegate.reactionViewWidth(for: message, at: indexPath, in: collectionView)
-        return CGSize(width: width, height: reactionViewMaxHeight)
+        if message.hasReaction > 0 {
+            let width = layoutDelegate.reactionViewWidth(for: message, at: indexPath, in: collectionView)
+            return CGSize(width: width, height: reactionViewMaxHeight)
+        } else {
+            return .zero
+        }
     }
 
     // MARK: - MessageContainer
