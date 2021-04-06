@@ -236,6 +236,8 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             displayDelegate.configureReactionView(reactionView, for: message, at: indexPath, in: messagesCollectionView)
             let reactionSize = attributes.reactionViewSize
             heightReactionAdded = reactionSize.height - attributes.reactionViewTopMargin
+        } else {
+            heightReactionAdded = 0
         }
         
         messageContainerView.backgroundColor = messageColor
