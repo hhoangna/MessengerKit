@@ -41,7 +41,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   MessageKit:
-    :commit: 1a801947cf159c1368857be2a84a895e7fa79f33
+    :commit: 82a7f20dabe42197f36eeb0fa2c1c839c95c7fa5
     :git: https://github.com/hhoangna/MessengerKit
 
 SPEC CHECKSUMS:
