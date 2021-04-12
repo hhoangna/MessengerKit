@@ -229,6 +229,31 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
         let inputAccessoryViewHeight = inputAccessoryView?.frame.height ?? 0
         return max(0, inputAccessoryViewHeight + additionalBottomInset - automaticallyAddedBottomInset)
     }
+    
+    
+    // MARK: - Inset Computation
+
+    func requiredScrollViewBottomInset(forKeyboardFrame keyboardFrame: CGRect) -> CGFloat {
+        // we only need to adjust for the part of the keyboard that covers (i.e. intersects) our collection view;
+        // see https://developer.apple.com/videos/play/wwdc2017/242/ for more details
+        let intersection = messagesCollectionView.frame.intersection(keyboardFrame)
+
+        if intersection.isNull || (messagesCollectionView.frame.maxY - intersection.maxY) > 0.001 {
+            // The keyboard is hidden, is a hardware one, or is undocked and does not cover the bottom of the collection view.
+            // Note: intersection.maxY may be less than messagesCollectionView.frame.maxY when dealing with undocked keyboards.
+            return max(0, additionalBottomInset - automaticallyAddedBottomInset)
+        } else {
+            return max(0, intersection.height + additionalBottomInset - automaticallyAddedBottomInset)
+        }
+    }
+
+    /// UIScrollView can automatically add safe area insets to its contentInset,
+    /// which needs to be accounted for when setting the contentInset based on screen coordinates.
+    ///
+    /// - Returns: The distance automatically added to contentInset.bottom, if any.
+    var automaticallyAddedBottomInset: CGFloat {
+        return messagesCollectionView.adjustedContentInset.bottom - messagesCollectionView.contentInset.bottom
+    }
 
     // MARK: - Methods [Private]
 
