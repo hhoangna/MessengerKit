@@ -224,6 +224,12 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
             messagesCollectionView.setContentOffset(contentOffset, animated: false)
         }
     }
+    
+    func requiredInitialScrollViewBottomInset() -> CGFloat {
+        let inputAccessoryViewHeight = inputAccessoryView?.frame.height ?? 0
+        return max(0, inputAccessoryViewHeight + additionalBottomInset - automaticallyAddedBottomInset)
+    }
+
     // MARK: - Methods [Private]
 
     /// Display time of message by swiping the cell
