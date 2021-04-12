@@ -225,7 +225,7 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
         }
     }
     
-    func requiredInitialScrollViewBottomInset() -> CGFloat {
+    open func requiredInitialScrollViewBottomInset() -> CGFloat {
         let inputAccessoryViewHeight = inputAccessoryView?.frame.height ?? 0
         return max(0, inputAccessoryViewHeight + additionalBottomInset - automaticallyAddedBottomInset)
     }
@@ -233,7 +233,7 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
     
     // MARK: - Inset Computation
 
-    func requiredScrollViewBottomInset(forKeyboardFrame keyboardFrame: CGRect) -> CGFloat {
+    open func requiredScrollViewBottomInset(forKeyboardFrame keyboardFrame: CGRect) -> CGFloat {
         // we only need to adjust for the part of the keyboard that covers (i.e. intersects) our collection view;
         // see https://developer.apple.com/videos/play/wwdc2017/242/ for more details
         let intersection = messagesCollectionView.frame.intersection(keyboardFrame)
@@ -251,7 +251,7 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
     /// which needs to be accounted for when setting the contentInset based on screen coordinates.
     ///
     /// - Returns: The distance automatically added to contentInset.bottom, if any.
-    var automaticallyAddedBottomInset: CGFloat {
+    open var automaticallyAddedBottomInset: CGFloat {
         return messagesCollectionView.adjustedContentInset.bottom - messagesCollectionView.contentInset.bottom
     }
 
