@@ -27,7 +27,7 @@ import UIKit
 
 open class AudioMessageSizeCalculator: MessageSizeCalculator {
 
-    open override func messageContainerSize(for message: MessageType, maxWidth: CGFloat = 0) -> CGSize {
+    open override func messageContainerSize(for message: MessageType) -> CGSize {
         switch message.kind {
         case .audio(let item):
             if maxWidth < item.size.width {
