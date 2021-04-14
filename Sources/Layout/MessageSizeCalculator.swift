@@ -86,7 +86,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
         attributes.avatarLeadingTrailingPadding = avatarLeadingTrailingPadding
 
         attributes.messageContainerPadding = messageContainerPadding(for: message)
-        attributes.messageContainerSize = messageContainerSize(for: message, maxWidth: maxWidth)
+        attributes.messageContainerSize = messageContainerSize(for: message)
         attributes.messageSubviewsSize = messageSubviewSize(for: message, maxWidth: maxWidth)
         attributes.cellTopLabelSize = cellTopLabelSize(for: message, at: indexPath)
         attributes.cellTopLabelAlignment = cellTopLabelAlignment(for: message)
@@ -308,7 +308,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
         return isFromCurrentSender ? outgoingMessagePadding : incomingMessagePadding
     }
 
-    open func messageContainerSize(for message: MessageType, maxWidth: CGFloat = 0) -> CGSize {
+    open func messageContainerSize(for message: MessageType) -> CGSize {
         // Returns .zero by default
         return .zero
     }
