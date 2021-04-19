@@ -773,11 +773,11 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             
             UIView.addKeyframe(withRelativeStartTime: 0.4, relativeDuration: 1.6) {
                 if let subview = self.messageContainerView.subviews.first(where: {$0.tag == 999}) {
-                    subview.layer.animateBackgroundColor(from: subview.backgroundColor, to: color, withDuration: 1.6)
+                    subview.layer.animateBackgroundColor(from: subview.backgroundColor ?? .clear, to: color, withDuration: 1.6)
                 } else if let subview = self.messageContainerView.subviews.first {
-                    subview.layer.animateBackgroundColor(from: subview.backgroundColor, to: color, withDuration: 1.6)
+                    subview.layer.animateBackgroundColor(from: subview.backgroundColor ?? .clear, to: color, withDuration: 1.6)
                 } else {
-                    self.messageContainerView.layer.animateBackgroundColor(from: self.messageContainerView.backgroundColor, to: color, withDuration: 1.6)
+                    self.messageContainerView.layer.animateBackgroundColor(from: self.messageContainerView.backgroundColor ?? .clear, to: color, withDuration: 1.6)
                 }
             }
             
