@@ -127,7 +127,7 @@ internal extension UIView {
     }
 }
 
-extension CALayer {
+public extension CALayer {
     func animateBorderColor(from startColor: UIColor, to endColor: UIColor, withDuration duration: Double) {
         let colorAnimation = CABasicAnimation(keyPath: "borderColor")
         colorAnimation.fromValue = startColor.cgColor
