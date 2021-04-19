@@ -133,7 +133,8 @@ public extension CALayer {
         colorAnimation.fromValue = startColor.cgColor
         colorAnimation.toValue = endColor.cgColor
         colorAnimation.duration = duration
-        self.backgroundColor = startColor.cgColor
+        colorAnimation.beginTime = CACurrentMediaTime()
+        colorAnimation.autoreverses = true
         self.add(colorAnimation, forKey: "backgroundColor")
     }
 }
