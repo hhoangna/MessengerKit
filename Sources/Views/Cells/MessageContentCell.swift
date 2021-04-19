@@ -119,8 +119,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     
     /// Customized for gesture
     var startAnimation: Bool = false
-    var timer = Timer()
-    var countTime: Double = 1.0
     var presentMessage: MessageType!
     var isAvailableGesture: Bool = false
     var safePanWork: Bool = false
@@ -253,16 +251,8 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         let touchLocation = gesture.location(in: self)
 
         switch true {
-        case messageContainerView.frame.contains(touchLocation):
-            let location = convert(touchLocation, to: messageContainerView)
-            
-            if !cellContentView(canHandle: location) {
-                if let subview = messageContainerView.subviews.first(where: {$0.tag != 999}), subview.frame.contains(location) {
-                    delegate?.didTapRepliedMessage(in: self)
-                } else {
-                    delegate?.didTapMessage(in: self, at: touchLocation)
-                }
-            }
+        case messageContainerView.frame.contains(touchLocation) && !cellContentView(canHandle: convert(touchLocation, to: messageContainerView)):
+            delegate?.didTapMessage(in: self, at: touchLocation)
         case avatarView.frame.contains(touchLocation):
             delegate?.didTapAvatar(in: self)
         case cellTopLabel.frame.contains(touchLocation):
@@ -292,58 +282,32 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     
     open override func handleHoldGesture(_ gesture: UIGestureRecognizer) {
         let touchLocation = gesture.location(in: self)
+        var propertyAnimator = UIViewPropertyAnimator(duration: 0.8, dampingRatio: 0.3) {
+            self.messageContainerView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+        }
+        propertyAnimator.addCompletion { (position) in
+            switch position {
+            case .end:
+                delegate?.didHoldMessage(in: self, at: touchLocation)
+                propertyAnimator.fractionComplete = -1
+                propertyAnimator.isReversed = true
+                propertyAnimator.startAnimation()
+            default:
+                break
+            }
+        }
+        
         switch true {
         case messageContainerView.frame.contains(touchLocation):
             if gesture.state == .began {
-                delegate?.didHoldMessage(in: self, at: touchLocation)
+                propertyAnimator.startAnimation()
+            } else if gesture.state == .ended {
+                //
             } else {
                 return
             }
-//            switch gesture.state {
-//            case .began:
-//                startAnimation = true
-//                countTime = 1.0
-//                timer = Timer.scheduledTimer(timeInterval: 0.05, target: self, selector: #selector(timerAnimationLongPressgesture), userInfo: nil, repeats: true)
-//            case .changed:
-//                if startAnimation {
-//                    if countTime < 0.6 {
-//                        startAnimation = false
-//                        timer.invalidate()
-//                        countTime = 1.0
-//
-//                        delegate?.didHoldMessage(in: self, at: touchLocation)
-//                        UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.4, options: [.allowUserInteraction, .curveEaseOut]) {
-//                            self.messageContainerView.transform = .identity
-//                        } completion: { (ok) in
-//                            //
-//                        }
-//                    } else {
-//                        UIView.animate(withDuration: 0.5) {
-//                            self.messageContainerView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
-//                        }
-//                    }
-//                }
-//            case .ended:
-//                startAnimation = false
-//                timer.invalidate()
-//                countTime = 1.0
-//                UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.4, options: [.allowUserInteraction, .curveEaseOut]) {
-//                    self.messageContainerView.transform = .identity
-//                } completion: { (ok) in
-//                    //
-//                }
-//            default:
-//                break
-//            }
         default:
             break
-        }
-    }
-    
-    @objc func timerAnimationLongPressgesture() {
-        countTime -= 0.05
-        if countTime < 0.6 {
-            timer.invalidate()
         }
     }
     
