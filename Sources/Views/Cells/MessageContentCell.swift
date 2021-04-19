@@ -294,10 +294,14 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             if gesture.state == .began {
                 UIView.animate(withDuration: 0.3) {
                     self.messageContainerView.transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
+                    self.reactionView.transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
+                    self.editIconImage.transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
                 } completion: { (done) in
                     self.delegate?.didHoldMessage(in: self, at: touchLocation)
                     UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.4, initialSpringVelocity: 0.7, options: [.allowUserInteraction]) {
                         self.messageContainerView.transform = .identity
+                        self.reactionView.transform = .identity
+                        self.editIconImage.transform = .identity
                     }
                 }
             } else {
