@@ -252,6 +252,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
 
         switch true {
         case messageContainerView.frame.contains(touchLocation) && !cellContentView(canHandle: convert(touchLocation, to: messageContainerView)):
+            let location = convert(touchLocation, to: messageContainerView)
             if let subview = messageContainerView.subviews.first(where: {$0.tag != 999}), subview.frame.contains(location) && messageContainerView.subviews.count > 1 {
                 delegate?.didTapRepliedMessage(in: self)
             } else {
