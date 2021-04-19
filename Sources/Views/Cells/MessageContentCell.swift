@@ -254,7 +254,11 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
 
         switch true {
         case messageContainerView.frame.contains(touchLocation) && !cellContentView(canHandle: convert(touchLocation, to: messageContainerView)):
-            delegate?.didTapMessage(in: self, at: touchLocation)
+            if let subview = messageContainerView.subviews.first(where: {$0.tag != 999}), subview.frame.contains(touchLocation) {
+                delegate?.didTapRepliedMessage(in: self)
+            } else {
+                delegate?.didTapMessage(in: self, at: touchLocation)
+            }
         case avatarView.frame.contains(touchLocation):
             delegate?.didTapAvatar(in: self)
         case cellTopLabel.frame.contains(touchLocation):
@@ -755,5 +759,34 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
                              y: messageContainerView.frame.minY + messageContainerView.frame.height * 0.5 - messageTimestampLabel.font.ascender * 0.5)
         let size = CGSize(width: attributes.messageTimeLabelSize.width, height: attributes.messageTimeLabelSize.height)
         messageTimestampLabel.frame = CGRect(origin: origin, size: size)
+    }
+    
+    func highlightMessageContainerView() {
+        self.messageContainerView.transform = CGAffineTransform(scaleX: 0.7, y: 0.7)
+        
+        UIView.animate(withDuration: 2, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.3, options: .curveEaseOut, animations: {
+            self.messageContainerView.transform = CGAffineTransform.identity
+        }, completion: nil)
+        
+        UIView.animateKeyframes(withDuration: 1, delay: 0, options: .allowUserInteraction) {
+            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.2) {
+                self.messageContainerView.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
+            }
+            
+            UIView.addKeyframe(withRelativeStartTime: 0.2, relativeDuration: 0.6) {
+                if let subview = self.messageContainerView.subviews.first(where: {$0.tag == 999}) {
+                    subview.layer.borderWidth = 1
+                    subview.layer.animateBorderColor(from: .clear, to: UIColor.darkGray, withDuration: 0.6)
+                } else {
+                    self.messageContainerView.layer.borderWidth = 1
+                    self.messageContainerView.layer.animateBorderColor(from: .clear, to: UIColor.darkGray, withDuration: 0.6)
+                }
+            }
+            
+            UIView.addKeyframe(withRelativeStartTime: 0.2, relativeDuration: 0.2) {
+                self.messageContainerView.transform = .identity
+            }
+        }
+
     }
 }

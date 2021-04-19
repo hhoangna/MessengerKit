@@ -76,9 +76,8 @@ open class MessageSizeCalculator: CellSizeCalculator {
     open override func configure(attributes: UICollectionViewLayoutAttributes) {
         guard let attributes = attributes as? MessagesCollectionViewLayoutAttributes else { return }
 
-        let dataSource = messagesLayout.messagesDataSource
         let indexPath = attributes.indexPath
-        let message = dataSource.messageForItem(at: indexPath, in: messagesLayout.messagesCollectionView)
+        let message = dataSource.messageForItem(at: indexPath, in: collectionView)
         let maxWidth = messageContainerMaxWidth(for: message)
 
         attributes.avatarSize = avatarSize(for: message)
@@ -120,8 +119,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
     }
 
     open override func sizeForItem(at indexPath: IndexPath) -> CGSize {
-        let dataSource = messagesLayout.messagesDataSource
-        let message = dataSource.messageForItem(at: indexPath, in: messagesLayout.messagesCollectionView)
+        let message = dataSource.messageForItem(at: indexPath, in: collectionView)
         let itemHeight = cellContentHeight(for: message, at: indexPath)
         return CGSize(width: messagesLayout.itemWidth, height: itemHeight)
     }
@@ -198,8 +196,6 @@ open class MessageSizeCalculator: CellSizeCalculator {
     // MARK: - Top cell Label
 
     open func cellTopLabelSize(for message: MessageType, at indexPath: IndexPath) -> CGSize {
-        let layoutDelegate = messagesLayout.messagesLayoutDelegate
-        let collectionView = messagesLayout.messagesCollectionView
         let height = layoutDelegate.cellTopLabelHeight(for: message, at: indexPath, in: collectionView)
         return CGSize(width: messagesLayout.itemWidth, height: height)
     }
@@ -212,8 +208,6 @@ open class MessageSizeCalculator: CellSizeCalculator {
     // MARK: - Top message Label
     
     open func messageTopLabelSize(for message: MessageType, at indexPath: IndexPath) -> CGSize {
-        let layoutDelegate = messagesLayout.messagesLayoutDelegate
-        let collectionView = messagesLayout.messagesCollectionView
         let height = layoutDelegate.messageTopLabelHeight(for: message, at: indexPath, in: collectionView)
         return CGSize(width: messagesLayout.itemWidth, height: height)
     }
@@ -226,7 +220,6 @@ open class MessageSizeCalculator: CellSizeCalculator {
     // MARK: - Message time label
 
     open func messageTimeLabelSize(for message: MessageType, at indexPath: IndexPath) -> CGSize {
-        let dataSource = messagesLayout.messagesDataSource
         guard let attributedText = dataSource.messageTimestampLabelAttributedText(for: message, at: indexPath) else {
             return .zero
         }
@@ -237,8 +230,6 @@ open class MessageSizeCalculator: CellSizeCalculator {
     // MARK: - Bottom cell Label
     
     open func cellBottomLabelSize(for message: MessageType, at indexPath: IndexPath) -> CGSize {
-        let layoutDelegate = messagesLayout.messagesLayoutDelegate
-        let collectionView = messagesLayout.messagesCollectionView
         let height = layoutDelegate.cellBottomLabelHeight(for: message, at: indexPath, in: collectionView)
         return CGSize(width: messagesLayout.itemWidth, height: height)
     }
@@ -251,8 +242,6 @@ open class MessageSizeCalculator: CellSizeCalculator {
     // MARK: - Bottom Message Label
 
     open func messageBottomLabelSize(for message: MessageType, at indexPath: IndexPath) -> CGSize {
-        let layoutDelegate = messagesLayout.messagesLayoutDelegate
-        let collectionView = messagesLayout.messagesCollectionView
         let height = layoutDelegate.messageBottomLabelHeight(for: message, at: indexPath, in: collectionView)
         return CGSize(width: messagesLayout.itemWidth, height: height)
     }
@@ -287,16 +276,12 @@ open class MessageSizeCalculator: CellSizeCalculator {
     }
     
     public func statusViewSize(for message: MessageType, at indexPath: IndexPath) -> CGSize {
-        let layoutDelegate = messagesLayout.messagesLayoutDelegate
-        let collectionView = messagesLayout.messagesCollectionView
         let height = layoutDelegate.statusViewHeight(for: message, at: indexPath, in: collectionView)
         let width = messagesLayout.itemWidth - statusViewPadding(for: message).horizontal
         return CGSize(width: width, height: height)
     }
     
     public func reactionViewSize(for message: MessageType, at indexPath: IndexPath) -> CGSize {
-        let layoutDelegate = messagesLayout.messagesLayoutDelegate
-        let collectionView = messagesLayout.messagesCollectionView
         let width = layoutDelegate.reactionViewWidth(for: message, at: indexPath, in: collectionView)
         return CGSize(width: width, height: reactionViewMaxHeight)
     }
@@ -333,6 +318,18 @@ open class MessageSizeCalculator: CellSizeCalculator {
         }
         return layout
     }
+    
+    lazy var layoutDelegate: MessagesLayoutDelegate = {
+        return messagesLayout.messagesLayoutDelegate
+    }()
+    
+    lazy var collectionView: MessagesCollectionView = {
+        return messagesLayout.messagesCollectionView
+    }()
+    
+    lazy var dataSource: MessagesDataSource = {
+        return messagesLayout.messagesDataSource
+    }()
 
     internal func labelSize(for attributedText: NSAttributedString, considering maxWidth: CGFloat) -> CGSize {
         let constraintBox = CGSize(width: maxWidth, height: .greatestFiniteMagnitude)
