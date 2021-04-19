@@ -292,8 +292,11 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         switch true {
         case messageContainerView.frame.contains(touchLocation):
             if gesture.state == .began {
-                self.messageContainerView.layer.addPulseAnimation()
-                self.delegate?.didHoldMessage(in: self, at: touchLocation)
+                UIView.animate(withDuration: 0.35, delay: 0, usingSpringWithDamping: 0.25, initialSpringVelocity: 0.7, options: [.allowUserInteraction, .autoreverse]) {
+                    self.messageContainerView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+                } completion: { (done) in
+                    self.delegate?.didHoldMessage(in: self, at: touchLocation)
+                }
             } else {
                 return
             }
