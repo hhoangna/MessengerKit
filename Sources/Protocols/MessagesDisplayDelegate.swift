@@ -41,6 +41,21 @@ public protocol MessagesDisplayDelegate: AnyObject {
     /// - Note:
     ///   The default value returned by this method is `MessageStyle.bubble`.
     func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle
+    
+    /// Specifies the background highlight color of the `MessageContainerView`.
+    ///
+    /// - Parameters:
+    ///   - indexPath: The `IndexPath` of the cell.
+    ///   - messagesCollectionView: The `MessagesCollectionView` in which this cell will be displayed.
+    ///
+    /// - Note:
+    ///   The default value is `UIColor.clear` for emoji messages.
+    ///
+    ///   Current sender: Green
+    ///
+    ///   All other senders: Gray
+    func backgroundHighlightColor(at  indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor
+
 
     /// Specifies the background color of the `MessageContainerView`.
     ///
@@ -261,6 +276,10 @@ public extension MessagesDisplayDelegate {
 
     func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
         return .bubble
+    }
+    
+    func backgroundHighlightColor(at  indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
+        return .clear
     }
 
     func backgroundColor(for message: MessageType, at  indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {

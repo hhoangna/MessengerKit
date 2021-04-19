@@ -765,29 +765,23 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         messageTimestampLabel.frame = CGRect(origin: origin, size: size)
     }
     
-    open func highlightMessageContainerView() {
-        self.messageContainerView.transform = CGAffineTransform(scaleX: 0.7, y: 0.7)
-        
-        UIView.animate(withDuration: 2, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.3, options: .curveEaseOut, animations: {
-            self.messageContainerView.transform = CGAffineTransform.identity
-        }, completion: nil)
-        
-        UIView.animateKeyframes(withDuration: 1, delay: 0, options: .allowUserInteraction) {
-            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.2) {
+    open func highlightMessageContainerView(with color: UIColor) {
+        UIView.animateKeyframes(withDuration: 2, delay: 0, options: .allowUserInteraction) {
+            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
                 self.messageContainerView.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
             }
             
-            UIView.addKeyframe(withRelativeStartTime: 0.2, relativeDuration: 0.6) {
+            UIView.addKeyframe(withRelativeStartTime: 0.4, relativeDuration: 1.6) {
                 if let subview = self.messageContainerView.subviews.first(where: {$0.tag == 999}) {
-                    subview.layer.borderWidth = 1
-                    subview.layer.animateBorderColor(from: .clear, to: UIColor.darkGray, withDuration: 0.6)
+                    subview.layer.animateBackgroundColor(from: subview.backgroundColor, to: color, withDuration: 1.6)
+                } else if let subview = self.messageContainerView.subviews.first {
+                    subview.layer.animateBackgroundColor(from: subview.backgroundColor, to: color, withDuration: 1.6)
                 } else {
-                    self.messageContainerView.layer.borderWidth = 1
-                    self.messageContainerView.layer.animateBorderColor(from: .clear, to: UIColor.darkGray, withDuration: 0.6)
+                    self.messageContainerView.layer.animateBackgroundColor(from: self.messageContainerView.backgroundColor, to: color, withDuration: 1.6)
                 }
             }
             
-            UIView.addKeyframe(withRelativeStartTime: 0.2, relativeDuration: 0.2) {
+            UIView.addKeyframe(withRelativeStartTime: 1.5, relativeDuration: 0.5) {
                 self.messageContainerView.transform = .identity
             }
         }

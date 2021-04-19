@@ -102,6 +102,8 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
     }
 
     public var selectedIndexPathForMenu: IndexPath?
+    
+    public var cachedIndexPath: IndexPath?
 
     public var isFirstLayout: Bool = true
     
@@ -161,6 +163,14 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
     open override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
         messageCollectionViewBottomInset = requiredInitialScrollViewBottomInset()
+    }
+    
+    public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        if let indexPath = cachedIndexPath,
+           let cell = messagesCollectionView.cellForItem(at: indexPath) as? MessageContentCell,
+           let color = messagesCollectionView.messagesDisplayDelegate?.backgroundHighlightColor(at: indexPath, in: messagesCollectionView) {
+            cell.highlightMessageContainerView(with: color)
+        }
     }
 
     // MARK: - Initializers

@@ -128,12 +128,12 @@ internal extension UIView {
 }
 
 public extension CALayer {
-    func animateBorderColor(from startColor: UIColor, to endColor: UIColor, withDuration duration: Double) {
-        let colorAnimation = CABasicAnimation(keyPath: "borderColor")
+    func animateBackgroundColor(from startColor: UIColor, to endColor: UIColor, withDuration duration: Double) {
+        let colorAnimation = CABasicAnimation(keyPath: "backgroundColor")
         colorAnimation.fromValue = startColor.cgColor
         colorAnimation.toValue = endColor.cgColor
         colorAnimation.duration = duration
-        self.borderColor = endColor.cgColor
-        self.add(colorAnimation, forKey: "borderColor")
+        self.backgroundColor = startColor.cgColor
+        self.add(colorAnimation, forKey: "backgroundColor")
     }
 }
