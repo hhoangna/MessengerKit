@@ -170,6 +170,8 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
            let cell = messagesCollectionView.cellForItem(at: indexPath) as? MessageContentCell,
            let color = messagesCollectionView.messagesDisplayDelegate?.backgroundHighlightColor(at: indexPath, in: messagesCollectionView) {
             cell.highlightMessageContainerView(with: color)
+            
+            cachedIndexPath = nil
         }
     }
 
