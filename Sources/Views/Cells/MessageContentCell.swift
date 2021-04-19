@@ -252,6 +252,11 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
 
         switch true {
         case messageContainerView.frame.contains(touchLocation) && !cellContentView(canHandle: convert(touchLocation, to: messageContainerView)):
+            if let subview = messageContainerView.subviews.first(where: {$0.tag != 999}), subview.frame.contains(location) && messageContainerView.subviews.count > 1 {
+                delegate?.didTapRepliedMessage(in: self)
+            } else {
+                delegate?.didTapMessage(in: self, at: touchLocation)
+            }
             delegate?.didTapMessage(in: self, at: touchLocation)
         case avatarView.frame.contains(touchLocation):
             delegate?.didTapAvatar(in: self)
@@ -288,7 +293,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         propertyAnimator.addCompletion { (position) in
             switch position {
             case .end:
-                delegate?.didHoldMessage(in: self, at: touchLocation)
+                self.delegate?.didHoldMessage(in: self, at: touchLocation)
                 propertyAnimator.fractionComplete = -1
                 propertyAnimator.isReversed = true
                 propertyAnimator.startAnimation()
@@ -302,7 +307,11 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             if gesture.state == .began {
                 propertyAnimator.startAnimation()
             } else if gesture.state == .ended {
-                //
+                if propertyAnimator.isRunning {
+                    propertyAnimator.pauseAnimation()
+                    propertyAnimator.isReversed = true
+                    propertyAnimator.continueAnimation(withTimingParameters: nil, durationFactor: 0)
+                }
             } else {
                 return
             }
