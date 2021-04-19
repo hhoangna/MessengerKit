@@ -137,4 +137,17 @@ public extension CALayer {
         colorAnimation.autoreverses = true
         self.add(colorAnimation, forKey: "backgroundColor")
     }
+    
+    func addPulseAnimation() {
+        let layerAnimation = CABasicAnimation(keyPath: "transform.scale")
+        layerAnimation.fromValue = 1
+        layerAnimation.toValue = 0.8
+        layerAnimation.isAdditive = false
+        layerAnimation.duration = CFTimeInterval(1)
+        layerAnimation.fillMode = CAMediaTimingFillMode.forwards
+        layerAnimation.isRemovedOnCompletion = true
+        layerAnimation.autoreverses = true
+
+        self.add(layerAnimation, forKey: "growingAnimation")
+    }
 }

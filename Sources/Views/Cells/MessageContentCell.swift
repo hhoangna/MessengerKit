@@ -288,31 +288,12 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     
     open override func handleHoldGesture(_ gesture: UIGestureRecognizer) {
         let touchLocation = gesture.location(in: self)
-        var propertyAnimator = UIViewPropertyAnimator(duration: 0.8, dampingRatio: 0.3) {
-            self.messageContainerView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
-        }
-        propertyAnimator.addCompletion { (position) in
-            switch position {
-            case .end:
-                self.delegate?.didHoldMessage(in: self, at: touchLocation)
-                propertyAnimator.fractionComplete = -1
-                propertyAnimator.isReversed = true
-                propertyAnimator.startAnimation()
-            default:
-                break
-            }
-        }
         
         switch true {
         case messageContainerView.frame.contains(touchLocation):
             if gesture.state == .began {
-                propertyAnimator.startAnimation()
-            } else if gesture.state == .ended {
-                if propertyAnimator.isRunning {
-                    propertyAnimator.pauseAnimation()
-                    propertyAnimator.isReversed = true
-                    propertyAnimator.continueAnimation(withTimingParameters: nil, durationFactor: 0)
-                }
+                self.messageContainerView.layer.addPulseAnimation()
+                self.delegate?.didHoldMessage(in: self, at: touchLocation)
             } else {
                 return
             }
