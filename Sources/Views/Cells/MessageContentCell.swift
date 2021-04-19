@@ -761,7 +761,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         messageTimestampLabel.frame = CGRect(origin: origin, size: size)
     }
     
-    func highlightMessageContainerView() {
+    open func highlightMessageContainerView() {
         self.messageContainerView.transform = CGAffineTransform(scaleX: 0.7, y: 0.7)
         
         UIView.animate(withDuration: 2, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.3, options: .curveEaseOut, animations: {
