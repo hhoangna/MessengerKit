@@ -170,6 +170,10 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
         messageCollectionViewBottomInset = requiredInitialScrollViewBottomInset()
     }
     
+    public func customizeViewController() {
+        
+    }
+    
     public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
         isScrolledToCacheIndexPath = true
         if let indexPath = cachedIndexPath,

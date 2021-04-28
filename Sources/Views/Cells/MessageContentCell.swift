@@ -51,7 +51,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         label.textInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: 7)
         label.numberOfLines = 1
         label.textAlignment = .center
-        label.backgroundColor = .white
+        label.backgroundColor = .clear
         label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
