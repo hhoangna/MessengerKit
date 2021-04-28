@@ -170,7 +170,7 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
         messageCollectionViewBottomInset = requiredInitialScrollViewBottomInset()
     }
     
-    public func customizeViewController() {
+    open func customizeViewController() {
         
     }
     
