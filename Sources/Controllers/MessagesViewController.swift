@@ -131,6 +131,7 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
         setupDelegates()
         addMenuControllerObservers()
         addObservers()
+        customizeViewController()
     }
     
     open override func viewWillAppear(_ animated: Bool) {
