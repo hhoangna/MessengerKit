@@ -734,13 +734,15 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     open func highlightMessageContainerView(with color: UIColor) {
         UIView.animate(withDuration: 0.2) {
             self.messageContainerView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+            self.reactionView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
         } completion: { (done) in
             UIView.animate(withDuration: 0.8, delay: 0, usingSpringWithDamping: 0.35, initialSpringVelocity: 0.6, options: .allowUserInteraction) {
                 self.messageContainerView.transform = .identity
+                self.reactionView.transform = .identity
                 if let subview = self.messageContainerView.subviews.first(where: {$0.tag == 999}) {
-                    subview.layer.animateBackgroundColor(from: subview.backgroundColor ?? .clear, to: color, withDuration: 1)
+                    subview.layer.animateBackgroundColor(from: subview.backgroundColor ?? .clear, to: color, withDuration: 0.8)
                 } else if let subview = self.messageContainerView.subviews.first {
-                    subview.layer.animateBackgroundColor(from: subview.backgroundColor ?? .clear, to: color, withDuration: 1)
+                    subview.layer.animateBackgroundColor(from: subview.backgroundColor ?? .clear, to: color, withDuration: 0.8)
                 } else {
                     self.messageContainerView.layer.animateBackgroundColor(from: self.messageContainerView.backgroundColor ?? .clear, to: color, withDuration: 0.8)
                 }

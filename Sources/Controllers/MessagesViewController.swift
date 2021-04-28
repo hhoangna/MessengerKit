@@ -108,6 +108,7 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
             scrollToCacheIndexPath()
         }
     }
+    var isScrolledToCacheIndexPath: Bool = false
 
     public var isFirstLayout: Bool = true
     
@@ -169,26 +170,38 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
         messageCollectionViewBottomInset = requiredInitialScrollViewBottomInset()
     }
     
-//    public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-//        if let indexPath = cachedIndexPath,
-//           let cell = messagesCollectionView.cellForItem(at: indexPath) as? MessageContentCell,
-//           let color = messagesCollectionView.messagesDisplayDelegate?.backgroundHighlightColor(at: indexPath, in: messagesCollectionView) {
-//            cell.highlightMessageContainerView(with: color)
-//
-//            cachedIndexPath = nil
-//        }
-//    }
-    
-    public func scrollToCacheIndexPath() {
+    public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        isScrolledToCacheIndexPath = true
         if let indexPath = cachedIndexPath,
            let cell = messagesCollectionView.cellForItem(at: indexPath) as? MessageContentCell,
            let color = messagesCollectionView.messagesDisplayDelegate?.backgroundHighlightColor(at: indexPath, in: messagesCollectionView) {
-            UIView.animate(withDuration: 0.5) {
-                self.messagesCollectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
-            } completion: { (done) in
+            cell.highlightMessageContainerView(with: color)
+
+            cachedIndexPath = nil
+        }
+    }
+    
+    public func scrollToCacheIndexPath() {
+        if let indexPath = cachedIndexPath {
+            self.isScrolledToCacheIndexPath = false
+            self.messagesCollectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
+            perform(#selector(hightlightCacheIndexPathIfNeed), with: nil, afterDelay: 0.5)
+        }
+    }
+    
+    @objc func hightlightCacheIndexPathIfNeed() {
+        if messagesCollectionView.layer.animation(forKey: "bounds") != nil {
+            return
+        }
+        if !isScrolledToCacheIndexPath {
+            if let indexPath = cachedIndexPath,
+               let cell = messagesCollectionView.cellForItem(at: indexPath) as? MessageContentCell,
+               let color = messagesCollectionView.messagesDisplayDelegate?.backgroundHighlightColor(at: indexPath, in: messagesCollectionView) {
                 cell.highlightMessageContainerView(with: color)
-                self.cachedIndexPath = nil
+
+                cachedIndexPath = nil
             }
+            isScrolledToCacheIndexPath = true
         }
     }
 
