@@ -103,7 +103,11 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
 
     public var selectedIndexPathForMenu: IndexPath?
     
-    public var cachedIndexPath: IndexPath?
+    public var cachedIndexPath: IndexPath? {
+        didSet {
+            scrollToCacheIndexPath()
+        }
+    }
 
     public var isFirstLayout: Bool = true
     
@@ -165,13 +169,26 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
         messageCollectionViewBottomInset = requiredInitialScrollViewBottomInset()
     }
     
-    public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+//    public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+//        if let indexPath = cachedIndexPath,
+//           let cell = messagesCollectionView.cellForItem(at: indexPath) as? MessageContentCell,
+//           let color = messagesCollectionView.messagesDisplayDelegate?.backgroundHighlightColor(at: indexPath, in: messagesCollectionView) {
+//            cell.highlightMessageContainerView(with: color)
+//
+//            cachedIndexPath = nil
+//        }
+//    }
+    
+    public func scrollToCacheIndexPath() {
         if let indexPath = cachedIndexPath,
            let cell = messagesCollectionView.cellForItem(at: indexPath) as? MessageContentCell,
            let color = messagesCollectionView.messagesDisplayDelegate?.backgroundHighlightColor(at: indexPath, in: messagesCollectionView) {
-            cell.highlightMessageContainerView(with: color)
-            
-            cachedIndexPath = nil
+            UIView.animate(withDuration: 0.5) {
+                self.messagesCollectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
+            } completion: { (done) in
+                cell.highlightMessageContainerView(with: color)
+                self.cachedIndexPath = nil
+            }
         }
     }
 

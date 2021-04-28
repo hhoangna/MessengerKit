@@ -87,7 +87,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
 
         attributes.messageContainerPadding = messageContainerPadding(for: message)
         attributes.messageContainerSize = messageContainerSize(for: message)
-        attributes.messageSubviewsSize = messageSubviewSize(for: message, maxWidth: maxWidth)
+        attributes.messageSubviewsSize = messageSubviewSize(for: message, maxWidth: maxWidth - 24)
         attributes.cellTopLabelSize = cellTopLabelSize(for: message, at: indexPath)
         attributes.cellTopLabelAlignment = cellTopLabelAlignment(for: message)
         attributes.cellBottomLabelSize = cellBottomLabelSize(for: message, at: indexPath)

@@ -231,6 +231,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         }
         
         messageContainerView.backgroundColor = messageColor
+        backgroundColor = .clear
         messageContainerView.style = messageStyle
 
         let topCellLabelText = dataSource.cellTopLabelAttributedText(for: message, at: indexPath)
@@ -258,7 +259,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             } else {
                 delegate?.didTapMessage(in: self, at: touchLocation)
             }
-            delegate?.didTapMessage(in: self, at: touchLocation)
         case avatarView.frame.contains(touchLocation):
             delegate?.didTapAvatar(in: self)
         case cellTopLabel.frame.contains(touchLocation):
@@ -526,13 +526,14 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             var origin: CGPoint = .zero
 
             if let _ = messageContainerView.subviews.first(where: {$0.tag == 999}) {
-                origin.y = messageContainerView.frame.maxY - (attributes.messageSubviewsSize.height / 2) - 7
+                let subviewSize = attributes.messageSubviewsSize
+                origin.y = messageContainerView.frame.maxY - (subviewSize.height / 2) - 7
 
                 switch attributes.avatarPosition.horizontal {
                 case .cellLeading:
-                    origin.x = messageContainerView.frame.minX + attributes.messageSubviewsSize.width + 8
+                    origin.x = messageContainerView.frame.minX + subviewSize.width + 8
                 case .cellTrailing:
-                    origin.x = messageContainerView.frame.maxX - 22 - attributes.messageSubviewsSize.width
+                    origin.x = messageContainerView.frame.maxX - 22 - subviewSize.width
                 default:
                     break
                 }
@@ -643,7 +644,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             sparateTopLine.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             sparateTopLine.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16)
         ])
-        sparateTopLine.isHidden = messageTopLabel.attributedText == nil
+        sparateTopLine.isHidden = true
     }
     
     /// Positions the cell's bottom label.
@@ -732,16 +733,16 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     
     open func highlightMessageContainerView(with color: UIColor) {
         UIView.animate(withDuration: 0.2) {
-            self.messageContainerView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+            self.messageContainerView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
         } completion: { (done) in
-            UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.35, initialSpringVelocity: 0.6, options: .allowUserInteraction) {
+            UIView.animate(withDuration: 0.8, delay: 0, usingSpringWithDamping: 0.35, initialSpringVelocity: 0.6, options: .allowUserInteraction) {
                 self.messageContainerView.transform = .identity
                 if let subview = self.messageContainerView.subviews.first(where: {$0.tag == 999}) {
                     subview.layer.animateBackgroundColor(from: subview.backgroundColor ?? .clear, to: color, withDuration: 1)
                 } else if let subview = self.messageContainerView.subviews.first {
                     subview.layer.animateBackgroundColor(from: subview.backgroundColor ?? .clear, to: color, withDuration: 1)
                 } else {
-                    self.messageContainerView.layer.animateBackgroundColor(from: self.messageContainerView.backgroundColor ?? .clear, to: color, withDuration: 1)
+                    self.messageContainerView.layer.animateBackgroundColor(from: self.messageContainerView.backgroundColor ?? .clear, to: color, withDuration: 0.8)
                 }
             }
         }
