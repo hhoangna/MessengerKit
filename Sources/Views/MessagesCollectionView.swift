@@ -92,15 +92,17 @@ open class MessagesCollectionView: UICollectionView {
     private func setupGestureRecognizers() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTapGesture(_:)))
         tapGesture.delaysTouchesBegan = true
+        tapGesture.numberOfTapsRequired = 1
         addGestureRecognizer(tapGesture)
         
         let doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTapGesture(_:)))
         doubleTapGesture.numberOfTapsRequired = 2
-        doubleTapGesture.require(toFail: tapGesture)
         addGestureRecognizer(doubleTapGesture)
         
         let holdGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleHoldGesture(_:)))
         addGestureRecognizer(holdGesture)
+        
+        tapGesture.require(toFail: doubleTapGesture)
     }
     
     @objc func handleDoubleTapGesture(_ gesture: UITapGestureRecognizer) {
