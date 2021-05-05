@@ -266,6 +266,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             delegate?.didTapAnywhere()
         case cellBottomLabel.frame.contains(touchLocation):
             delegate?.didTapCellBottomLabel(in: self)
+            delegate?.didTapAnywhere()
         case messageTopLabel.frame.contains(touchLocation):
             delegate?.didTapMessageTopLabel(in: self)
             delegate?.didTapAnywhere()
@@ -276,13 +277,21 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             delegate?.didTapAnywhere()
         case statusView.frame.contains(touchLocation):
             delegate?.didTapStatusView(in: self)
-            delegate?.didTapAnywhere()
         case reactionView.frame.contains(touchLocation):
             delegate?.didTapReactionView(in: self)
-            delegate?.didTapAnywhere()
         default:
             delegate?.didTapBackground(in: self)
             delegate?.didTapAnywhere()
+        }
+    }
+    
+    open override func handleDoubleTapGesture(_ gesture: UIGestureRecognizer) {
+        let touchLocation = gesture.location(in: self)
+        switch true {
+        case messageContainerView.frame.contains(touchLocation):
+            delegate?.didDoubleTapMessage(in: self)
+        default:
+            break
         }
     }
     

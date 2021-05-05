@@ -66,6 +66,17 @@ public protocol MessageCellDelegate: MessageLabelDelegate {
     /// `indexPath(for: cell)` method. Then using the returned `IndexPath` with the `MessagesDataSource`
     /// method `messageForItem(at:indexPath:messagesCollectionView)`.
     func didTapBackground(in cell: MessageCollectionViewCell)
+    
+    /// Triggered when a tap occurs in the `MessageContainerView`.
+    ///
+    /// - Parameters:
+    ///   - cell: The cell where the double tab occurred.
+    ///
+    /// - Note:
+    /// You can get a reference to the `MessageType` for the cell by using `UICollectionView`'s
+    /// `indexPath(for: cell)` method. Then using the returned `IndexPath` with the `MessagesDataSource`
+    /// method `messageForItem(at:indexPath:messagesCollectionView)`.
+    func didDoubleTapMessage(in cell: MessageCollectionViewCell)
 
     /// Triggered when a tap occurs in the `MessageContainerView`.
     ///
@@ -230,6 +241,8 @@ public extension MessageCellDelegate {
     func didTapAnywhere() {}
 
     func didTapBackground(in cell: MessageCollectionViewCell) {}
+    
+    func didDoubleTapMessage(in cell: MessageCollectionViewCell) {}
 
     func didTapMessage(in cell: MessageCollectionViewCell, at location: CGPoint) {}
     

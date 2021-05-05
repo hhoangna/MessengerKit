@@ -88,6 +88,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
         attributes.messageContainerPadding = messageContainerPadding(for: message)
         attributes.messageContainerSize = messageContainerSize(for: message)
         attributes.messageSubviewsSize = messageSubviewSize(for: message, maxWidth: maxWidth - 24)
+        attributes.messageReplySize = messageReplySize(for: message, maxWidth: maxWidth - 24)
         attributes.cellTopLabelSize = cellTopLabelSize(for: message, at: indexPath)
         attributes.cellTopLabelAlignment = cellTopLabelAlignment(for: message)
         attributes.cellBottomLabelSize = cellBottomLabelSize(for: message, at: indexPath)
@@ -322,6 +323,10 @@ open class MessageSizeCalculator: CellSizeCalculator {
     }
     
     open func messageSubviewSize(for message: MessageType, maxWidth: CGFloat) -> CGSize {
+        return .zero
+    }
+    
+    open func messageReplySize(for message: MessageType, maxWidth: CGFloat) -> CGSize {
         return .zero
     }
 

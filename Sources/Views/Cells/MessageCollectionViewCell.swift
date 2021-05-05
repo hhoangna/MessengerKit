@@ -36,6 +36,11 @@ open class MessageCollectionViewCell: UICollectionViewCell {
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
+    
+    /// Handle double tap gesture on contentView and its subviews.
+    open func handleDoubleTapGesture(_ gesture: UIGestureRecognizer) {
+        // Should be overridden
+    }
 
     /// Handle tap gesture on contentView and its subviews.
     open func handleTapGesture(_ gesture: UIGestureRecognizer) {

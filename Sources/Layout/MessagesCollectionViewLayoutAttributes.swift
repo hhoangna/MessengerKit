@@ -39,6 +39,7 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
     public var messageLabelInsets: UIEdgeInsets = .zero
     
     public var messageSubviewsSize: CGSize = .zero
+    public var messageReplySize: CGSize = .zero
 
     public var cellTopLabelAlignment = LabelAlignment(textAlignment: .center, textInsets: UIEdgeInsets(top: 0, left: 7, bottom: 0, right: 7))
     public var cellTopLabelSize: CGSize = .zero
@@ -83,6 +84,7 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
         copy.avatarLeadingTrailingPadding = avatarLeadingTrailingPadding
         copy.messageContainerSize = messageContainerSize
         copy.messageSubviewsSize = messageSubviewsSize
+        copy.messageReplySize = messageReplySize
         copy.messageContainerPadding = messageContainerPadding
         copy.messageLabelFont = messageLabelFont
         copy.messageLabelInsets = messageLabelInsets
@@ -120,6 +122,7 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
                 && attributes.avatarLeadingTrailingPadding == avatarLeadingTrailingPadding
                 && attributes.messageContainerSize == messageContainerSize
                 && attributes.messageSubviewsSize == messageSubviewsSize
+                && attributes.messageReplySize == messageReplySize
                 && attributes.messageContainerPadding == messageContainerPadding
                 && attributes.messageLabelFont == messageLabelFont
                 && attributes.messageLabelInsets == messageLabelInsets
