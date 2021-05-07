@@ -340,6 +340,11 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
     public func setTrailingReactionViewMargin(_ newMargin: CGFloat) {
         messageSizeCalculators().forEach { $0.trailingReactionViewMargin = newMargin }
     }
+    
+    /// Set `topReplyViewMargin` of all `MessageSizeCalculator`s
+    public func setTopReplyViewMargin(_ newMargin: CGFloat) {
+        messageSizeCalculators().forEach { $0.topMessageContainerViewMargin = newMargin }
+    }
 
     /// Get all `MessageSizeCalculator`s
     open func messageSizeCalculators() -> [MessageSizeCalculator] {

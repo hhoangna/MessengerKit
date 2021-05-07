@@ -22,7 +22,7 @@
  SOFTWARE.
  */
 
-import Foundation
+import UIKit
 
 /// A protocol used by `MessageContentCell` subclasses to detect taps in the cell's subviews.
 public protocol MessageCellDelegate: MessageLabelDelegate {

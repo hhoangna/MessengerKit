@@ -48,4 +48,7 @@ public protocol MessageType {
     
     /// The reaction of message
     var hasReaction: Int { get }
+    
+    /// The replied of message
+    var isReplied: Bool { get }
 }

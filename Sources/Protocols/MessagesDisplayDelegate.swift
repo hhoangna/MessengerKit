@@ -72,6 +72,22 @@ public protocol MessagesDisplayDelegate: AnyObject {
     ///
     ///   All other senders: Gray
     func backgroundColor(for message: MessageType, at  indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor
+    
+    /// Specifies the background color of the `MessageContainerView`.
+    ///
+    /// - Parameters:
+    ///   - message: The `MessageType` that will be displayed by this cell.
+    ///   - indexPath: The `IndexPath` of the cell.
+    ///   - messagesCollectionView: The `MessagesCollectionView` in which this cell will be displayed.
+    ///
+    /// - Note:
+    ///   The default value is `UIColor.clear` for emoji messages.
+    ///   For all other `MessageKind` cases, the color depends on the `SenderType`.
+    ///
+    ///   Current sender: Green
+    ///
+    ///   All other senders: Gray
+    func replyColor(for message: MessageType, at  indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor
 
     /// The section header to use for a given `IndexPath`.
     ///
@@ -290,6 +306,11 @@ public extension MessagesDisplayDelegate {
         default:
             return message.isOwner ? .outgoingMessageBackground : .incomingMessageBackground
         }
+    }
+    
+    func replyColor(for message: MessageType, at  indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
+
+        return message.isOwner ? .outgoingMessageBackground : .incomingMessageBackground
     }
     
     func messageHeaderView(for indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageReusableView {

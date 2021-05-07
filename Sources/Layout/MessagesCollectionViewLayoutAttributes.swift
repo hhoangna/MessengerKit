@@ -38,8 +38,8 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
     public var messageLabelFont: UIFont = UIFont.preferredFont(forTextStyle: .body)
     public var messageLabelInsets: UIEdgeInsets = .zero
     
-    public var messageSubviewsSize: CGSize = .zero
-    public var messageReplySize: CGSize = .zero
+    public var messageReplyContainerSize: CGSize = .zero
+    public var messageReplyContainerMargin: CGFloat = 17
 
     public var cellTopLabelAlignment = LabelAlignment(textAlignment: .center, textInsets: UIEdgeInsets(top: 0, left: 7, bottom: 0, right: 7))
     public var cellTopLabelSize: CGSize = .zero
@@ -69,6 +69,7 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
     
     public var messageEditedStatus: Bool = false
     public var messageReaction: Bool = false
+    public var messageReplied: Bool = false
 
     public var linkPreviewFonts = LinkPreviewFonts(titleFont: .preferredFont(forTextStyle: .footnote),
                                                    teaserFont: .preferredFont(forTextStyle: .caption2),
@@ -83,8 +84,8 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
         copy.avatarPosition = avatarPosition
         copy.avatarLeadingTrailingPadding = avatarLeadingTrailingPadding
         copy.messageContainerSize = messageContainerSize
-        copy.messageSubviewsSize = messageSubviewsSize
-        copy.messageReplySize = messageReplySize
+        copy.messageReplyContainerSize = messageReplyContainerSize
+        copy.messageReplyContainerMargin = messageReplyContainerMargin
         copy.messageContainerPadding = messageContainerPadding
         copy.messageLabelFont = messageLabelFont
         copy.messageLabelInsets = messageLabelInsets
@@ -109,6 +110,7 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
         copy.reactionViewSize = reactionViewSize
         copy.messageEditedStatus = messageEditedStatus
         copy.messageReaction = messageReaction
+        copy.messageReplied = messageReplied
         
         return copy
         // swiftlint:enable force_cast
@@ -121,8 +123,8 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
                 && attributes.avatarPosition == avatarPosition
                 && attributes.avatarLeadingTrailingPadding == avatarLeadingTrailingPadding
                 && attributes.messageContainerSize == messageContainerSize
-                && attributes.messageSubviewsSize == messageSubviewsSize
-                && attributes.messageReplySize == messageReplySize
+                && attributes.messageReplyContainerSize == messageReplyContainerSize
+                && attributes.messageReplyContainerMargin == messageReplyContainerMargin
                 && attributes.messageContainerPadding == messageContainerPadding
                 && attributes.messageLabelFont == messageLabelFont
                 && attributes.messageLabelInsets == messageLabelInsets
@@ -147,6 +149,7 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
                 && attributes.reactionViewSize == reactionViewSize
                 && attributes.messageEditedStatus == messageEditedStatus
                 && attributes.messageReaction == messageReaction
+                && attributes.messageReplied == messageReplied
         } else {
             return false
         }
