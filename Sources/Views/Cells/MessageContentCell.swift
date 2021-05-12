@@ -521,7 +521,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         if attributes.messageReplied {
             switch attributes.avatarPosition.vertical {
             case .messageBottom:
-                origin.y = attributes.size.height - attributes.messageContainerPadding.bottom - attributes.cellBottomLabelSize.height - attributes.messageBottomLabelSize.height - attributes.messageContainerSize.height - attributes.messageContainerPadding.top - reactionAdded - (attributes.messageReplyContainerSize.height - attributes.messageReplyContainerMargin) - attributes.reactionViewTopMargin - attributes.statusViewSize.height
+                origin.y = attributes.size.height - attributes.messageContainerPadding.bottom - attributes.cellBottomLabelSize.height - attributes.messageBottomLabelSize.height - attributes.messageContainerSize.height - attributes.messageContainerPadding.top - reactionAdded - (attributes.messageReplyContainerSize.height - attributes.messageReplyContainerMargin) - attributes.statusViewSize.height
             case .messageCenter:
                 if attributes.avatarSize.height > attributes.messageContainerSize.height {
                     let messageHeight = attributes.messageContainerSize.height + attributes.messageContainerPadding.vertical
@@ -794,7 +794,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             UIView.animate(withDuration: 0.8, delay: 0, usingSpringWithDamping: 0.35, initialSpringVelocity: 0.6, options: .allowUserInteraction) {
                 self.messageContainerView.transform = .identity
                 self.reactionView.transform = .identity
-                self.messageContainerView.layer.animateBackgroundColor(from: self.messageContainerView.backgroundColor ?? .clear, to: color, withDuration: 0.8)
+                self.messageContainerView.layer.animateBackgroundColor(from: self.messageContainerView.backgroundColor ?? .clear, to: color, withDuration: 0.4)
             }
         }
     }
