@@ -313,14 +313,14 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         case messageContainerView.frame.contains(touchLocation),
              replyContainerView.frame.contains(touchLocation):
             if gesture.state == .began {
-                UIView.animate(withDuration: 0.3) {
+                UIView.animate(withDuration: 0.25) {
                     self.messageContainerView.transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
                     self.replyContainerView.transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
                     self.reactionView.transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
                     self.editIconImage.transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
                 } completion: { (done) in
                     self.delegate?.didHoldMessage(in: self, at: touchLocation)
-                    UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.4, initialSpringVelocity: 0.7, options: [.allowUserInteraction]) {
+                    UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.4, options: [.allowUserInteraction]) {
                         self.messageContainerView.transform = .identity
                         self.replyContainerView.transform = .identity
                         self.reactionView.transform = .identity
@@ -645,8 +645,10 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         
         if reactionSize == .zero {
             reactionView.frame = .zero
+            reactionView.isHidden = true
         } else {
             var origin: CGPoint = .zero
+            reactionView.isHidden = false
 
             origin.y = messageContainerView.frame.maxY - attributes.reactionViewTopMargin
             
@@ -787,14 +789,16 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     }
     
     open func highlightMessageContainerView(with color: UIColor) {
-        UIView.animate(withDuration: 0.2) {
-            self.messageContainerView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
-            self.reactionView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+        UIView.animate(withDuration: 0.65) {
+            self.messageContainerView.layer.animateBackgroundColor(from: self.messageContainerView.backgroundColor ?? .clear, to: color, withDuration: 0.65)
+        }
+        UIView.animate(withDuration: 0.25) {
+            self.messageContainerView.transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
+            self.reactionView.transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
         } completion: { (done) in
-            UIView.animate(withDuration: 0.8, delay: 0, usingSpringWithDamping: 0.35, initialSpringVelocity: 0.6, options: .allowUserInteraction) {
+            UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.4, options: .allowUserInteraction) {
                 self.messageContainerView.transform = .identity
                 self.reactionView.transform = .identity
-                self.messageContainerView.layer.animateBackgroundColor(from: self.messageContainerView.backgroundColor ?? .clear, to: color, withDuration: 0.4)
             }
         }
     }

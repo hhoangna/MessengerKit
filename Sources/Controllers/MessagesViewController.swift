@@ -190,7 +190,7 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
         if let indexPath = cachedIndexPath {
             self.isScrolledToCacheIndexPath = false
             self.messagesCollectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
-            perform(#selector(hightlightCacheIndexPathIfNeed), with: nil, afterDelay: 0.5)
+            perform(#selector(hightlightCacheIndexPathIfNeed), with: nil, afterDelay: 0.35)
         }
     }
     
