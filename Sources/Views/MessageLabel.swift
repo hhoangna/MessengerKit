@@ -429,7 +429,7 @@ open class MessageLabel: UILabel {
 
     // MARK: - Gesture Handling
 
-    private func stringIndex(at location: CGPoint) -> Int? {
+    open func stringIndex(at location: CGPoint) -> Int? {
         guard textStorage.length > 0 else { return nil }
 
         var location = location
