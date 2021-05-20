@@ -345,6 +345,11 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
     public func setTopReplyViewMargin(_ newMargin: CGFloat) {
         messageSizeCalculators().forEach { $0.topMessageContainerViewMargin = newMargin }
     }
+    
+    /// Set `previewLinkHeight` of all `MessageSizeCalculator`s
+    public func setPreviewLinkHeight(_ newValue: CGFloat) {
+        messageSizeCalculators().forEach { $0.linkPreviewHeigt = newValue }
+    }
 
     /// Get all `MessageSizeCalculator`s
     open func messageSizeCalculators() -> [MessageSizeCalculator] {
