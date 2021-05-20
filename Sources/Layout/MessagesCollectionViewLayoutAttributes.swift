@@ -40,6 +40,9 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
     
     public var messageReplyContainerSize: CGSize = .zero
     public var messageReplyContainerMargin: CGFloat = 17
+    
+    public var linkInfoContainerSize: CGSize = .zero
+    public var linkPreviewHeight: CGFloat = 150
 
     public var cellTopLabelAlignment = LabelAlignment(textAlignment: .center, textInsets: UIEdgeInsets(top: 0, left: 7, bottom: 0, right: 7))
     public var cellTopLabelSize: CGSize = .zero
@@ -86,6 +89,8 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
         copy.messageContainerSize = messageContainerSize
         copy.messageReplyContainerSize = messageReplyContainerSize
         copy.messageReplyContainerMargin = messageReplyContainerMargin
+        copy.linkInfoContainerSize = linkInfoContainerSize
+        copy.linkPreviewHeight = linkPreviewHeight
         copy.messageContainerPadding = messageContainerPadding
         copy.messageLabelFont = messageLabelFont
         copy.messageLabelInsets = messageLabelInsets
@@ -125,6 +130,8 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
                 && attributes.messageContainerSize == messageContainerSize
                 && attributes.messageReplyContainerSize == messageReplyContainerSize
                 && attributes.messageReplyContainerMargin == messageReplyContainerMargin
+                && attributes.linkPreviewHeight == linkPreviewHeight
+                && attributes.linkInfoContainerSize == linkInfoContainerSize
                 && attributes.messageContainerPadding == messageContainerPadding
                 && attributes.messageLabelFont == messageLabelFont
                 && attributes.messageLabelInsets == messageLabelInsets

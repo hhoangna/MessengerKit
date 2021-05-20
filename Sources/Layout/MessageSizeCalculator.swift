@@ -74,6 +74,8 @@ open class MessageSizeCalculator: CellSizeCalculator {
     public var trailingReactionViewMargin: CGFloat = 12
     public var reactionViewMaxHeight: CGFloat = 24
     
+    public var linkPreviewHeigt: CGFloat = 150
+    
     open override func configure(attributes: UICollectionViewLayoutAttributes) {
         guard let attributes = attributes as? MessagesCollectionViewLayoutAttributes else { return }
 
@@ -88,6 +90,8 @@ open class MessageSizeCalculator: CellSizeCalculator {
         attributes.messageContainerPadding = messageContainerPadding(for: message)
         attributes.messageContainerSize = messageContainerSize(for: message)
         attributes.messageReplyContainerSize = messageReplySize(for: message)
+        attributes.linkInfoContainerSize = linkPreviewSize(for: message)
+        attributes.linkPreviewHeight = linkPreviewHeigt
         attributes.cellTopLabelSize = cellTopLabelSize(for: message, at: indexPath)
         attributes.cellTopLabelAlignment = cellTopLabelAlignment(for: message)
         attributes.cellBottomLabelSize = cellBottomLabelSize(for: message, at: indexPath)
@@ -316,6 +320,11 @@ open class MessageSizeCalculator: CellSizeCalculator {
     }
     
     open func messageReplySize(for message: MessageType) -> CGSize {
+        // Returns .zero by default
+        return .zero
+    }
+    
+    open func linkPreviewSize(for message: MessageType) -> CGSize {
         // Returns .zero by default
         return .zero
     }
