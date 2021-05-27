@@ -260,10 +260,15 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         let touchLocation = gesture.location(in: self)
 
         switch true {
-        case replyContainerView.frame.contains(convert(touchLocation, to: replyContainerView)):
-            delegate?.didTapRepliedMessage(in: self)
         case messageContainerView.frame.contains(touchLocation) && !cellContentView(canHandle: convert(touchLocation, to: messageContainerView)):
-            delegate?.didTapMessage(in: self, at: touchLocation)
+            let inTouch = convert(touchLocation, to: messageContainerView)
+            if replyContainerView.frame.contains(inTouch) {
+                delegate?.didTapRepliedMessage(in: self)
+            } else if contentContainerView.frame.contains(inTouch) {
+                delegate?.didTapMessage(in: self, at: inTouch)
+            } else if reactionView.frame.contains(inTouch) {
+                delegate?.didTapReactionView(in: self)
+            }
         case avatarView.frame.contains(touchLocation):
             delegate?.didTapAvatar(in: self)
         case cellTopLabel.frame.contains(touchLocation):
@@ -282,8 +287,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             delegate?.didTapAnywhere()
         case statusView.frame.contains(touchLocation):
             delegate?.didTapStatusView(in: self)
-        case reactionView.frame.contains(touchLocation):
-            delegate?.didTapReactionView(in: self)
         default:
             delegate?.didTapBackground(in: self)
             delegate?.didTapAnywhere()
@@ -472,6 +475,8 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     open func layoutAvatarView(with attributes: MessagesCollectionViewLayoutAttributes) {
         var origin: CGPoint = .zero
         let padding = attributes.avatarLeadingTrailingPadding
+        let reactionSize = attributes.messageReaction ? attributes.reactionViewSize : .zero
+        let reactionHeight = reactionSize.height > 0 ? reactionSize.height - attributes.reactionViewTopMargin : 0
 
         switch attributes.avatarPosition.horizontal {
         case .cellLeading:
@@ -488,7 +493,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         case .messageTop: // Needs messageContainerView frame to be set
             origin.y = messageContainerView.frame.minY
         case .messageBottom: // Needs messageContainerView frame to be set
-            origin.y = messageContainerView.frame.maxY - attributes.avatarSize.height
+            origin.y = (messageContainerView.frame.maxY - reactionHeight) - attributes.avatarSize.height
         case .messageCenter: // Needs messageContainerView frame to be set
             origin.y = messageContainerView.frame.midY - (attributes.avatarSize.height/2)
         case .cellBottom:
