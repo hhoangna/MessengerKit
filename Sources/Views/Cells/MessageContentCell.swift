@@ -604,13 +604,13 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             switch attributes.avatarPosition.horizontal {
             case .cellLeading:
                 if reactionSize.width > messageContainterWidth - attributes.reactionViewLeadingMargin - attributes.reactionViewTrailingMargin {
-                    origin.x = contentContainerView.frame.minX + attributes.reactionViewLeadingMargin
+                    origin.x = contentContainerView.frame.minX + (messageContainterWidth - reactionSize.width) / 2
                 } else {
                     origin.x = contentContainerView.frame.maxX - attributes.reactionViewTrailingMargin - reactionSize.width
                 }
             case .cellTrailing:
                 if reactionSize.width > messageContainterWidth - attributes.reactionViewLeadingMargin - attributes.reactionViewTrailingMargin {
-                    origin.x = contentContainerView.frame.maxX - attributes.reactionViewTrailingMargin - reactionSize.width
+                    origin.x = contentContainerView.frame.maxX - (messageContainterWidth - reactionSize.width) / 2 - reactionSize.width
                 } else {
                     origin.x = contentContainerView.frame.minX + attributes.reactionViewLeadingMargin
                 }
