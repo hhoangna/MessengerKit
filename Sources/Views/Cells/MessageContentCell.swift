@@ -38,8 +38,8 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     open var avatarView: AvatarView = AvatarView()
 
     /// The container used for styling and holding the message's content view.
-    open var messageContainerView: MessageContainerView = {
-        let containerView = MessageContainerView()
+    open var messageContainerView: UIView = {
+        let containerView = UIView()
         containerView.backgroundColor = .clear
 //        containerView.clipsToBounds = true
 //        containerView.layer.masksToBounds = true
@@ -609,14 +609,16 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             switch attributes.avatarPosition.horizontal {
             case .cellLeading:
                 origin.x = attributes.avatarSize.width + attributes.messageContainerPadding.left + avatarPadding
+                contentContainerView.frame = CGRect(x: 0, y: 0, width: containerSize.width, height: containerSize.height)
             case .cellTrailing:
                 origin.x = attributes.frame.width - attributes.avatarSize.width - widthContainerView - attributes.messageContainerPadding.right - avatarPadding
+                contentContainerView.frame = CGRect(x: widthContainerView - containerSize.width, y: 0, width: containerSize.width, height: containerSize.height)
             case .natural:
                 fatalError(MessageKitError.avatarPositionUnresolved)
+                contentContainerView.frame = CGRect(x: 0, y: 0, width: containerSize.width, height: containerSize.height)
             }
             
             messageContainerView.frame = CGRect(origin: origin, size: CGSize(width: widthContainerView, height: containerSize.height + reactionAdded))
-            contentContainerView.frame = CGRect(x: widthContainerView - containerSize.width, y: 0, width: containerSize.width, height: containerSize.height)
         } else {
             switch attributes.avatarPosition.horizontal {
             case .cellLeading:
@@ -694,8 +696,9 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             }
             
             reactionView.frame = CGRect(origin: origin, size: reactionSize)
-            
-            contentContainerView.cut(by: reactionView, margin: 2)
+            reactionView.layer.cornerRadius = reactionView.frame.height / 2
+            reactionView.clipsToBounds = true
+            contentContainerView.cut(by: reactionView, margin: 3)
         }
     }
     
