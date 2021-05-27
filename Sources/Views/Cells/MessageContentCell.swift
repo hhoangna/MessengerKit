@@ -46,11 +46,11 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         return containerView
     }()
     
-    open var contentContainerView: UIView = {
-        let view = UIView()
+    open var contentContainerView: MessageContainerView = {
+        let view = MessageContainerView()
         
         return view
-    }
+    }()
     
     open var replyContainerView: UIView = {
         let view = UIView()
@@ -249,9 +249,9 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             displayDelegate.configureReactionView(reactionView, for: message, at: indexPath, in: messagesCollectionView)
         }
         
-        messageContainerView.backgroundColor = messageColor
+        contentContainerView.backgroundColor = messageColor
         replyContainerView.backgroundColor = messageReplyColor
-        messageContainerView.style = messageStyle
+        contentContainerView.style = messageStyle
         backgroundColor = .clear
 
         let topCellLabelText = dataSource.cellTopLabelAttributedText(for: message, at: indexPath)
