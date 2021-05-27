@@ -41,8 +41,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     open var messageContainerView: UIView = {
         let containerView = UIView()
         containerView.backgroundColor = .clear
-//        containerView.clipsToBounds = true
-//        containerView.layer.masksToBounds = true
         return containerView
     }()
     
@@ -67,7 +65,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         label.numberOfLines = 1
         label.textAlignment = .center
         label.backgroundColor = .clear
-//        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -169,8 +166,8 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         contentView.addSubview(messageTopLabel)
         contentView.addSubview(messageBottomLabel)
         contentView.addSubview(cellBottomLabel)
-        contentView.addSubview(replyContainerView)
         contentView.addSubview(messageContainerView)
+        messageContainerView.addSubview(replyContainerView)
         messageContainerView.addSubview(contentContainerView)
         contentView.addSubview(avatarView)
         contentView.addSubview(messageTimestampLabel)
@@ -193,21 +190,11 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     open override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
         super.apply(layoutAttributes)
         guard let attributes = layoutAttributes as? MessagesCollectionViewLayoutAttributes else { return }
-        var heightReactionAdded: CGFloat = 0
-        var reactionSize: CGSize = .zero
-        
-        if attributes.messageReaction {
-            reactionSize = attributes.reactionViewSize
-            heightReactionAdded = reactionSize.height - attributes.reactionViewTopMargin
-        } else {
-            heightReactionAdded = 0
-        }
 
         // Call this before other laying out other subviews
-        layoutReplyContainerView(with: attributes, reactionAdded: heightReactionAdded)
-        layoutMessageContainerView(with: attributes, reactionAdded: heightReactionAdded)
+        layoutMessageContainerView(with: attributes)
         layoutEditIcon(with: attributes)
-        layoutReactionView(with: attributes, reactionSize: reactionSize)
+        layoutReactionView(with: attributes)
         layoutStatusView(with: attributes)
         layoutMessageBottomLabel(with: attributes)
         layoutCellBottomLabel(with: attributes)
@@ -273,7 +260,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         let touchLocation = gesture.location(in: self)
 
         switch true {
-        case replyContainerView.frame.contains(touchLocation):
+        case replyContainerView.frame.contains(convert(touchLocation, to: replyContainerView)):
             delegate?.didTapRepliedMessage(in: self)
         case messageContainerView.frame.contains(touchLocation) && !cellContentView(canHandle: convert(touchLocation, to: messageContainerView)):
             delegate?.didTapMessage(in: self, at: touchLocation)
@@ -324,13 +311,11 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             if gesture.state == .began {
                 UIView.animate(withDuration: 0.25) {
                     self.messageContainerView.transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
-                    self.replyContainerView.transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
                     self.editIconImage.transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
                 } completion: { (done) in
                     self.delegate?.didHoldMessage(in: self, at: touchLocation)
                     UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.4, options: [.allowUserInteraction]) {
                         self.messageContainerView.transform = .identity
-                        self.replyContainerView.transform = .identity
                         self.editIconImage.transform = .identity
                     }
                 }
@@ -356,17 +341,17 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             
             if presentMessage.isOwner {
                 NSLayoutConstraint.activate([
-                    replyIconImage.trailingAnchor.constraint(equalTo: contentContainerView.trailingAnchor, constant: 30),
+                    replyIconImage.trailingAnchor.constraint(equalTo: messageContainerView.trailingAnchor, constant: 30),
                     replyIconImage.widthAnchor.constraint(equalToConstant: 30),
                     replyIconImage.heightAnchor.constraint(equalToConstant: 30),
-                    replyIconImage.centerYAnchor.constraint(equalTo: contentContainerView.centerYAnchor)
+                    replyIconImage.centerYAnchor.constraint(equalTo: messageContainerView.centerYAnchor)
                 ])
             } else {
                 NSLayoutConstraint.activate([
-                    replyIconImage.leadingAnchor.constraint(equalTo: contentContainerView.leadingAnchor, constant: -30),
+                    replyIconImage.leadingAnchor.constraint(equalTo: messageContainerView.leadingAnchor, constant: -30),
                     replyIconImage.widthAnchor.constraint(equalToConstant: 30),
                     replyIconImage.heightAnchor.constraint(equalToConstant: 30),
-                    replyIconImage.centerYAnchor.constraint(equalTo: contentContainerView.centerYAnchor)
+                    replyIconImage.centerYAnchor.constraint(equalTo: messageContainerView.centerYAnchor)
                 ])
             }
             
@@ -380,7 +365,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             if presentMessage.isOwner {
                 if translation.x < 0 {
                     self.messageContainerView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
-                    self.replyContainerView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
                     self.editIconImage.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
                     self.accessoryView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
 
@@ -408,7 +392,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             } else {
                 if translation.x > 0 {
                     self.messageContainerView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
-                    self.replyContainerView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
                     self.editIconImage.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
                     self.accessoryView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
                     
@@ -441,7 +424,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             }
             UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.3, options: [.allowUserInteraction]) {
                 self.messageContainerView.transform = .identity
-                self.replyContainerView.transform = .identity
                 self.editIconImage.transform = .identity
                 self.accessoryView.transform = .identity
 
@@ -466,10 +448,9 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         }
         
         let touchLocation = panGesture.location(in: self)
-        if messageContainerView.frame.contains(touchLocation) || replyContainerView.frame.contains(touchLocation) {
+        if messageContainerView.frame.contains(touchLocation) {
             let translation = panGesture.translation(in: self.messageContainerView)
-            let translationRep = panGesture.translation(in: self.replyContainerView)
-            if (abs(translation.x) > abs(translation.y)) || (abs(translationRep.x) > abs(translationRep.y)) {
+            if (abs(translation.x) > abs(translation.y)) {
                 return true
             } else {
                 return false
@@ -505,11 +486,11 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         case .messageLabelTop:
             origin.y = messageTopLabel.frame.minY
         case .messageTop: // Needs messageContainerView frame to be set
-            origin.y = contentContainerView.frame.minY
+            origin.y = messageContainerView.frame.minY
         case .messageBottom: // Needs messageContainerView frame to be set
-            origin.y = contentContainerView.frame.maxY - attributes.avatarSize.height
+            origin.y = messageContainerView.frame.maxY - attributes.avatarSize.height
         case .messageCenter: // Needs messageContainerView frame to be set
-            origin.y = contentContainerView.frame.midY - (attributes.avatarSize.height/2)
+            origin.y = messageContainerView.frame.midY - (attributes.avatarSize.height/2)
         case .cellBottom:
             origin.y = attributes.frame.height - attributes.avatarSize.height
         default:
@@ -518,121 +499,56 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
 
         avatarView.frame = CGRect(origin: origin, size: attributes.avatarSize)
     }
-    
-    open func layoutReplyContainerView(with attributes: MessagesCollectionViewLayoutAttributes, reactionAdded: CGFloat) {
-        var origin: CGPoint = .zero
-        
-        if attributes.messageReplied {
-            switch attributes.avatarPosition.vertical {
-            case .messageBottom:
-                origin.y = attributes.size.height - attributes.messageContainerPadding.bottom - attributes.cellBottomLabelSize.height - attributes.messageBottomLabelSize.height - attributes.messageContainerSize.height - attributes.messageContainerPadding.top - reactionAdded - (attributes.messageReplyContainerSize.height - attributes.messageReplyContainerMargin) - attributes.statusViewSize.height
-            case .messageCenter:
-                if attributes.avatarSize.height > attributes.messageContainerSize.height {
-                    let messageHeight = attributes.messageContainerSize.height + attributes.messageContainerPadding.vertical
-                    origin.y = (attributes.size.height / 2) - (messageHeight / 2)
-                } else {
-                    fallthrough
-                }
-            default:
-                if attributes.accessoryViewSize.height > attributes.messageContainerSize.height {
-                    let messageHeight = attributes.messageContainerSize.height + attributes.messageContainerPadding.vertical
-                    origin.y = (attributes.size.height / 2) - (messageHeight / 2)
-                } else {
-                    origin.y = attributes.cellTopLabelSize.height + attributes.messageTopLabelSize.height + attributes.messageContainerPadding.top
-                }
-            }
-
-            let avatarPadding = attributes.avatarLeadingTrailingPadding
-            switch attributes.avatarPosition.horizontal {
-            case .cellLeading:
-                origin.x = attributes.avatarSize.width + attributes.messageContainerPadding.left + avatarPadding
-            case .cellTrailing:
-                origin.x = attributes.frame.width - attributes.avatarSize.width - attributes.messageReplyContainerSize.width - attributes.messageContainerPadding.right - avatarPadding
-            case .natural:
-                fatalError(MessageKitError.avatarPositionUnresolved)
-            }
-
-            replyContainerView.frame = CGRect(origin: origin, size: attributes.messageReplyContainerSize)
-        } else {
-            replyContainerView.frame = .zero
-        }
-    }
 
     /// Positions the cell's `MessageContainerView`.
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
-    open func layoutMessageContainerView(with attributes: MessagesCollectionViewLayoutAttributes, reactionAdded: CGFloat) {
+    open func layoutMessageContainerView(with attributes: MessagesCollectionViewLayoutAttributes) {
         var origin: CGPoint = .zero
         let containerSize = attributes.messageContainerSize
+        let replySize = attributes.messageReplied ? attributes.messageReplyContainerSize : .zero
+        let replyHeight = replySize.height > 0 ? replySize.height - attributes.messageReplyContainerMargin : 0
+        let reactionSize = attributes.messageReaction ? attributes.reactionViewSize : .zero
+        let reactionHeight = reactionSize.height > 0 ? reactionSize.height - attributes.reactionViewTopMargin : 0
         
-        if attributes.messageReplied {
-            switch attributes.avatarPosition.vertical {
-            case .messageBottom:
-                origin.y = replyContainerView.frame.maxY - attributes.messageReplyContainerMargin
-            case .messageCenter:
-                if attributes.avatarSize.height > containerSize.height {
-                    let messageHeight = containerSize.height + attributes.messageContainerPadding.vertical
-                    origin.y = (attributes.size.height / 2) - (messageHeight / 2)
-                } else {
-                    fallthrough
-                }
-            default:
-                if attributes.accessoryViewSize.height > containerSize.height {
-                    let messageHeight = containerSize.height + attributes.messageContainerPadding.vertical
-                    origin.y = (attributes.size.height / 2) - (messageHeight / 2)
-                } else {
-                    origin.y = attributes.cellTopLabelSize.height + attributes.messageTopLabelSize.height + attributes.messageContainerPadding.top
-                }
+        switch attributes.avatarPosition.vertical {
+        case .messageBottom:
+            origin.y = attributes.size.height - attributes.messageContainerPadding.bottom - attributes.cellBottomLabelSize.height - attributes.messageBottomLabelSize.height - containerSize.height - attributes.messageContainerPadding.top - reactionHeight - attributes.statusViewSize.height - replyHeight
+        case .messageCenter:
+            if attributes.avatarSize.height > containerSize.height {
+                let messageHeight = containerSize.height + attributes.messageContainerPadding.vertical
+                origin.y = (attributes.size.height / 2) - (messageHeight / 2)
+            } else {
+                fallthrough
             }
-        } else {
-            switch attributes.avatarPosition.vertical {
-            case .messageBottom:
-                origin.y = attributes.size.height - attributes.messageContainerPadding.bottom - attributes.cellBottomLabelSize.height - attributes.messageBottomLabelSize.height - containerSize.height - attributes.messageContainerPadding.top - reactionAdded - attributes.statusViewSize.height
-            case .messageCenter:
-                if attributes.avatarSize.height > containerSize.height {
-                    let messageHeight = containerSize.height + attributes.messageContainerPadding.vertical
-                    origin.y = (attributes.size.height / 2) - (messageHeight / 2)
-                } else {
-                    fallthrough
-                }
-            default:
-                if attributes.accessoryViewSize.height > containerSize.height {
-                    let messageHeight = containerSize.height + attributes.messageContainerPadding.vertical
-                    origin.y = (attributes.size.height / 2) - (messageHeight / 2)
-                } else {
-                    origin.y = attributes.cellTopLabelSize.height + attributes.messageTopLabelSize.height + attributes.messageContainerPadding.top
-                }
+        default:
+            if attributes.accessoryViewSize.height > containerSize.height {
+                let messageHeight = containerSize.height + attributes.messageContainerPadding.vertical
+                origin.y = (attributes.size.height / 2) - (messageHeight / 2)
+            } else {
+                origin.y = attributes.cellTopLabelSize.height + attributes.messageTopLabelSize.height + attributes.messageContainerPadding.top
             }
         }
         
         let avatarPadding = attributes.avatarLeadingTrailingPadding
-        if attributes.messageReaction {
-            let widthContainerView = max(containerSize.width, attributes.reactionViewSize.width + attributes.reactionViewLeadingMargin + attributes.reactionViewTrailingMargin)
-            switch attributes.avatarPosition.horizontal {
-            case .cellLeading:
-                origin.x = attributes.avatarSize.width + attributes.messageContainerPadding.left + avatarPadding
-                contentContainerView.frame = CGRect(x: 0, y: 0, width: containerSize.width, height: containerSize.height)
-            case .cellTrailing:
-                origin.x = attributes.frame.width - attributes.avatarSize.width - widthContainerView - attributes.messageContainerPadding.right - avatarPadding
-                contentContainerView.frame = CGRect(x: widthContainerView - containerSize.width, y: 0, width: containerSize.width, height: containerSize.height)
-            case .natural:
-                fatalError(MessageKitError.avatarPositionUnresolved)
-                contentContainerView.frame = CGRect(x: 0, y: 0, width: containerSize.width, height: containerSize.height)
-            }
+        let widthContainerView = max(containerSize.width, reactionSize.width + attributes.reactionViewLeadingMargin + attributes.reactionViewTrailingMargin, replySize.width)
+
+        switch attributes.avatarPosition.horizontal {
+        case .cellLeading:
+            origin.x = attributes.avatarSize.width + attributes.messageContainerPadding.left + avatarPadding
             
-            messageContainerView.frame = CGRect(origin: origin, size: CGSize(width: widthContainerView, height: containerSize.height + reactionAdded))
-        } else {
-            switch attributes.avatarPosition.horizontal {
-            case .cellLeading:
-                origin.x = attributes.avatarSize.width + attributes.messageContainerPadding.left + avatarPadding
-            case .cellTrailing:
-                origin.x = attributes.frame.width - attributes.avatarSize.width - containerSize.width - attributes.messageContainerPadding.right - avatarPadding
-            case .natural:
-                fatalError(MessageKitError.avatarPositionUnresolved)
-            }
-            
-            messageContainerView.frame = CGRect(origin: origin, size: CGSize(width: containerSize.width, height: containerSize.height + reactionAdded))
+            replyContainerView.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: replySize)
             contentContainerView.frame = CGRect(x: 0, y: 0, width: containerSize.width, height: containerSize.height)
+        case .cellTrailing:
+            origin.x = attributes.frame.width - attributes.avatarSize.width - widthContainerView - attributes.messageContainerPadding.right - avatarPadding
+            
+            replyContainerView.frame = CGRect(origin: CGPoint(x: widthContainerView - replySize.width, y: 0), size: replySize)
+            contentContainerView.frame = CGRect(origin: CGPoint(x: widthContainerView - containerSize.width, y: 0), size: containerSize)
+
+        case .natural:
+            fatalError(MessageKitError.avatarPositionUnresolved)
         }
+        
+        messageContainerView.frame = CGRect(origin: origin, size: CGSize(width: widthContainerView, height: containerSize.height + replyHeight + reactionHeight))
     }
     
     open func layoutEditIcon(with attributes: MessagesCollectionViewLayoutAttributes) {
@@ -664,15 +580,16 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     
     /// Positions the cell's reaction view.
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
-    open func layoutReactionView(with attributes: MessagesCollectionViewLayoutAttributes, reactionSize: CGSize) {
+    open func layoutReactionView(with attributes: MessagesCollectionViewLayoutAttributes) {
         let isReaction = attributes.messageReaction
-        
+
         if !isReaction {
             reactionView.frame = .zero
             reactionView.isHidden = true
             contentContainerView.uncut()
         } else {
             var origin: CGPoint = .zero
+            let reactionSize = attributes.reactionViewSize
             reactionView.isHidden = false
 
             origin.y = contentContainerView.frame.maxY - attributes.reactionViewTopMargin
@@ -743,17 +660,10 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         messageTopLabel.textAlignment = attributes.messageTopLabelAlignment.textAlignment
         messageTopLabel.textInsets = attributes.messageTopLabelAlignment.textInsets
 
-        if attributes.messageReplied {
-            let y = replyContainerView.frame.minY - attributes.messageContainerPadding.top - attributes.messageTopLabelSize.height
-            let origin = CGPoint(x: 0, y: y)
-            
-            messageTopLabel.frame = CGRect(origin: origin, size: attributes.messageTopLabelSize)
-        } else {
-            let y = messageContainerView.frame.minY - attributes.messageContainerPadding.top - attributes.messageTopLabelSize.height
-            let origin = CGPoint(x: 0, y: y)
-            
-            messageTopLabel.frame = CGRect(origin: origin, size: attributes.messageTopLabelSize)
-        }
+        let y = messageContainerView.frame.minY - attributes.messageContainerPadding.top - attributes.messageTopLabelSize.height
+        let origin = CGPoint(x: 0, y: y)
+        
+        messageTopLabel.frame = CGRect(origin: origin, size: attributes.messageTopLabelSize)
     }
 
     /// Positions the message bubble's bottom label.
