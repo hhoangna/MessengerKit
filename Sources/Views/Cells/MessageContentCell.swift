@@ -589,9 +589,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             reactionView.frame = .zero
             reactionView.isHidden = true
             contentContainerView.uncut()
-            if messageContainerView.contains(reactionView) {
-                reactionView.removeFromSuperview()
-            }
         } else {
             var origin: CGPoint = .zero
             let reactionSize = attributes.reactionViewSize
@@ -618,13 +615,10 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
                 fatalError(MessageKitError.avatarPositionUnresolved)
             }
             
-            if !messageContainerView.contains(reactionView) {
-                addSubview(reactionView)
-            }
             reactionView.frame = CGRect(origin: origin, size: reactionSize)
             reactionView.layer.cornerRadius = reactionView.frame.height / 2
             reactionView.clipsToBounds = true
-            messageContainerView.cut(by: reactionView, margin: 3)
+            contentContainerView.cut(by: reactionView, margin: 3)
         }
     }
     
