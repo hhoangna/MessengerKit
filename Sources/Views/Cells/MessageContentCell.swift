@@ -537,12 +537,12 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             origin.x = attributes.avatarSize.width + attributes.messageContainerPadding.left + avatarPadding
             
             replyContainerView.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: replySize)
-            contentContainerView.frame = CGRect(x: 0, y: 0, width: containerSize.width, height: containerSize.height)
+            contentContainerView.frame = CGRect(x: 0, y: replyHeight, width: containerSize.width, height: containerSize.height)
         case .cellTrailing:
             origin.x = attributes.frame.width - attributes.avatarSize.width - widthContainerView - attributes.messageContainerPadding.right - avatarPadding
             
             replyContainerView.frame = CGRect(origin: CGPoint(x: widthContainerView - replySize.width, y: 0), size: replySize)
-            contentContainerView.frame = CGRect(origin: CGPoint(x: widthContainerView - containerSize.width, y: 0), size: containerSize)
+            contentContainerView.frame = CGRect(origin: CGPoint(x: widthContainerView - containerSize.width, y: replyHeight), size: containerSize)
 
         case .natural:
             fatalError(MessageKitError.avatarPositionUnresolved)
