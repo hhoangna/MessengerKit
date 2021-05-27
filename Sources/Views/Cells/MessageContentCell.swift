@@ -40,10 +40,17 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     /// The container used for styling and holding the message's content view.
     open var messageContainerView: MessageContainerView = {
         let containerView = MessageContainerView()
-        containerView.clipsToBounds = true
-        containerView.layer.masksToBounds = true
+        containerView.backgroundColor = .clear
+//        containerView.clipsToBounds = true
+//        containerView.layer.masksToBounds = true
         return containerView
     }()
+    
+    open var contentContainerView: UIView = {
+        let view = UIView()
+        
+        return view
+    }
     
     open var replyContainerView: UIView = {
         let view = UIView()
@@ -164,10 +171,11 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         contentView.addSubview(cellBottomLabel)
         contentView.addSubview(replyContainerView)
         contentView.addSubview(messageContainerView)
+        messageContainerView.addSubview(contentContainerView)
         contentView.addSubview(avatarView)
         contentView.addSubview(messageTimestampLabel)
         contentView.addSubview(editIconImage)
-        contentView.addSubview(reactionView)
+        messageContainerView.addSubview(reactionView)
         contentView.addSubview(statusView)
     }
 
@@ -200,7 +208,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         layoutMessageContainerView(with: attributes, reactionAdded: heightReactionAdded)
         layoutEditIcon(with: attributes)
         layoutReactionView(with: attributes, reactionSize: reactionSize)
-        layoutStatusView(with: attributes, reactionAdded: heightReactionAdded)
+        layoutStatusView(with: attributes)
         layoutMessageBottomLabel(with: attributes)
         layoutCellBottomLabel(with: attributes)
         layoutCellTopLabel(with: attributes)
@@ -609,8 +617,14 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         case .natural:
             fatalError(MessageKitError.avatarPositionUnresolved)
         }
-
-        messageContainerView.frame = CGRect(origin: origin, size: containerSize)
+        
+        if attributes.messageReaction {
+            let widthReaction = attributes.reactionViewSize.width + attributes.reactionViewLeadingMargin + attributes.reactionViewTrailingMargin
+            messageContainerView.frame = CGRect(origin: origin, size: CGSize(width: max(containerSize.width, widthReaction), height: containerSize.height + reactionAdded))
+        } else {
+            messageContainerView.frame = CGRect(origin: origin, size: CGSize(width: containerSize.width, height: containerSize.height + reactionAdded))
+        }
+        contentContainerView.frame = CGRect(x: 0, y: 0, width: containerSize.width, height: containerSize.height)
     }
     
     open func layoutEditIcon(with attributes: MessagesCollectionViewLayoutAttributes) {
@@ -648,7 +662,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         if !isReaction {
             reactionView.frame = .zero
             reactionView.isHidden = true
-            messageContainerView.uncut()
+            contentContainerView.uncut()
         } else {
             var origin: CGPoint = .zero
             reactionView.isHidden = false
@@ -676,17 +690,17 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             
             reactionView.frame = CGRect(origin: origin, size: reactionSize)
             
-            messageContainerView.cut(by: reactionView, margin: 2)
+            contentContainerView.cut(by: reactionView, margin: 2)
         }
     }
     
     /// Positions the cell's status view.
     /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
-    open func layoutStatusView(with attributes: MessagesCollectionViewLayoutAttributes, reactionAdded: CGFloat) {
+    open func layoutStatusView(with attributes: MessagesCollectionViewLayoutAttributes) {
         var origin = CGPoint.zero
 
         origin.x = attributes.statusViewPadding.left
-        origin.y = messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom + reactionAdded
+        origin.y = messageContainerView.frame.maxY + attributes.messageContainerPadding.bottom
         
         statusView.frame = CGRect(origin: origin, size: attributes.statusViewSize)
     }
