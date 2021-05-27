@@ -130,7 +130,7 @@ internal extension UIView {
         let p: CGMutablePath = CGMutablePath()
         self.clipsToBounds = false
         p.addRect(self.bounds)
-        let frame = self.convert(view.frame, to: self.superview)
+        let frame = view.frame
         p.addRoundedRect(in: CGRect(x: frame.minX - margin / 2, y: frame.minY - margin / 2, width: frame.width + margin, height: frame.height + margin), cornerWidth: view.layer.cornerRadius + (margin / 2), cornerHeight: view.layer.cornerRadius + (margin / 2))
 
         let s = CAShapeLayer()

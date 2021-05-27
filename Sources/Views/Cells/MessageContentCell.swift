@@ -298,8 +298,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         switch true {
         case messageContainerView.frame.contains(touchLocation):
             delegate?.didDoubleTapMessage(in: self)
-        case replyContainerView.frame.contains(touchLocation):
-            delegate?.didDoubleTapMessage(in: self)
         default:
             break
         }
@@ -309,8 +307,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         let touchLocation = gesture.location(in: self)
         
         switch true {
-        case messageContainerView.frame.contains(touchLocation),
-             replyContainerView.frame.contains(touchLocation):
+        case messageContainerView.frame.contains(touchLocation):
             if gesture.state == .began {
                 UIView.animate(withDuration: 0.25) {
                     self.messageContainerView.transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
@@ -339,7 +336,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         case .began:
             startAnimation = true
             isAvailableGesture = false
-            safePanWork = contentContainerView.frame.contains(gesture.location(in: self)) || replyContainerView.frame.contains(gesture.location(in: self))
+            safePanWork = messageContainerView.frame.contains(gesture.location(in: self))
             contentView.addSubview(replyIconImage)
             
             if presentMessage.isOwner {
@@ -592,6 +589,9 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             reactionView.frame = .zero
             reactionView.isHidden = true
             contentContainerView.uncut()
+            if messageContainerView.contains(reactionView) {
+                reactionView.removeFromSuperview()
+            }
         } else {
             var origin: CGPoint = .zero
             let reactionSize = attributes.reactionViewSize
@@ -604,13 +604,13 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             switch attributes.avatarPosition.horizontal {
             case .cellLeading:
                 if reactionSize.width > messageContainterWidth - attributes.reactionViewLeadingMargin - attributes.reactionViewTrailingMargin {
-                    origin.x = contentContainerView.frame.minX + (messageContainterWidth - reactionSize.width) / 2
+                    origin.x = contentContainerView.frame.minX + attributes.reactionViewLeadingMargin
                 } else {
                     origin.x = contentContainerView.frame.maxX - attributes.reactionViewTrailingMargin - reactionSize.width
                 }
             case .cellTrailing:
                 if reactionSize.width > messageContainterWidth - attributes.reactionViewLeadingMargin - attributes.reactionViewTrailingMargin {
-                    origin.x = contentContainerView.frame.maxX - (messageContainterWidth - reactionSize.width) / 2 - reactionSize.width
+                    origin.x = contentContainerView.frame.maxX - attributes.reactionViewTrailingMargin - reactionSize.width
                 } else {
                     origin.x = contentContainerView.frame.minX + attributes.reactionViewLeadingMargin
                 }
@@ -618,10 +618,13 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
                 fatalError(MessageKitError.avatarPositionUnresolved)
             }
             
+            if !messageContainerView.contains(reactionView) {
+                addSubview(reactionView)
+            }
             reactionView.frame = CGRect(origin: origin, size: reactionSize)
             reactionView.layer.cornerRadius = reactionView.frame.height / 2
             reactionView.clipsToBounds = true
-            contentContainerView.cut(by: reactionView, margin: 3)
+            messageContainerView.cut(by: reactionView, margin: 3)
         }
     }
     
