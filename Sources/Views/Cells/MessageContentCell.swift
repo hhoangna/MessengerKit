@@ -167,7 +167,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         contentView.addSubview(avatarView)
         contentView.addSubview(messageTimestampLabel)
         contentView.addSubview(editIconImage)
-        messageContainerView.addSubview(reactionView)
+        contentView.addSubview(reactionView)
         contentView.addSubview(statusView)
     }
 
@@ -316,12 +316,14 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
                 UIView.animate(withDuration: 0.25) {
                     self.messageContainerView.transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
                     self.replyContainerView.transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
+                    self.reactionView.transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
                     self.editIconImage.transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
                 } completion: { (done) in
                     self.delegate?.didHoldMessage(in: self, at: touchLocation)
                     UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.4, options: [.allowUserInteraction]) {
                         self.messageContainerView.transform = .identity
                         self.replyContainerView.transform = .identity
+                        self.reactionView.transform = .identity
                         self.editIconImage.transform = .identity
                     }
                 }
@@ -372,6 +374,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
                 if translation.x < 0 {
                     self.messageContainerView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
                     self.replyContainerView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+                    self.reactionView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
                     self.editIconImage.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
                     self.accessoryView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
 
@@ -400,6 +403,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
                 if translation.x > 0 {
                     self.messageContainerView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
                     self.replyContainerView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
+                    self.reactionView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
                     self.editIconImage.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
                     self.accessoryView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: 0)
                     
@@ -433,6 +437,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.3, options: [.allowUserInteraction]) {
                 self.messageContainerView.transform = .identity
                 self.replyContainerView.transform = .identity
+                self.reactionView.transform = .identity
                 self.editIconImage.transform = .identity
                 self.accessoryView.transform = .identity
 
@@ -643,7 +648,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         if !isReaction {
             reactionView.frame = .zero
             reactionView.isHidden = true
-            messageContainerView.clipsToBounds = true
             messageContainerView.uncut()
         } else {
             var origin: CGPoint = .zero
@@ -672,7 +676,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             
             reactionView.frame = CGRect(origin: origin, size: reactionSize)
             
-            messageContainerView.clipsToBounds = false
             messageContainerView.cut(by: reactionView, margin: 2)
         }
     }
@@ -794,9 +797,11 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         self.messageContainerView.layer.animateBackgroundColor(from: self.messageContainerView.backgroundColor ?? .clear, to: color, withDuration: 0.65)
         UIView.animate(withDuration: 0.25) {
             self.messageContainerView.transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
+            self.reactionView.transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
         } completion: { (done) in
             UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.4, options: .allowUserInteraction) {
                 self.messageContainerView.transform = .identity
+                self.reactionView.transform = .identity
             }
         }
     }

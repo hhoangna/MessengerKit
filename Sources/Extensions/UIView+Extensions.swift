@@ -128,7 +128,7 @@ internal extension UIView {
     
     func cut(by view: UIView, margin: CGFloat) {
         let p: CGMutablePath = CGMutablePath()
-        self.clipsToBounds = false
+        self.clipsToBounds = true
         p.addRect(self.bounds)
         let frame = self.convert(view.frame, to: self.superview)
         p.addRoundedRect(in: CGRect(x: frame.minX - margin / 2, y: frame.minY - margin / 2, width: frame.width + margin, height: frame.height + margin), cornerWidth: view.layer.cornerRadius + (margin / 2), cornerHeight: view.layer.cornerRadius + (margin / 2))
