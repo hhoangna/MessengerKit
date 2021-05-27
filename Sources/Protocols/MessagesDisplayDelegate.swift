@@ -41,6 +41,15 @@ public protocol MessagesDisplayDelegate: AnyObject {
     /// - Note:
     ///   The default value returned by this method is `MessageStyle.bubble`.
     func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle
+
+    /// - Parameters:
+    ///   - message: The `MessageType` that will be displayed by this cell.
+    ///   - indexPath: The `IndexPath` of the cell.
+    ///   - messagesCollectionView: The `MessagesCollectionView` in which this cell will be displayed.
+    ///
+    /// - Note:
+    ///   The default value returned by this method is `0`.
+    func radiusMessage(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat
     
     /// Specifies the background highlight color of the `MessageContainerView`.
     ///
@@ -292,6 +301,10 @@ public extension MessagesDisplayDelegate {
 
     func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
         return .bubble
+    }
+    
+    func radiusMessage(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        return 0
     }
     
     func backgroundHighlightColor(at  indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {

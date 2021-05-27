@@ -46,8 +46,8 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         return containerView
     }()
     
-    open var contentContainerView: MessageContainerView = {
-        let view = MessageContainerView()
+    open var contentContainerView: UIView = {
+        let view = UIView()
         
         return view
     }()
@@ -236,7 +236,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         presentMessage = message
 
         let messageColor = displayDelegate.backgroundColor(for: message, at: indexPath, in: messagesCollectionView)
-        let messageStyle = displayDelegate.messageStyle(for: message, at: indexPath, in: messagesCollectionView)
+        let messageRadius = displayDelegate.radiusMessage(for: message, at: indexPath, in: messagesCollectionView)
         let messageReplyColor = displayDelegate.replyColor(for: message, at: indexPath, in: messagesCollectionView)
 
         displayDelegate.configureAvatarView(avatarView, for: message, at: indexPath, in: messagesCollectionView)
@@ -250,8 +250,9 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         }
         
         contentContainerView.backgroundColor = messageColor
+        contentContainerView.layer.cornerRadius = messageRadius
         replyContainerView.backgroundColor = messageReplyColor
-        contentContainerView.style = messageStyle
+//        contentContainerView.style = messageStyle
         backgroundColor = .clear
 
         let topCellLabelText = dataSource.cellTopLabelAttributedText(for: message, at: indexPath)
