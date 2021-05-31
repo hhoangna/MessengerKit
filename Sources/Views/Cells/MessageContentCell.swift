@@ -561,18 +561,19 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         if attributes.messageEditedStatus {
             editIconImage.isHidden = false
             var origin: CGPoint = .zero
+            let frame = messageContainerView.convert(contentContainerView.frame, to: contentView)
 
             if attributes.messageReplied {
-                origin.y = contentContainerView.frame.maxY - 14
+                origin.y = frame.maxY - 14
             } else {
-                origin.y = contentContainerView.frame.minY + (contentContainerView.frame.height / 2) - 7
+                origin.y = frame.minY + (frame.height / 2) - 7
             }
 
             switch attributes.avatarPosition.horizontal {
             case .cellLeading:
-                origin.x = contentContainerView.frame.maxX + 8
+                origin.x = frame.maxX + 8
             case .cellTrailing:
-                origin.x = contentContainerView.frame.minX - 22
+                origin.x = frame.minX - 22
             default:
                 break
             }
