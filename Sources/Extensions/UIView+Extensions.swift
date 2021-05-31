@@ -32,13 +32,13 @@ internal extension UIView {
         }
         translatesAutoresizingMaskIntoConstraints = false
 
-	    let constraints: [NSLayoutConstraint] = [
-    	    leftAnchor.constraint(equalTo: superview.leftAnchor),
-    	    rightAnchor.constraint(equalTo: superview.rightAnchor),
-    	    topAnchor.constraint(equalTo: superview.topAnchor),
-    	    bottomAnchor.constraint(equalTo: superview.bottomAnchor)
-    	    ]
-	    NSLayoutConstraint.activate(constraints)
+        let constraints: [NSLayoutConstraint] = [
+            leftAnchor.constraint(equalTo: superview.leftAnchor),
+            rightAnchor.constraint(equalTo: superview.rightAnchor),
+            topAnchor.constraint(equalTo: superview.topAnchor),
+            bottomAnchor.constraint(equalTo: superview.bottomAnchor)
+            ]
+        NSLayoutConstraint.activate(constraints)
     }
 
     func centerInSuperview() {
@@ -155,6 +155,22 @@ internal extension UIView {
         s.fillRule = CAShapeLayerFillRule.evenOdd
 
         self.layer.mask = s
+    }
+    
+    func animateBorder(to color: UIColor, duration: Double) {
+        let borderColorAnimation: CABasicAnimation = CABasicAnimation(keyPath: "borderColor")
+        borderColorAnimation.fromValue = layer.borderColor
+        borderColorAnimation.toValue = color.cgColor
+        borderColorAnimation.duration = duration
+        borderColorAnimation.autoreverses = true
+        layer.add(borderColorAnimation, forKey: "borderColor")
+
+        let borderWidthAnimation: CABasicAnimation = CABasicAnimation(keyPath: "borderWidth")
+        borderWidthAnimation.fromValue = layer.borderWidth
+        borderWidthAnimation.toValue = 2.0
+        borderWidthAnimation.duration = duration
+        borderWidthAnimation.autoreverses = true
+        layer.add(borderWidthAnimation, forKey: "borderWidth")
     }
 }
 

@@ -734,7 +734,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     }
     
     open func highlightMessageContainerView(with color: UIColor) {
-        self.contentContainerView.layer.animateBackgroundColor(from: self.contentContainerView.backgroundColor ?? .clear, to: color, withDuration: 0.65)
+        self.contentContainerView.animateBorder(to: color, duration: 1)
         UIView.animate(withDuration: 0.25) {
             self.contentContainerView.transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
         } completion: { (done) in
