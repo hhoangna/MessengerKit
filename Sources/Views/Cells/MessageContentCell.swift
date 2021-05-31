@@ -239,6 +239,14 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         contentContainerView.backgroundColor = messageColor
         contentContainerView.layer.cornerRadius = messageRadius
         replyContainerView.backgroundColor = messageReplyColor
+        
+        if #available(iOS 13, *) {
+            reactionView.layer.borderColor = UIColor.clear.cgColor
+            reactionView.layer.borderWidth = 0
+        } else {
+            reactionView.layer.borderColor = messagesCollectionView.superview?.backgroundColor?.cgColor
+            reactionView.layer.borderWidth = 1.5
+        }
 //        contentContainerView.style = messageStyle
         backgroundColor = .clear
 
@@ -618,7 +626,9 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             reactionView.frame = CGRect(origin: origin, size: reactionSize)
             reactionView.layer.cornerRadius = reactionView.frame.height / 2
             reactionView.clipsToBounds = true
-            contentContainerView.cut(by: reactionView, margin: 3)
+            if #available(iOS 13, *) {
+                contentContainerView.cut(by: reactionView, margin: 3)
+            }
         }
     }
     
