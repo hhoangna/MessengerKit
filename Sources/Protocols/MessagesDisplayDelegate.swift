@@ -51,6 +51,24 @@ public protocol MessagesDisplayDelegate: AnyObject {
     ///   The default value returned by this method is `0`.
     func radiusMessage(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat
     
+    /// - Parameters:
+    ///   - message: The `MessageType` that will be displayed by this cell.
+    ///   - indexPath: The `IndexPath` of the cell.
+    ///   - messagesCollectionView: The `MessagesCollectionView` in which this cell will be displayed.
+    ///
+    /// - Note:
+    ///   The default value returned by this method is `0`.
+    func borderMessageWidth(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat
+    
+    /// - Parameters:
+    ///   - message: The `MessageType` that will be displayed by this cell.
+    ///   - indexPath: The `IndexPath` of the cell.
+    ///   - messagesCollectionView: The `MessagesCollectionView` in which this cell will be displayed.
+    ///
+    /// - Note:
+    ///   The default value returned by this method is `0`.
+    func borderMesssageColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor
+    
     /// Specifies the background highlight color of the `MessageContainerView`.
     ///
     /// - Parameters:
@@ -305,6 +323,14 @@ public extension MessagesDisplayDelegate {
     
     func radiusMessage(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
         return 0
+    }
+    
+    func borderMessageWidth(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        return 0
+    }
+    
+    func borderMesssageColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
+        return .clear
     }
     
     func backgroundHighlightColor(at  indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {

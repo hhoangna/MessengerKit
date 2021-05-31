@@ -225,6 +225,8 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         let messageColor = displayDelegate.backgroundColor(for: message, at: indexPath, in: messagesCollectionView)
         let messageRadius = displayDelegate.radiusMessage(for: message, at: indexPath, in: messagesCollectionView)
         let messageReplyColor = displayDelegate.replyColor(for: message, at: indexPath, in: messagesCollectionView)
+        let messageBoderWidth = displayDelegate.borderMessageWidth(for: message, at: indexPath, in: messagesCollectionView)
+        let messageBoderColor = displayDelegate.borderMesssageColor(for: message, at: indexPath, in: messagesCollectionView)
 
         displayDelegate.configureAvatarView(avatarView, for: message, at: indexPath, in: messagesCollectionView)
 
@@ -238,8 +240,10 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         
         contentContainerView.backgroundColor = messageColor
         contentContainerView.layer.cornerRadius = messageRadius
+        contentContainerView.layer.borderWidth = messageBoderWidth
+        contentContainerView.layer.borderColor = messageBoderColor.cgColor
+        
         replyContainerView.backgroundColor = messageReplyColor
-//        contentContainerView.style = messageStyle
         backgroundColor = .clear
 
         let topCellLabelText = dataSource.cellTopLabelAttributedText(for: message, at: indexPath)
