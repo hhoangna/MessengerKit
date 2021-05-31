@@ -141,17 +141,9 @@ internal extension UIView {
 
         let s = CAShapeLayer()
         s.path = p
-        s.lineWidth = layer.borderWidth
-        s.strokeColor = layer.borderColor
         s.fillRule = CAShapeLayerFillRule.evenOdd
 
         self.layer.mask = s
-        
-        let borderLayer = CAShapeLayer()
-        borderLayer.path = p
-        borderLayer.lineWidth = layer.borderWidth
-        borderLayer.strokeColor = layer.borderColor
-        self.layer.addSublayer(borderLayer)
     }
     
     func uncut() {
