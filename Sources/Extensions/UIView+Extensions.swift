@@ -132,11 +132,11 @@ internal extension UIView {
         p.addRect(self.bounds)
         if let frame = superview?.convert(view.frame, to: self) {
             let cutRect = CGRect(x: frame.minX - margin / 2, y: frame.minY - margin / 2, width: frame.width + margin, height: frame.height + margin)
-            p.addRoundedRect(in: cutRect, cornerWidth: cutRect.width / 2, cornerHeight: cutRect.height / 2)
+            p.addRoundedRect(in: cutRect, cornerWidth: cutRect.width > cutRect.height ? cutRect.height / 2 : cutRect.width / 2, cornerHeight: cutRect.height / 2)
         } else {
             let frame = self.convert(view.frame, to: self.superview)
             let cutRect = CGRect(x: frame.minX - margin / 2, y: frame.minY - margin / 2, width: frame.width + margin, height: frame.height + margin)
-            p.addRoundedRect(in: cutRect, cornerWidth: cutRect.width / 2, cornerHeight: cutRect.height / 2)
+            p.addRoundedRect(in: cutRect, cornerWidth: cutRect.width > cutRect.height ? cutRect.height / 2 : cutRect.width / 2, cornerHeight: cutRect.height / 2)
         }
 
         let s = CAShapeLayer()
