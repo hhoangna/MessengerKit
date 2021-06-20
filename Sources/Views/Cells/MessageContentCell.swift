@@ -107,7 +107,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     
     lazy var replyIconImage: UIButton = {
         let replyIcon = UIButton()
-        replyIcon.setImage(#imageLiteral(resourceName: "icBlackReply").withRenderingMode(.alwaysOriginal), for: .normal)
+        replyIcon.setImage(UIImage(named: "icBlackReply", in: Bundle.messageKitAssetBundle, compatibleWith: nil)?.withRenderingMode(.alwaysOriginal), for: .normal)
         replyIcon.tintColor = UIColor(red: 17/255, green: 17/255, blue: 17/255, alpha: 1)
         replyIcon.isUserInteractionEnabled = false
         replyIcon.contentEdgeInsets = UIEdgeInsets(top: 3, left: 3, bottom: 3, right: 3)
@@ -121,7 +121,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     
     lazy var editIconImage: UIButton = {
         let replyIcon = UIButton()
-        replyIcon.setImage(#imageLiteral(resourceName: "icBlackPen").withRenderingMode(.alwaysOriginal), for: .normal)
+        replyIcon.setImage(UIImage(named: "icBlackPenEdit", in: Bundle.messageKitAssetBundle, compatibleWith: nil)?.withRenderingMode(.alwaysOriginal), for: .normal)
         replyIcon.tintColor = UIColor(named: "111111")
         replyIcon.alpha = 0.4
         replyIcon.isUserInteractionEnabled = false
