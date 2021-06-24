@@ -41,6 +41,8 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
     public var messageReplyContainerSize: CGSize = .zero
     public var messageReplyContainerMargin: CGFloat = 17
     
+    public var messageMediaDescriptionSize: CGSize = .zero
+    
     public var linkInfoContainerSize: CGSize = .zero
     public var linkPreviewHeight: CGFloat = 150
 
@@ -73,7 +75,7 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
     public var messageEditedStatus: Bool = false
     public var messageReaction: Bool = false
     public var messageReplied: Bool = false
-
+    
     public var linkPreviewFonts = LinkPreviewFonts(titleFont: .preferredFont(forTextStyle: .footnote),
                                                    teaserFont: .preferredFont(forTextStyle: .caption2),
                                                    domainFont: .preferredFont(forTextStyle: .caption1))
@@ -89,6 +91,7 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
         copy.messageContainerSize = messageContainerSize
         copy.messageReplyContainerSize = messageReplyContainerSize
         copy.messageReplyContainerMargin = messageReplyContainerMargin
+        copy.messageMediaDescriptionSize = messageMediaDescriptionSize
         copy.linkInfoContainerSize = linkInfoContainerSize
         copy.linkPreviewHeight = linkPreviewHeight
         copy.messageContainerPadding = messageContainerPadding
@@ -130,6 +133,7 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
                 && attributes.messageContainerSize == messageContainerSize
                 && attributes.messageReplyContainerSize == messageReplyContainerSize
                 && attributes.messageReplyContainerMargin == messageReplyContainerMargin
+                && attributes.messageMediaDescriptionSize == messageMediaDescriptionSize
                 && attributes.linkPreviewHeight == linkPreviewHeight
                 && attributes.linkInfoContainerSize == linkInfoContainerSize
                 && attributes.messageContainerPadding == messageContainerPadding

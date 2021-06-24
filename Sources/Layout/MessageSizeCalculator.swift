@@ -91,6 +91,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
         attributes.messageContainerSize = messageContainerSize(for: message)
         attributes.messageReplyContainerSize = messageReplySize(for: message)
         attributes.linkInfoContainerSize = linkPreviewSize(for: message)
+        attributes.messageMediaDescriptionSize = messageMediaDescriptionSize(for: message)
         attributes.linkPreviewHeight = linkPreviewHeigt
         attributes.cellTopLabelSize = cellTopLabelSize(for: message, at: indexPath)
         attributes.cellTopLabelAlignment = cellTopLabelAlignment(for: message)
@@ -326,6 +327,10 @@ open class MessageSizeCalculator: CellSizeCalculator {
     
     open func linkPreviewSize(for message: MessageType) -> CGSize {
         // Returns .zero by default
+        return .zero
+    }
+    
+    open func messageMediaDescriptionSize(for message: MessageType) -> CGSize {
         return .zero
     }
 
