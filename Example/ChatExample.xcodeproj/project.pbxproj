@@ -410,7 +410,7 @@
 				TargetAttributes = {
 					882B5E321CF7D4B900B6E160 = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = 373X8CRW8X;
+						DevelopmentTeam = K8M97J7A5K;
 						LastSwiftMigration = 0800;
 					};
 					882B5E481CF7D4B900B6E160 = {
@@ -773,7 +773,7 @@
 			baseConfigurationReference = A17AACB177F81B8A5ACA7D64 /* Pods-ChatExample.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 373X8CRW8X;
+				DEVELOPMENT_TEAM = K8M97J7A5K;
 				INFOPLIST_FILE = "$(SRCROOT)/Sources/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.messagekit.ChatExample;
@@ -787,7 +787,7 @@
 			baseConfigurationReference = ABBB75782A3594E6FECDF6CD /* Pods-ChatExample.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 373X8CRW8X;
+				DEVELOPMENT_TEAM = K8M97J7A5K;
 				INFOPLIST_FILE = "$(SRCROOT)/Sources/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.messagekit.ChatExample;

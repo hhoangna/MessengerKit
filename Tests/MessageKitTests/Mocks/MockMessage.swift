@@ -79,6 +79,14 @@ struct MockLinkItem: LinkItem {
 }
 
 struct MockMessage: MessageType {
+    var isOwner: Bool
+    
+    var isEdited: Bool
+    
+    var hasReaction: Int
+    
+    var isReplied: Bool
+    
 
     var messageId: String
     var sender: SenderType {
