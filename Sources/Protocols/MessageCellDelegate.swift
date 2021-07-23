@@ -198,7 +198,7 @@ public protocol MessageCellDelegate: MessageLabelDelegate {
     /// You can get a reference to the `MessageType` for the cell by using `UICollectionView`'s
     /// `indexPath(for: cell)` method. Then using the returned `IndexPath` with the `MessagesDataSource`
     /// method `messageForItem(at:indexPath:messagesCollectionView)`.
-    func didTapPlayButton(in cell: AudioMessageCell)
+    func didTapPlayButton(in cell: MessageContentCell)
 
     /// Triggered when audio player start playing audio.
     ///
@@ -208,7 +208,7 @@ public protocol MessageCellDelegate: MessageLabelDelegate {
     /// You can get a reference to the `MessageType` for the cell by using `UICollectionView`'s
     /// `indexPath(for: cell)` method. Then using the returned `IndexPath` with the `MessagesDataSource`
     /// method `messageForItem(at:indexPath:messagesCollectionView)`.
-    func didStartAudio(in cell: AudioMessageCell)
+    func didStartAudio(in cell: MessageContentCell)
 
     /// Triggered when audio player pause audio.
     ///
@@ -218,7 +218,7 @@ public protocol MessageCellDelegate: MessageLabelDelegate {
     /// You can get a reference to the `MessageType` for the cell by using `UICollectionView`'s
     /// `indexPath(for: cell)` method. Then using the returned `IndexPath` with the `MessagesDataSource`
     /// method `messageForItem(at:indexPath:messagesCollectionView)`.
-    func didPauseAudio(in cell: AudioMessageCell)
+    func didPauseAudio(in cell: MessageContentCell)
 
     /// Triggered when audio player stoped audio.
     ///
@@ -228,7 +228,7 @@ public protocol MessageCellDelegate: MessageLabelDelegate {
     /// You can get a reference to the `MessageType` for the cell by using `UICollectionView`'s
     /// `indexPath(for: cell)` method. Then using the returned `IndexPath` with the `MessagesDataSource`
     /// method `messageForItem(at:indexPath:messagesCollectionView)`.
-    func didStopAudio(in cell: AudioMessageCell)
+    func didStopAudio(in cell: MessageContentCell)
 
 }
 
@@ -258,13 +258,13 @@ public extension MessageCellDelegate {
     
     func didTapImage(in cell: MessageCollectionViewCell) {}
 
-    func didTapPlayButton(in cell: AudioMessageCell) {}
+    func didTapPlayButton(in cell: MessageContentCell) {}
 
-    func didStartAudio(in cell: AudioMessageCell) {}
+    func didStartAudio(in cell: MessageContentCell) {}
 
-    func didPauseAudio(in cell: AudioMessageCell) {}
+    func didPauseAudio(in cell: MessageContentCell) {}
 
-    func didStopAudio(in cell: AudioMessageCell) {}
+    func didStopAudio(in cell: MessageContentCell) {}
 
     func didTapMessageBottomLabel(in cell: MessageCollectionViewCell) {}
     
