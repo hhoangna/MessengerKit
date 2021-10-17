@@ -703,7 +703,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             break
         }
         
-        let iconEditMaxX = editIconImage.isHidden == true ? 0 : editIconImage.frame.maxX
+        let iconEditMaxX = editIconImage.isHidden == true ? 0 : editIconImage.frame.width
         let iconEditMinX = editIconImage.isHidden == true ? 0 : editIconImage.frame.width + 8
 
         // Accessory view is always on the opposite side of avatar
