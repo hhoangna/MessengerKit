@@ -219,6 +219,10 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
         messageSizeCalculators().forEach { $0.replyImageIcon = newImage }
     }
     
+    public func setEditIconSize(_ newSize: CGSize) {
+        messageSizeCalculators().forEach { $0.editIconSize = newSize }
+    }
+    
     /// Set `incomingAvatarSize` of all `MessageSizeCalculator`s
     public func setMessageIncomingAvatarSize(_ newSize: CGSize) {
         messageSizeCalculators().forEach { $0.incomingAvatarSize = newSize }

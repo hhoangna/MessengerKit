@@ -30,6 +30,8 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
     // MARK: - Properties
     public var editImageIcon = UIImage(named: "icBlackPenEdit")
     public var replyImageIcon = UIImage(named: "icBlackReply")
+    
+    public var editIconSize: CGSize = CGSize(width: 14, height: 14)
 
     public var avatarSize: CGSize = .zero
     public var avatarPosition = AvatarPosition(vertical: .cellBottom)
@@ -123,6 +125,7 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
         copy.messageReplied = messageReplied
         copy.replyImageIcon = replyImageIcon
         copy.editImageIcon = editImageIcon
+        copy.editIconSize = editIconSize
         
         return copy
         // swiftlint:enable force_cast
@@ -167,6 +170,7 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
                 && attributes.messageReplied == messageReplied
                 && attributes.editImageIcon == editImageIcon
                 && attributes.replyImageIcon == replyImageIcon
+                && attributes.editIconSize == editIconSize
         } else {
             return false
         }
