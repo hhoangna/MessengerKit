@@ -685,17 +685,18 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     open func layoutAccessoryView(with attributes: MessagesCollectionViewLayoutAttributes) {
         
         var origin: CGPoint = .zero
-        
+        let frame = messageContainerView.convert(contentContainerView.frame, to: contentView)
+
         // Accessory view is set at the side space of the messageContainerView
         switch attributes.accessoryViewPosition {
         case .messageLabelTop:
             origin.y = messageTopLabel.frame.minY
         case .messageTop:
-            origin.y = contentContainerView.frame.minY
+            origin.y = frame.minY
         case .messageBottom:
-            origin.y = contentContainerView.frame.maxY - attributes.accessoryViewSize.height
+            origin.y = frame.maxY - attributes.accessoryViewSize.height
         case .messageCenter:
-            origin.y = contentContainerView.frame.midY - (attributes.accessoryViewSize.height / 2)
+            origin.y = frame.midY - (attributes.accessoryViewSize.height / 2)
         case .cellBottom:
             origin.y = attributes.frame.height - attributes.accessoryViewSize.height
         default:
@@ -708,9 +709,9 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         // Accessory view is always on the opposite side of avatar
         switch attributes.avatarPosition.horizontal {
         case .cellLeading:
-            origin.x = contentContainerView.frame.maxX + attributes.accessoryViewPadding.left + iconEditMaxX
+            origin.x = frame.maxX + attributes.accessoryViewPadding.left + iconEditMaxX
         case .cellTrailing:
-            origin.x = contentContainerView.frame.minX - attributes.accessoryViewPadding.right - attributes.accessoryViewSize.width - iconEditMinX
+            origin.x = frame.minX - attributes.accessoryViewPadding.right - attributes.accessoryViewSize.width - iconEditMinX
         case .natural:
             fatalError(MessageKitError.avatarPositionUnresolved)
         }
