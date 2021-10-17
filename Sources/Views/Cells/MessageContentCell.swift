@@ -107,12 +107,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     
     lazy var replyIconImage: UIButton = {
         let replyIcon = UIButton()
-        replyIcon.setImage(UIImage(named: "icBlackReply", in: Bundle.messageKitAssetBundle, compatibleWith: nil)?.withRenderingMode(.alwaysOriginal), for: .normal)
-        replyIcon.tintColor = UIColor(red: 17/255, green: 17/255, blue: 17/255, alpha: 1)
-        replyIcon.isUserInteractionEnabled = false
-        replyIcon.contentEdgeInsets = UIEdgeInsets(top: 3, left: 3, bottom: 3, right: 3)
-        replyIcon.layer.cornerRadius = 15
-        replyIcon.backgroundColor = .white
         replyIcon.translatesAutoresizingMaskIntoConstraints = false
         replyIcon.alpha = 0
         
@@ -121,9 +115,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     
     lazy var editIconImage: UIButton = {
         let replyIcon = UIButton()
-        replyIcon.setImage(UIImage(named: "icBlackPenEdit", in: Bundle.messageKitAssetBundle, compatibleWith: nil)?.withRenderingMode(.alwaysOriginal), for: .normal)
-        replyIcon.tintColor = UIColor(named: "111111")
-        replyIcon.alpha = 0.4
         replyIcon.isUserInteractionEnabled = false
         
         return replyIcon
@@ -192,6 +183,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         guard let attributes = layoutAttributes as? MessagesCollectionViewLayoutAttributes else { return }
 
         // Call this before other laying out other subviews
+        replyIconImage.setImage(attributes.replyImageIcon, for: .normal)
         layoutMessageContainerView(with: attributes)
         layoutEditIcon(with: attributes)
         layoutReactionView(with: attributes)
@@ -559,6 +551,8 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     
     open func layoutEditIcon(with attributes: MessagesCollectionViewLayoutAttributes) {
         if attributes.messageEditedStatus {
+            
+            editIconImage.setImage(attributes.editImageIcon, for: .normal)
             editIconImage.isHidden = false
             var origin: CGPoint = .zero
             let frame = messageContainerView.convert(contentContainerView.frame, to: contentView)

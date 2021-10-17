@@ -33,6 +33,9 @@ open class MessageSizeCalculator: CellSizeCalculator {
         self.layout = layout
     }
     
+    public var editImageIcon = UIImage(named: "icBlackPenEdit")
+    public var replyImageIcon = UIImage(named: "icBlackReply")
+
     public var incomingAvatarSize = CGSize(width: 30, height: 30)
     public var outgoingAvatarSize = CGSize(width: 30, height: 30)
 
@@ -82,6 +85,9 @@ open class MessageSizeCalculator: CellSizeCalculator {
         let dataSource = messagesLayout.messagesDataSource
         let indexPath = attributes.indexPath
         let message = dataSource.messageForItem(at: indexPath, in: messagesLayout.messagesCollectionView)
+        
+        attributes.replyImageIcon = replyImageIcon
+        attributes.editImageIcon = editImageIcon
 
         attributes.avatarSize = avatarSize(for: message)
         attributes.avatarPosition = avatarPosition(for: message)

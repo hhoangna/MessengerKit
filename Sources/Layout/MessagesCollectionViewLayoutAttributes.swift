@@ -28,6 +28,8 @@ import UIKit
 open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttributes {
 
     // MARK: - Properties
+    public var editImageIcon = UIImage(named: "icBlackPenEdit")
+    public var replyImageIcon = UIImage(named: "icBlackReply")
 
     public var avatarSize: CGSize = .zero
     public var avatarPosition = AvatarPosition(vertical: .cellBottom)
@@ -119,6 +121,8 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
         copy.messageEditedStatus = messageEditedStatus
         copy.messageReaction = messageReaction
         copy.messageReplied = messageReplied
+        copy.replyImageIcon = replyImageIcon
+        copy.editImageIcon = editImageIcon
         
         return copy
         // swiftlint:enable force_cast
@@ -161,6 +165,8 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
                 && attributes.messageEditedStatus == messageEditedStatus
                 && attributes.messageReaction == messageReaction
                 && attributes.messageReplied == messageReplied
+                && attributes.editImageIcon == editImageIcon
+                && attributes.replyImageIcon == replyImageIcon
         } else {
             return false
         }
