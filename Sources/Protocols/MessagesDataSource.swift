@@ -40,6 +40,8 @@ public protocol MessagesDataSource: AnyObject {
     ///   The default implementation of this method checks for equality between
     ///   the message's `SenderType` and the current `SenderType`.
     func isFromCurrentSender(message: MessageType) -> Bool
+    
+    func conversationForItem(at indexPath: IndexPath) -> Int
 
     /// The message to be used for a `MessageCollectionViewCell` at the given `IndexPath`.
     ///
@@ -142,6 +144,10 @@ public extension MessagesDataSource {
 
     func isFromCurrentSender(message: MessageType) -> Bool {
         return message.isOwner
+    }
+    
+    func conversationForItem(at indexPath: IndexPath) -> Int {
+        return 0
     }
 
     func numberOfItems(inSection section: Int, in messagesCollectionView: MessagesCollectionView) -> Int {
