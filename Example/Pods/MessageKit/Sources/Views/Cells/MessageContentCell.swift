@@ -266,13 +266,11 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             delegate?.didTapMessageBottomLabel(in: self)
         case accessoryView.frame.contains(touchLocation):
             delegate?.didTapAccessoryView(in: self)
-            delegate?.didTapAnywhere()
         case statusView.frame.contains(touchLocation):
             delegate?.didTapStatusView(in: self)
             delegate?.didTapAnywhere()
         case reactionView.frame.contains(touchLocation):
             delegate?.didTapReactionView(in: self)
-            delegate?.didTapAnywhere()
         default:
             delegate?.didTapBackground(in: self)
             delegate?.didTapAnywhere()
