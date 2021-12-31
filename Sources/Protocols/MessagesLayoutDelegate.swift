@@ -229,9 +229,15 @@ public protocol MessagesLayoutDelegate: AnyObject {
     /// - Note:
     ///   The default implementation will throw fatalError(). You must override this method if you are using messages with MessageType.custom.
     func customCellSizeCalculator(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CellSizeCalculator
+    
+
+    func messageSelectionViewSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize
 }
 
 public extension MessagesLayoutDelegate {
+    func messageSelectionViewSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize {
+        return .zero
+    }
 
     func headerViewSize(for section: Int, in messagesCollectionView: MessagesCollectionView) -> CGSize {
         return .zero

@@ -122,6 +122,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
         
         attributes.messageEditedStatus = message.isEdited
         attributes.messageReplied = message.isReplied
+        attributes.messageSelectionImageSize = messageSelectionViewSize(for: message, at: indexPath)
 
         if message.hasReaction > 0 {
             attributes.reactionViewTrailingMargin = trailingReactionViewMargin
@@ -341,6 +342,13 @@ open class MessageSizeCalculator: CellSizeCalculator {
     
     open func messageMediaDescriptionSize(for message: MessageType) -> CGSize {
         return .zero
+    }
+    
+    open func messageSelectionViewSize(for message: MessageType, at indexPath: IndexPath) -> CGSize {
+        let layoutDelegate = messagesLayout.messagesLayoutDelegate
+        let collectionView = messagesLayout.messagesCollectionView
+        let size = layoutDelegate.messageSelectionViewSize(for: message, at: indexPath, in: collectionView)
+        return size
     }
 
     open func messageContainerMaxWidth(for message: MessageType) -> CGFloat {

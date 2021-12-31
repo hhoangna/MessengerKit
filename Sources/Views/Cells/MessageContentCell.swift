@@ -28,6 +28,9 @@ import UIKit
 /// A subclass of `MessageCollectionViewCell` used to display text, media, and location messages.
 open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDelegate {
     
+    /// The view displaying the selection
+    open var selectionImage: UIImageView = UIImageView()
+    
     /// The view displaying the reaction
     open var reactionView: UIView = UIView()
     
@@ -165,6 +168,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         contentView.addSubview(editIconImage)
         messageContainerView.addSubview(reactionView)
         contentView.addSubview(statusView)
+        contentView.addSubview(selectionImage)
     }
 
     open override func prepareForReuse() {
@@ -174,6 +178,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         messageTopLabel.text = nil
         messageBottomLabel.text = nil
         messageTimestampLabel.attributedText = nil
+        selectionImage.image = nil
     }
 
     // MARK: - Configuration
@@ -195,6 +200,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         layoutAvatarView(with: attributes)
         layoutAccessoryView(with: attributes)
         layoutTimeLabelView(with: attributes)
+        layoutSelectionView(with: attributes)
     }
 
     /// Used to configure the cell.
@@ -249,6 +255,9 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         messageBottomLabel.attributedText = bottomMessageLabelText
         messageTimestampLabel.attributedText = messageTimestampLabelText
         messageTimestampLabel.isHidden = !messagesCollectionView.showMessageTimestampOnSwipeLeft
+        
+        let selectionIcon = displayDelegate.selectionIcon(for: message, at: indexPath, in: messagesCollectionView)
+        selectionImage.image = selectionIcon
     }
 
     /// Handle tap gesture on contentView and its subviews.
@@ -506,6 +515,9 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         let replyHeight = replySize.height > 0 ? replySize.height - attributes.messageReplyContainerMargin : 0
         let reactionSize = attributes.messageReaction ? attributes.reactionViewSize : .zero
         let reactionHeight = reactionSize.height > 0 ? reactionSize.height - attributes.reactionViewTopMargin : 0
+        let selectionImageSize = attributes.messageSelectionImageSize
+        let selectionImageWidth = attributes.messageSelectionImageSize.width > 0 ? attributes.messageSelectionImageSize.width + attributes.selectionImageLeadingMargin + attributes.selectionImageTrailingMargin :  0
+
         
         switch attributes.avatarPosition.vertical {
         case .messageBottom:
@@ -527,24 +539,24 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         }
         
         let avatarPadding = attributes.avatarLeadingTrailingPadding
-        let widthContainerView = max(containerSize.width, reactionSize.width + attributes.reactionViewLeadingMargin + attributes.reactionViewTrailingMargin, replySize.width)
+        let widthContainerView = max(containerSize.width, reactionSize.width + attributes.reactionViewLeadingMargin + attributes.reactionViewTrailingMargin, replySize.width) - selectionImageWidth
 
         switch attributes.avatarPosition.horizontal {
         case .cellLeading:
-            origin.x = attributes.avatarSize.width + attributes.messageContainerPadding.left + avatarPadding
+            origin.x = selectionImageWidth  + attributes.avatarSize.width + attributes.messageContainerPadding.left + avatarPadding
             
             replyContainerView.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: replySize)
             contentContainerView.frame = CGRect(x: 0, y: replyHeight, width: containerSize.width, height: containerSize.height)
         case .cellTrailing:
             origin.x = attributes.frame.width - attributes.avatarSize.width - widthContainerView - attributes.messageContainerPadding.right - avatarPadding
-            
+                        
             replyContainerView.frame = CGRect(origin: CGPoint(x: widthContainerView - replySize.width, y: 0), size: replySize)
-            contentContainerView.frame = CGRect(origin: CGPoint(x: widthContainerView - containerSize.width, y: replyHeight), size: containerSize)
+            contentContainerView.frame = CGRect(origin: CGPoint(x: 0 , y: replyHeight), size: CGSize(width: widthContainerView, height: containerSize.height))
 
         case .natural:
             fatalError(MessageKitError.avatarPositionUnresolved)
         }
-        
+
         messageContainerView.frame = CGRect(origin: origin, size: CGSize(width: widthContainerView, height: containerSize.height + replyHeight + reactionHeight))
     }
     
@@ -726,6 +738,17 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
                              y: contentContainerView.frame.minY + contentContainerView.frame.height * 0.5 - messageTimestampLabel.font.ascender * 0.5)
         let size = CGSize(width: attributes.messageTimeLabelSize.width, height: attributes.messageTimeLabelSize.height)
         messageTimestampLabel.frame = CGRect(origin: origin, size: size)
+    }
+    
+    ///  Positions the message bubble's time label.
+    /// - attributes: The `MessagesCollectionViewLayoutAttributes` for the cell.
+    open func layoutSelectionView(with attributes: MessagesCollectionViewLayoutAttributes) {
+        let paddingLeft: CGFloat = attributes.selectionImageLeadingMargin
+        let origin = CGPoint(x: paddingLeft,
+                             y: messageContainerView.frame.minY + messageContainerView.frame.height * 0.5 - attributes.messageSelectionImageSize.height * 0.5)
+        let size = attributes.messageSelectionImageSize
+        selectionImage.frame = CGRect(origin: origin, size: size)
+        selectionImage.backgroundColor = .blue
     }
     
     open func highlightMessageContainerView(with color: UIColor) {

@@ -115,6 +115,23 @@ public protocol MessagesDisplayDelegate: AnyObject {
     ///
     ///   All other senders: Gray
     func replyColor(for message: MessageType, at  indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor
+    
+    // MARK: - Selection View
+
+    /// Specifies the image of the Selection view.
+    ///
+    /// - Parameters:
+    ///   - message: A `MessageType` with a `MessageKind` case of `.text` to which the color will apply.
+    ///   - indexPath: The `IndexPath` of the cell.
+    ///   - messagesCollectionView: The `MessagesCollectionView` in which this cell will be displayed.
+    ///
+    /// - Note:
+    ///   The default value returned by this method is determined by the messages `SenderType`.
+    ///
+    ///   Current sender: UIColor.white
+    ///
+    ///   All other senders: UIColor.darkText
+    func selectionIcon(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIImage?
 
     /// The section header to use for a given `IndexPath`.
     ///
@@ -345,6 +362,10 @@ public extension MessagesDisplayDelegate {
         default:
             return message.isOwner ? .outgoingMessageBackground : .incomingMessageBackground
         }
+    }
+    
+    func selectionIcon(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIImage? {
+        return UIImage()
     }
     
     func replyColor(for message: MessageType, at  indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {

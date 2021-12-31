@@ -63,7 +63,10 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
     public var messageBottomLabelSize: CGSize = .zero
 
     public var messageTimeLabelSize: CGSize = .zero
-
+    public var messageSelectionImageSize: CGSize = .zero
+    public var selectionImageLeadingMargin: CGFloat = 10
+    public var selectionImageTrailingMargin: CGFloat = 10
+    
     public var accessoryViewSize: CGSize = .zero
     public var accessoryViewPadding: HorizontalEdgeInsets = .zero
     public var accessoryViewPosition: AccessoryPosition = .messageCenter
@@ -126,6 +129,7 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
         copy.replyImageIcon = replyImageIcon
         copy.editImageIcon = editImageIcon
         copy.editIconSize = editIconSize
+        copy.messageSelectionImageSize = messageSelectionImageSize
         
         return copy
         // swiftlint:enable force_cast
@@ -171,6 +175,8 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
                 && attributes.editImageIcon == editImageIcon
                 && attributes.replyImageIcon == replyImageIcon
                 && attributes.editIconSize == editIconSize
+                && attributes.messageSelectionImageSize == messageSelectionImageSize
+
         } else {
             return false
         }
