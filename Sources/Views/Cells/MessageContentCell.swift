@@ -128,12 +128,14 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         return replyIcon
     }()
     
+    open var messageContentMode: MessageContentMode = .normal
+
+    
     /// Customized for gesture
     var startAnimation: Bool = false
     var presentMessage: MessageType!
     var isAvailableGesture: Bool = false
     var safePanWork: Bool = false
-    var messageContentMode: MessageContentMode = .normal
 
     /// The `MessageCellDelegate` for the cell.
     open weak var delegate: MessageCellDelegate?
