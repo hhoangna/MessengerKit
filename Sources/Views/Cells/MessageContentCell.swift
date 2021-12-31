@@ -750,7 +750,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
                              y: messageContainerView.frame.minY + messageContainerView.frame.height * 0.5 - attributes.messageSelectionImageSize.height * 0.5)
         let size = attributes.messageSelectionImageSize
         selectionImage.frame = CGRect(origin: origin, size: size)
-        selectionImage.backgroundColor = .blue
     }
     
     open func highlightMessageContainerView(with color: UIColor) {
