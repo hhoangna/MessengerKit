@@ -478,10 +478,12 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         let padding = attributes.avatarLeadingTrailingPadding
         let reactionSize = attributes.messageReaction ? attributes.reactionViewSize : .zero
         let reactionHeight = reactionSize.height > 0 ? reactionSize.height - attributes.reactionViewTopMargin : 0
+        let selectionImageSize = attributes.messageSelectionImageSize
+        let selectionImageWidth = selectionImageSize.width > 0 ? selectionImageSize.width + attributes.selectionImageLeadingMargin + attributes.selectionImageTrailingMargin :  0
 
         switch attributes.avatarPosition.horizontal {
         case .cellLeading:
-            origin.x = padding
+            origin.x = padding + selectionImageWidth
         case .cellTrailing:
             origin.x = attributes.frame.width - attributes.avatarSize.width - padding
         case .natural:
