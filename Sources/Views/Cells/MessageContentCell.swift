@@ -25,7 +25,7 @@
 import Foundation
 import UIKit
 
-enum MessageContentMode {
+public enum MessageContentMode {
     case normal
     case multiSelect
 }
