@@ -89,6 +89,17 @@ public protocol MessageCellDelegate: MessageLabelDelegate {
     /// method `messageForItem(at:indexPath:messagesCollectionView)`.
     func didTapMessage(in cell: MessageCollectionViewCell, at location: CGPoint)
     
+    /// Triggered when a tap occurs in the `cell`.
+    ///
+    /// - Parameters:
+    ///   - cell: The cell where the tap occurred.
+    ///
+    /// - Note:
+    /// You can get a reference to the `MessageType` for the cell by using `UICollectionView`'s
+    /// `indexPath(for: cell)` method. Then using the returned `IndexPath` with the `MessagesDataSource`
+    /// method `messageForItem(at:indexPath:messagesCollectionView)`.
+    func didTapCell(in cell: MessageCollectionViewCell, at location: CGPoint)
+    
     /// Triggered when a tap occurs in the `MessageContainerView`.
     ///
     /// - Parameters:

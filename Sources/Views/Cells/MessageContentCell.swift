@@ -25,6 +25,11 @@
 import Foundation
 import UIKit
 
+enum MessageContentMode {
+    case normal
+    case multiSelect
+}
+
 /// A subclass of `MessageCollectionViewCell` used to display text, media, and location messages.
 open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDelegate {
     
@@ -128,6 +133,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     var presentMessage: MessageType!
     var isAvailableGesture: Bool = false
     var safePanWork: Bool = false
+    var messageContentMode: MessageContentMode = .normal
 
     /// The `MessageCellDelegate` for the cell.
     open weak var delegate: MessageCellDelegate?
@@ -264,6 +270,11 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     open override func handleTapGesture(_ gesture: UIGestureRecognizer) {
         let touchLocation = gesture.location(in: self)
 
+        if messageContentMode == .multiSelect {
+            delegate?.didTapCell(in: self, at: inTouch)
+            return
+        }
+        
         switch true {
         case messageContainerView.frame.contains(touchLocation) && !cellContentView(canHandle: convert(touchLocation, to: messageContainerView)):
             let inTouch = convert(touchLocation, to: messageContainerView)
