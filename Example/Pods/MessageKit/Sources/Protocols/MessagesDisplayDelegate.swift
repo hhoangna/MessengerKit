@@ -42,6 +42,48 @@ public protocol MessagesDisplayDelegate: AnyObject {
     ///   The default value returned by this method is `MessageStyle.bubble`.
     func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle
 
+    /// - Parameters:
+    ///   - message: The `MessageType` that will be displayed by this cell.
+    ///   - indexPath: The `IndexPath` of the cell.
+    ///   - messagesCollectionView: The `MessagesCollectionView` in which this cell will be displayed.
+    ///
+    /// - Note:
+    ///   The default value returned by this method is `0`.
+    func radiusMessage(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat
+    
+    /// - Parameters:
+    ///   - message: The `MessageType` that will be displayed by this cell.
+    ///   - indexPath: The `IndexPath` of the cell.
+    ///   - messagesCollectionView: The `MessagesCollectionView` in which this cell will be displayed.
+    ///
+    /// - Note:
+    ///   The default value returned by this method is `0`.
+    func borderMessageWidth(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat
+    
+    /// - Parameters:
+    ///   - message: The `MessageType` that will be displayed by this cell.
+    ///   - indexPath: The `IndexPath` of the cell.
+    ///   - messagesCollectionView: The `MessagesCollectionView` in which this cell will be displayed.
+    ///
+    /// - Note:
+    ///   The default value returned by this method is `0`.
+    func borderMesssageColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor
+    
+    /// Specifies the background highlight color of the `MessageContainerView`.
+    ///
+    /// - Parameters:
+    ///   - indexPath: The `IndexPath` of the cell.
+    ///   - messagesCollectionView: The `MessagesCollectionView` in which this cell will be displayed.
+    ///
+    /// - Note:
+    ///   The default value is `UIColor.clear` for emoji messages.
+    ///
+    ///   Current sender: Green
+    ///
+    ///   All other senders: Gray
+    func backgroundHighlightColor(at  indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor
+
+
     /// Specifies the background color of the `MessageContainerView`.
     ///
     /// - Parameters:
@@ -57,6 +99,39 @@ public protocol MessagesDisplayDelegate: AnyObject {
     ///
     ///   All other senders: Gray
     func backgroundColor(for message: MessageType, at  indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor
+    
+    /// Specifies the background color of the `MessageContainerView`.
+    ///
+    /// - Parameters:
+    ///   - message: The `MessageType` that will be displayed by this cell.
+    ///   - indexPath: The `IndexPath` of the cell.
+    ///   - messagesCollectionView: The `MessagesCollectionView` in which this cell will be displayed.
+    ///
+    /// - Note:
+    ///   The default value is `UIColor.clear` for emoji messages.
+    ///   For all other `MessageKind` cases, the color depends on the `SenderType`.
+    ///
+    ///   Current sender: Green
+    ///
+    ///   All other senders: Gray
+    func replyColor(for message: MessageType, at  indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor
+    
+    // MARK: - Selection View
+
+    /// Specifies the image of the Selection view.
+    ///
+    /// - Parameters:
+    ///   - message: A `MessageType` with a `MessageKind` case of `.text` to which the color will apply.
+    ///   - indexPath: The `IndexPath` of the cell.
+    ///   - messagesCollectionView: The `MessagesCollectionView` in which this cell will be displayed.
+    ///
+    /// - Note:
+    ///   The default value returned by this method is determined by the messages `SenderType`.
+    ///
+    ///   Current sender: UIColor.white
+    ///
+    ///   All other senders: UIColor.darkText
+    func selectionIcon(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIImage?
 
     /// The section header to use for a given `IndexPath`.
     ///
@@ -105,8 +180,6 @@ public protocol MessagesDisplayDelegate: AnyObject {
     ///   - indexPath: The `IndexPath` of the cell.
     ///   - messagesCollectionView: The `MessagesCollectionView` in which this cell will be displayed.
     ///
-    /// - Note:
-    ///   The default image configured by this method is `?`.
     func configureStatusView(_ statusView: UIView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView)
     
     /// Used to configure the `ReactionView` in a `MessageContentCell` class.
@@ -221,7 +294,7 @@ public protocol MessagesDisplayDelegate: AnyObject {
     ///
     /// - Note:
     ///   This protocol method is called by MessageKit every time an audio cell needs to be configure
-    func configureAudioCell(_ cell: AudioMessageCell, message: MessageType)
+    func configureAudioCell(_ cell: MessageContentCell, message: MessageType)
 
     /// Specifies the tint color of play button and progress bar for an `AudioMessageCell`.
     ///
@@ -246,7 +319,7 @@ public protocol MessagesDisplayDelegate: AnyObject {
     ///     1. return the time as 0:ss if duration is up to 59 seconds                         (e.g. 0:03     means 0 minutes and 3 seconds)
     ///     2. return the time as m:ss if duration is greater than 59 and lower than 3600      (e.g. 12:23    means 12 mintues and 23 seconds)
     ///     3. return the time as h:mm:ss for anything longer that 3600 seconds                (e.g. 1:19:08  means 1 hour 19 minutes and 8 seconds)
-    func audioProgressTextFormat(_ duration: Float, for audioCell: AudioMessageCell, in messageCollectionView: MessagesCollectionView) -> String
+    func audioProgressTextFormat(_ duration: Float, for audioCell: MessageContentCell, in messageCollectionView: MessagesCollectionView) -> String
 
     /// Used to configure the `UIImageView` of a `LinkPreviewMessageCell`.
     /// - Parameters:
@@ -264,6 +337,22 @@ public extension MessagesDisplayDelegate {
     func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
         return .bubble
     }
+    
+    func radiusMessage(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        return 0
+    }
+    
+    func borderMessageWidth(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        return 0
+    }
+    
+    func borderMesssageColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
+        return .clear
+    }
+    
+    func backgroundHighlightColor(at  indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
+        return .clear
+    }
 
     func backgroundColor(for message: MessageType, at  indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
 
@@ -273,6 +362,15 @@ public extension MessagesDisplayDelegate {
         default:
             return message.isOwner ? .outgoingMessageBackground : .incomingMessageBackground
         }
+    }
+    
+    func selectionIcon(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIImage? {
+        return UIImage()
+    }
+    
+    func replyColor(for message: MessageType, at  indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
+
+        return message.isOwner ? .outgoingMessageBackground : .incomingMessageBackground
     }
     
     func messageHeaderView(for indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageReusableView {
@@ -333,7 +431,7 @@ public extension MessagesDisplayDelegate {
 
     // MARK: - Audio Message Defaults
     
-    func configureAudioCell(_ cell: AudioMessageCell, message: MessageType) {
+    func configureAudioCell(_ cell: MessageContentCell, message: MessageType) {
         
     }
 
@@ -341,7 +439,7 @@ public extension MessagesDisplayDelegate {
         return message.isOwner ? .outgoingAudioMessageTint : .incomingAudioMessageTint
     }
 
-    func audioProgressTextFormat(_ duration: Float, for audioCell: AudioMessageCell, in messageCollectionView: MessagesCollectionView) -> String {
+    func audioProgressTextFormat(_ duration: Float, for audioCell: MessageContentCell, in messageCollectionView: MessagesCollectionView) -> String {
         var retunValue = "0:00"
         // print the time as 0:ss if duration is up to 59 seconds
         // print the time as m:ss if duration is up to 59:59 seconds

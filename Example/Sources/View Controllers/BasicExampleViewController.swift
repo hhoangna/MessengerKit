@@ -42,7 +42,6 @@ extension BasicExampleViewController: MessagesDisplayDelegate {
         return UIView()
     }
     
-    
     // MARK: - Text Messages
     
     func textColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {

@@ -32,13 +32,13 @@ internal extension UIView {
         }
         translatesAutoresizingMaskIntoConstraints = false
 
-	    let constraints: [NSLayoutConstraint] = [
-    	    leftAnchor.constraint(equalTo: superview.leftAnchor),
-    	    rightAnchor.constraint(equalTo: superview.rightAnchor),
-    	    topAnchor.constraint(equalTo: superview.topAnchor),
-    	    bottomAnchor.constraint(equalTo: superview.bottomAnchor)
-    	    ]
-	    NSLayoutConstraint.activate(constraints)
+        let constraints: [NSLayoutConstraint] = [
+            leftAnchor.constraint(equalTo: superview.leftAnchor),
+            rightAnchor.constraint(equalTo: superview.rightAnchor),
+            topAnchor.constraint(equalTo: superview.topAnchor),
+            bottomAnchor.constraint(equalTo: superview.bottomAnchor)
+            ]
+        NSLayoutConstraint.activate(constraints)
     }
 
     func centerInSuperview() {
@@ -124,5 +124,77 @@ internal extension UIView {
         
         NSLayoutConstraint.activate(constraints)
         return constraints
+    }
+    
+    func cut(by view: UIView, margin: CGFloat) {
+        let p: CGMutablePath = CGMutablePath()
+        self.clipsToBounds = false
+        p.addRect(self.bounds)
+        if let frame = superview?.convert(view.frame, to: self) {
+            let cutRect = CGRect(x: frame.minX - margin / 2, y: frame.minY - margin / 2, width: frame.width + margin, height: frame.height + margin)
+            p.addRoundedRect(in: cutRect, cornerWidth: cutRect.width > cutRect.height ? cutRect.height / 2 : cutRect.width / 2, cornerHeight: cutRect.height / 2)
+        } else {
+            let frame = self.convert(view.frame, to: self.superview)
+            let cutRect = CGRect(x: frame.minX - margin / 2, y: frame.minY - margin / 2, width: frame.width + margin, height: frame.height + margin)
+            p.addRoundedRect(in: cutRect, cornerWidth: cutRect.width > cutRect.height ? cutRect.height / 2 : cutRect.width / 2, cornerHeight: cutRect.height / 2)
+        }
+
+        let s = CAShapeLayer()
+        s.path = p
+        s.fillRule = CAShapeLayerFillRule.evenOdd
+
+        self.layer.mask = s
+    }
+    
+    func uncut() {
+        let p: CGMutablePath = CGMutablePath()
+        self.clipsToBounds = true
+        p.addRect(self.bounds)
+        let s = CAShapeLayer()
+        s.path = p
+        s.fillRule = CAShapeLayerFillRule.evenOdd
+
+        self.layer.mask = s
+    }
+    
+    func animateBorder(to color: UIColor, duration: Double) {
+        let borderColorAnimation: CABasicAnimation = CABasicAnimation(keyPath: "borderColor")
+        borderColorAnimation.fromValue = layer.borderColor
+        borderColorAnimation.toValue = color.cgColor
+        borderColorAnimation.duration = duration
+        borderColorAnimation.autoreverses = true
+        layer.add(borderColorAnimation, forKey: "borderColor")
+
+        let borderWidthAnimation: CABasicAnimation = CABasicAnimation(keyPath: "borderWidth")
+        borderWidthAnimation.fromValue = layer.borderWidth
+        borderWidthAnimation.toValue = 2.0
+        borderWidthAnimation.duration = duration
+        borderWidthAnimation.autoreverses = true
+        layer.add(borderWidthAnimation, forKey: "borderWidth")
+    }
+}
+
+public extension CALayer {
+    func animateBackgroundColor(from startColor: UIColor, to endColor: UIColor, withDuration duration: Double) {
+        let colorAnimation = CABasicAnimation(keyPath: "backgroundColor")
+        colorAnimation.fromValue = startColor.cgColor
+        colorAnimation.toValue = endColor.cgColor
+        colorAnimation.duration = duration
+        colorAnimation.beginTime = CACurrentMediaTime()
+        colorAnimation.autoreverses = true
+        self.add(colorAnimation, forKey: "backgroundColor")
+    }
+    
+    func addPulseAnimation() {
+        let layerAnimation = CABasicAnimation(keyPath: "transform.scale")
+        layerAnimation.fromValue = 1
+        layerAnimation.toValue = 0.8
+        layerAnimation.isAdditive = false
+        layerAnimation.duration = CFTimeInterval(1)
+        layerAnimation.fillMode = CAMediaTimingFillMode.forwards
+        layerAnimation.isRemovedOnCompletion = true
+        layerAnimation.autoreverses = true
+
+        self.add(layerAnimation, forKey: "growingAnimation")
     }
 }

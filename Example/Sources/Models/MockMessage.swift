@@ -102,7 +102,13 @@ struct MockLinkItem: LinkItem {
 }
 
 internal struct MockMessage: MessageType {
-
+    
+    /// The reaction of message
+    var hasReaction: Int { return 0 }
+    
+    /// The replied of message
+    var isReplied: Bool { return false }
+    
     var messageId: String
     var sender: SenderType {
         return user

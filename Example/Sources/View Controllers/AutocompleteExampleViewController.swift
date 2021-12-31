@@ -283,6 +283,9 @@ extension AutocompleteExampleViewController: AutocompleteManagerDelegate, Autoco
 // MARK: - MessagesDisplayDelegate
 
 extension AutocompleteExampleViewController: MessagesDisplayDelegate {
+    func selectionIcon(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIImage? {
+        return #imageLiteral(resourceName: "ic_info")
+    }
 
     // MARK: - Text Messages
 

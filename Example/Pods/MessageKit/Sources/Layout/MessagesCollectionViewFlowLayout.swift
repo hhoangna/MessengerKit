@@ -184,21 +184,21 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
         let message = messagesDataSource.messageForItem(at: indexPath, in: messagesCollectionView)
         switch message.kind {
         case .text:
-            return textMessageSizeCalculator
+            return messagesLayoutDelegate.textCellSizeCalculator(for: message, at: indexPath, in: messagesCollectionView) ?? textMessageSizeCalculator
         case .attributedText:
-            return attributedTextMessageSizeCalculator
+            return messagesLayoutDelegate.attributedTextCellSizeCalculator(for: message, at: indexPath, in: messagesCollectionView) ??  attributedTextMessageSizeCalculator
         case .emoji:
-            return emojiMessageSizeCalculator
+            return messagesLayoutDelegate.emojiCellSizeCalculator(for: message, at: indexPath, in: messagesCollectionView) ??  emojiMessageSizeCalculator
         case .photo:
-            return photoMessageSizeCalculator
+            return messagesLayoutDelegate.photoCellSizeCalculator(for: message, at: indexPath, in: messagesCollectionView) ??  photoMessageSizeCalculator
         case .video:
-            return videoMessageSizeCalculator
+            return messagesLayoutDelegate.videoCellSizeCalculator(for: message, at: indexPath, in: messagesCollectionView) ??  videoMessageSizeCalculator
         case .location:
-            return locationMessageSizeCalculator
+            return messagesLayoutDelegate.locationCellSizeCalculator(for: message, at: indexPath, in: messagesCollectionView) ??  locationMessageSizeCalculator
         case .audio:
-            return audioMessageSizeCalculator
+            return messagesLayoutDelegate.audioCellSizeCalculator(for: message, at: indexPath, in: messagesCollectionView) ??  audioMessageSizeCalculator
         case .contact:
-            return contactMessageSizeCalculator
+            return messagesLayoutDelegate.contactCellSizeCalculator(for: message, at: indexPath, in: messagesCollectionView) ??  contactMessageSizeCalculator
         case .linkPreview:
             return linkPreviewMessageSizeCalculator
         case .custom:
@@ -209,6 +209,18 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
     open func sizeForItem(at indexPath: IndexPath) -> CGSize {
         let calculator = cellSizeCalculatorForItem(at: indexPath)
         return calculator.sizeForItem(at: indexPath)
+    }
+    
+    public func setEditIconImage(_ newImage: UIImage) {
+        messageSizeCalculators().forEach { $0.editImageIcon = newImage }
+    }
+    
+    public func setReplyIconImage(_ newImage: UIImage) {
+        messageSizeCalculators().forEach { $0.replyImageIcon = newImage }
+    }
+    
+    public func setEditIconSize(_ newSize: CGSize) {
+        messageSizeCalculators().forEach { $0.editIconSize = newSize }
     }
     
     /// Set `incomingAvatarSize` of all `MessageSizeCalculator`s
@@ -341,9 +353,14 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
         messageSizeCalculators().forEach { $0.trailingReactionViewMargin = newMargin }
     }
     
-    /// Set `heightPreviewLink` of all `MessageSizeCalculator`s
-    public func setLinkPreviewHeight(_ newValue: CGFloat) {
-        messageSizeCalculators().forEach { $0.linkPreviewHeight = newValue }
+    /// Set `topReplyViewMargin` of all `MessageSizeCalculator`s
+    public func setTopReplyViewMargin(_ newMargin: CGFloat) {
+        messageSizeCalculators().forEach { $0.topMessageContainerViewMargin = newMargin }
+    }
+    
+    /// Set `previewLinkHeight` of all `MessageSizeCalculator`s
+    public func setPreviewLinkHeight(_ newValue: CGFloat) {
+        messageSizeCalculators().forEach { $0.linkPreviewHeigt = newValue }
     }
 
     /// Get all `MessageSizeCalculator`s

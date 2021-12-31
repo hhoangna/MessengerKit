@@ -102,6 +102,13 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
     }
 
     public var selectedIndexPathForMenu: IndexPath?
+    
+    public var cachedIndexPath: IndexPath? {
+        didSet {
+            scrollToCacheIndexPath()
+        }
+    }
+    var isScrolledToCacheIndexPath: Bool = false
 
     public var isFirstLayout: Bool = true
     
@@ -124,6 +131,7 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
         setupDelegates()
         addMenuControllerObservers()
         addObservers()
+        customizeViewController()
     }
     
     open override func viewWillAppear(_ animated: Bool) {
@@ -161,6 +169,45 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
     open override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
         messageCollectionViewBottomInset = requiredInitialScrollViewBottomInset()
+    }
+    
+    open func customizeViewController() {
+        
+    }
+    
+    public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        isScrolledToCacheIndexPath = true
+        if let indexPath = cachedIndexPath,
+           let cell = messagesCollectionView.cellForItem(at: indexPath) as? MessageContentCell,
+           let color = messagesCollectionView.messagesDisplayDelegate?.backgroundHighlightColor(at: indexPath, in: messagesCollectionView) {
+            cell.highlightMessageContainerView(with: color)
+
+            cachedIndexPath = nil
+        }
+    }
+    
+    public func scrollToCacheIndexPath() {
+        if let indexPath = cachedIndexPath {
+            self.isScrolledToCacheIndexPath = false
+            self.messagesCollectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
+            perform(#selector(hightlightCacheIndexPathIfNeed), with: nil, afterDelay: 0.35)
+        }
+    }
+    
+    @objc func hightlightCacheIndexPathIfNeed() {
+        if messagesCollectionView.layer.animation(forKey: "bounds") != nil {
+            return
+        }
+        if !isScrolledToCacheIndexPath {
+            if let indexPath = cachedIndexPath,
+               let cell = messagesCollectionView.cellForItem(at: indexPath) as? MessageContentCell,
+               let color = messagesCollectionView.messagesDisplayDelegate?.backgroundHighlightColor(at: indexPath, in: messagesCollectionView) {
+                cell.highlightMessageContainerView(with: color)
+
+                cachedIndexPath = nil
+            }
+            isScrolledToCacheIndexPath = true
+        }
     }
 
     // MARK: - Initializers
@@ -224,6 +271,37 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
             messagesCollectionView.setContentOffset(contentOffset, animated: false)
         }
     }
+    
+    open func requiredInitialScrollViewBottomInset() -> CGFloat {
+        let inputAccessoryViewHeight = inputAccessoryView?.frame.height ?? 0
+        return max(0, inputAccessoryViewHeight + additionalBottomInset - automaticallyAddedBottomInset)
+    }
+    
+    
+    // MARK: - Inset Computation
+
+    open func requiredScrollViewBottomInset(forKeyboardFrame keyboardFrame: CGRect) -> CGFloat {
+        // we only need to adjust for the part of the keyboard that covers (i.e. intersects) our collection view;
+        // see https://developer.apple.com/videos/play/wwdc2017/242/ for more details
+        let intersection = messagesCollectionView.frame.intersection(keyboardFrame)
+
+        if intersection.isNull || (messagesCollectionView.frame.maxY - intersection.maxY) > 0.001 {
+            // The keyboard is hidden, is a hardware one, or is undocked and does not cover the bottom of the collection view.
+            // Note: intersection.maxY may be less than messagesCollectionView.frame.maxY when dealing with undocked keyboards.
+            return max(0, additionalBottomInset - automaticallyAddedBottomInset)
+        } else {
+            return max(0, intersection.height + additionalBottomInset - automaticallyAddedBottomInset)
+        }
+    }
+
+    /// UIScrollView can automatically add safe area insets to its contentInset,
+    /// which needs to be accounted for when setting the contentInset based on screen coordinates.
+    ///
+    /// - Returns: The distance automatically added to contentInset.bottom, if any.
+    open var automaticallyAddedBottomInset: CGFloat {
+        return messagesCollectionView.adjustedContentInset.bottom - messagesCollectionView.contentInset.bottom
+    }
+
     // MARK: - Methods [Private]
 
     /// Display time of message by swiping the cell
@@ -402,25 +480,45 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
 
         switch message.kind {
         case .text, .attributedText, .emoji:
-            let cell = messagesCollectionView.dequeueReusableCell(TextMessageCell.self, for: indexPath)
-            cell.configure(with: message, at: indexPath, and: messagesCollectionView)
-            return cell
+            if let cell = messagesDataSource.textCell(for: message, at: indexPath, in: messagesCollectionView) {
+                return cell
+            } else {
+                let cell = messagesCollectionView.dequeueReusableCell(TextMessageCell.self, for: indexPath)
+                cell.configure(with: message, at: indexPath, and: messagesCollectionView)
+                return cell
+            }
         case .photo, .video:
-            let cell = messagesCollectionView.dequeueReusableCell(MediaMessageCell.self, for: indexPath)
-            cell.configure(with: message, at: indexPath, and: messagesCollectionView)
-            return cell
+            if let cell = messagesDataSource.photoCell(for: message, at: indexPath, in: messagesCollectionView) {
+                return cell
+            } else {
+                let cell = messagesCollectionView.dequeueReusableCell(MediaMessageCell.self, for: indexPath)
+                cell.configure(with: message, at: indexPath, and: messagesCollectionView)
+                return cell
+            }
         case .location:
-            let cell = messagesCollectionView.dequeueReusableCell(LocationMessageCell.self, for: indexPath)
-            cell.configure(with: message, at: indexPath, and: messagesCollectionView)
-            return cell
+            if let cell = messagesDataSource.locationCell(for: message, at: indexPath, in: messagesCollectionView) {
+                return cell
+            } else {
+                let cell = messagesCollectionView.dequeueReusableCell(LocationMessageCell.self, for: indexPath)
+                cell.configure(with: message, at: indexPath, and: messagesCollectionView)
+                return cell
+            }
         case .audio:
-            let cell = messagesCollectionView.dequeueReusableCell(AudioMessageCell.self, for: indexPath)
-            cell.configure(with: message, at: indexPath, and: messagesCollectionView)
-            return cell
+            if let cell = messagesDataSource.audioCell(for: message, at: indexPath, in: messagesCollectionView) {
+                return cell
+            } else {
+                let cell = messagesCollectionView.dequeueReusableCell(AudioMessageCell.self, for: indexPath)
+                cell.configure(with: message, at: indexPath, and: messagesCollectionView)
+                return cell
+            }
         case .contact:
-            let cell = messagesCollectionView.dequeueReusableCell(ContactMessageCell.self, for: indexPath)
-            cell.configure(with: message, at: indexPath, and: messagesCollectionView)
-            return cell
+            if let cell = messagesDataSource.contactCell(for: message, at: indexPath, in: messagesCollectionView) {
+                return cell
+            } else {
+                let cell = messagesCollectionView.dequeueReusableCell(ContactMessageCell.self, for: indexPath)
+                cell.configure(with: message, at: indexPath, and: messagesCollectionView)
+                return cell
+            }
         case .linkPreview:
             let cell = messagesCollectionView.dequeueReusableCell(LinkPreviewMessageCell.self, for: indexPath)
             cell.configure(with: message, at: indexPath, and: messagesCollectionView)
@@ -455,6 +553,10 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         guard let messagesFlowLayout = collectionViewLayout as? MessagesCollectionViewFlowLayout else { return .zero }
         return messagesFlowLayout.sizeForItem(at: indexPath)
+    }
+    
+    open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return .zero
     }
 
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
@@ -551,7 +653,7 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
     // MARK: - UIGestureRecognizerDelegate
 
     /// check pan gesture direction
-    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+    open func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         guard let panGesture = gestureRecognizer as? UIPanGestureRecognizer else {
             return false
         }

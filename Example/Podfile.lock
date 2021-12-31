@@ -2,7 +2,7 @@ PODS:
   - InputBarAccessoryView (5.3.1):
     - InputBarAccessoryView/Core (= 5.3.1)
   - InputBarAccessoryView/Core (5.3.1)
-  - MessageKit (3.6.0):
+  - MessageKit (3.6.1):
     - InputBarAccessoryView (~> 5.3.1)
   - PINCache (3.0.3):
     - PINCache/Arc-exception-safe (= 3.0.3)
@@ -19,7 +19,7 @@ PODS:
   - PINRemoteImage/PINCache (3.0.3):
     - PINCache (~> 3.0.3)
     - PINRemoteImage/Core
-  - SwiftLint (0.42.0)
+  - SwiftLint (0.45.1)
 
 DEPENDENCIES:
   - MessageKit (from `https://github.com/hhoangna/MessengerKit`)
@@ -41,17 +41,17 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   MessageKit:
-    :commit: 82a7f20dabe42197f36eeb0fa2c1c839c95c7fa5
+    :commit: 520b480f3d4afbc9d548feefb0d4b55ead3398c7
     :git: https://github.com/hhoangna/MessengerKit
 
 SPEC CHECKSUMS:
   InputBarAccessoryView: 1f75d8c9f75e5e57f3ffac36ed58635a8005e0bc
-  MessageKit: 1dd95ad876c079b5fa40dc163340abc65a7158a6
+  MessageKit: 3bc00e9dbd94d1e6d88771622ff00ae47c7c255a
   PINCache: 7a8fc1a691173d21dbddbf86cd515de6efa55086
   PINOperation: 00c935935f1e8cf0d1e2d6b542e75b88fc3e5e20
   PINRemoteImage: f1295b29f8c5e640e25335a1b2bd9d805171bd01
-  SwiftLint: 4fa9579c63416865179bc416f0a92d55f009600d
+  SwiftLint: 06ac37e4d38c7068e0935bb30cda95f093bec761
 
 PODFILE CHECKSUM: 9044cf8831910521b7f2d840992f03415c401698
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.10.0

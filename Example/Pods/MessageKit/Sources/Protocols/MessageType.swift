@@ -45,4 +45,10 @@ public protocol MessageType {
 
     /// The modified status of message
     var isEdited: Bool { get }
+    
+    /// The reaction of message
+    var hasReaction: Int { get }
+    
+    /// The replied of message
+    var isReplied: Bool { get }
 }

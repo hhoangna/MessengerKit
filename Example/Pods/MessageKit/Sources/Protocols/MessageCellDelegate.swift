@@ -22,7 +22,7 @@
  SOFTWARE.
  */
 
-import Foundation
+import UIKit
 
 /// A protocol used by `MessageContentCell` subclasses to detect taps in the cell's subviews.
 public protocol MessageCellDelegate: MessageLabelDelegate {
@@ -66,6 +66,17 @@ public protocol MessageCellDelegate: MessageLabelDelegate {
     /// `indexPath(for: cell)` method. Then using the returned `IndexPath` with the `MessagesDataSource`
     /// method `messageForItem(at:indexPath:messagesCollectionView)`.
     func didTapBackground(in cell: MessageCollectionViewCell)
+    
+    /// Triggered when a tap occurs in the `MessageContainerView`.
+    ///
+    /// - Parameters:
+    ///   - cell: The cell where the double tab occurred.
+    ///
+    /// - Note:
+    /// You can get a reference to the `MessageType` for the cell by using `UICollectionView`'s
+    /// `indexPath(for: cell)` method. Then using the returned `IndexPath` with the `MessagesDataSource`
+    /// method `messageForItem(at:indexPath:messagesCollectionView)`.
+    func didDoubleTapMessage(in cell: MessageCollectionViewCell)
 
     /// Triggered when a tap occurs in the `MessageContainerView`.
     ///
@@ -77,6 +88,17 @@ public protocol MessageCellDelegate: MessageLabelDelegate {
     /// `indexPath(for: cell)` method. Then using the returned `IndexPath` with the `MessagesDataSource`
     /// method `messageForItem(at:indexPath:messagesCollectionView)`.
     func didTapMessage(in cell: MessageCollectionViewCell, at location: CGPoint)
+    
+    /// Triggered when a tap occurs in the `MessageContainerView`.
+    ///
+    /// - Parameters:
+    ///   - cell: The cell where the tap occurred.
+    ///
+    /// - Note:
+    /// You can get a reference to the `MessageType` for the cell by using `UICollectionView`'s
+    /// `indexPath(for: cell)` method. Then using the returned `IndexPath` with the `MessagesDataSource`
+    /// method `messageForItem(at:indexPath:messagesCollectionView)`.
+    func didTapRepliedMessage(in cell: MessageCollectionViewCell)
 
     /// Triggered when a tap occurs in the `AvatarView`.
     ///
@@ -176,7 +198,7 @@ public protocol MessageCellDelegate: MessageLabelDelegate {
     /// You can get a reference to the `MessageType` for the cell by using `UICollectionView`'s
     /// `indexPath(for: cell)` method. Then using the returned `IndexPath` with the `MessagesDataSource`
     /// method `messageForItem(at:indexPath:messagesCollectionView)`.
-    func didTapPlayButton(in cell: AudioMessageCell)
+    func didTapPlayButton(in cell: MessageContentCell)
 
     /// Triggered when audio player start playing audio.
     ///
@@ -186,7 +208,7 @@ public protocol MessageCellDelegate: MessageLabelDelegate {
     /// You can get a reference to the `MessageType` for the cell by using `UICollectionView`'s
     /// `indexPath(for: cell)` method. Then using the returned `IndexPath` with the `MessagesDataSource`
     /// method `messageForItem(at:indexPath:messagesCollectionView)`.
-    func didStartAudio(in cell: AudioMessageCell)
+    func didStartAudio(in cell: MessageContentCell)
 
     /// Triggered when audio player pause audio.
     ///
@@ -196,7 +218,7 @@ public protocol MessageCellDelegate: MessageLabelDelegate {
     /// You can get a reference to the `MessageType` for the cell by using `UICollectionView`'s
     /// `indexPath(for: cell)` method. Then using the returned `IndexPath` with the `MessagesDataSource`
     /// method `messageForItem(at:indexPath:messagesCollectionView)`.
-    func didPauseAudio(in cell: AudioMessageCell)
+    func didPauseAudio(in cell: MessageContentCell)
 
     /// Triggered when audio player stoped audio.
     ///
@@ -206,7 +228,7 @@ public protocol MessageCellDelegate: MessageLabelDelegate {
     /// You can get a reference to the `MessageType` for the cell by using `UICollectionView`'s
     /// `indexPath(for: cell)` method. Then using the returned `IndexPath` with the `MessagesDataSource`
     /// method `messageForItem(at:indexPath:messagesCollectionView)`.
-    func didStopAudio(in cell: AudioMessageCell)
+    func didStopAudio(in cell: MessageContentCell)
 
 }
 
@@ -219,8 +241,12 @@ public extension MessageCellDelegate {
     func didTapAnywhere() {}
 
     func didTapBackground(in cell: MessageCollectionViewCell) {}
+    
+    func didDoubleTapMessage(in cell: MessageCollectionViewCell) {}
 
     func didTapMessage(in cell: MessageCollectionViewCell, at location: CGPoint) {}
+    
+    func didTapRepliedMessage(in cell: MessageCollectionViewCell) {}
 
     func didTapAvatar(in cell: MessageCollectionViewCell) {}
 
@@ -232,13 +258,13 @@ public extension MessageCellDelegate {
     
     func didTapImage(in cell: MessageCollectionViewCell) {}
 
-    func didTapPlayButton(in cell: AudioMessageCell) {}
+    func didTapPlayButton(in cell: MessageContentCell) {}
 
-    func didStartAudio(in cell: AudioMessageCell) {}
+    func didStartAudio(in cell: MessageContentCell) {}
 
-    func didPauseAudio(in cell: AudioMessageCell) {}
+    func didPauseAudio(in cell: MessageContentCell) {}
 
-    func didStopAudio(in cell: AudioMessageCell) {}
+    func didStopAudio(in cell: MessageContentCell) {}
 
     func didTapMessageBottomLabel(in cell: MessageCollectionViewCell) {}
     

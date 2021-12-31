@@ -1,6 +1,6 @@
 {
   "name": "MessageKit",
-  "version": "3.6.0",
+  "version": "3.6.1",
   "license": {
     "type": "MIT",
     "file": "LICENSE.md"
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/hhoangna/MessengerKit.git",
-    "tag": "3.6.0"
+    "tag": "3.6.1"
   },
   "source_files": "Sources/**/*.swift",
   "swift_versions": "5.3",

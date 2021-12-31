@@ -28,6 +28,10 @@ import UIKit
 open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttributes {
 
     // MARK: - Properties
+    public var editImageIcon = UIImage(named: "icBlackPenEdit")
+    public var replyImageIcon = UIImage(named: "icBlackReply")
+    
+    public var editIconSize: CGSize = CGSize(width: 14, height: 14)
 
     public var avatarSize: CGSize = .zero
     public var avatarPosition = AvatarPosition(vertical: .cellBottom)
@@ -38,7 +42,13 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
     public var messageLabelFont: UIFont = UIFont.preferredFont(forTextStyle: .body)
     public var messageLabelInsets: UIEdgeInsets = .zero
     
-    public var messageSubviewsSize: CGSize = .zero
+    public var messageReplyContainerSize: CGSize = .zero
+    public var messageReplyContainerMargin: CGFloat = 17
+    
+    public var messageMediaDescriptionSize: CGSize = .zero
+    
+    public var linkInfoContainerSize: CGSize = .zero
+    public var linkPreviewHeight: CGFloat = 150
 
     public var cellTopLabelAlignment = LabelAlignment(textAlignment: .center, textInsets: UIEdgeInsets(top: 0, left: 7, bottom: 0, right: 7))
     public var cellTopLabelSize: CGSize = .zero
@@ -53,7 +63,10 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
     public var messageBottomLabelSize: CGSize = .zero
 
     public var messageTimeLabelSize: CGSize = .zero
-
+    public var messageSelectionImageSize: CGSize = .zero
+    public var selectionImageLeadingMargin: CGFloat = 10
+    public var selectionImageTrailingMargin: CGFloat = 10
+    
     public var accessoryViewSize: CGSize = .zero
     public var accessoryViewPadding: HorizontalEdgeInsets = .zero
     public var accessoryViewPosition: AccessoryPosition = .messageCenter
@@ -61,13 +74,15 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
     public var statusViewSize: CGSize = .zero
     public var statusViewPadding: HorizontalEdgeInsets = .zero
     
-    public var reactionViewTopMargin: CGFloat = .infinity
-    public var reactionViewLeadingMargin: CGFloat = .infinity
-    public var reactionViewTrailingMargin: CGFloat = .infinity
+    public var reactionViewTopMargin: CGFloat = 8
+    public var reactionViewLeadingMargin: CGFloat = 12
+    public var reactionViewTrailingMargin: CGFloat = 12
     public var reactionViewSize: CGSize = .zero
     
     public var messageEditedStatus: Bool = false
-
+    public var messageReaction: Bool = false
+    public var messageReplied: Bool = false
+    
     public var linkPreviewFonts = LinkPreviewFonts(titleFont: .preferredFont(forTextStyle: .footnote),
                                                    teaserFont: .preferredFont(forTextStyle: .caption2),
                                                    domainFont: .preferredFont(forTextStyle: .caption1))
@@ -81,7 +96,11 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
         copy.avatarPosition = avatarPosition
         copy.avatarLeadingTrailingPadding = avatarLeadingTrailingPadding
         copy.messageContainerSize = messageContainerSize
-        copy.messageSubviewsSize = messageSubviewsSize
+        copy.messageReplyContainerSize = messageReplyContainerSize
+        copy.messageReplyContainerMargin = messageReplyContainerMargin
+        copy.messageMediaDescriptionSize = messageMediaDescriptionSize
+        copy.linkInfoContainerSize = linkInfoContainerSize
+        copy.linkPreviewHeight = linkPreviewHeight
         copy.messageContainerPadding = messageContainerPadding
         copy.messageLabelFont = messageLabelFont
         copy.messageLabelInsets = messageLabelInsets
@@ -105,6 +124,12 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
         copy.reactionViewTrailingMargin = reactionViewTrailingMargin
         copy.reactionViewSize = reactionViewSize
         copy.messageEditedStatus = messageEditedStatus
+        copy.messageReaction = messageReaction
+        copy.messageReplied = messageReplied
+        copy.replyImageIcon = replyImageIcon
+        copy.editImageIcon = editImageIcon
+        copy.editIconSize = editIconSize
+        copy.messageSelectionImageSize = messageSelectionImageSize
         
         return copy
         // swiftlint:enable force_cast
@@ -117,7 +142,11 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
                 && attributes.avatarPosition == avatarPosition
                 && attributes.avatarLeadingTrailingPadding == avatarLeadingTrailingPadding
                 && attributes.messageContainerSize == messageContainerSize
-                && attributes.messageSubviewsSize == messageSubviewsSize
+                && attributes.messageReplyContainerSize == messageReplyContainerSize
+                && attributes.messageReplyContainerMargin == messageReplyContainerMargin
+                && attributes.messageMediaDescriptionSize == messageMediaDescriptionSize
+                && attributes.linkPreviewHeight == linkPreviewHeight
+                && attributes.linkInfoContainerSize == linkInfoContainerSize
                 && attributes.messageContainerPadding == messageContainerPadding
                 && attributes.messageLabelFont == messageLabelFont
                 && attributes.messageLabelInsets == messageLabelInsets
@@ -141,6 +170,13 @@ open class MessagesCollectionViewLayoutAttributes: UICollectionViewLayoutAttribu
                 && attributes.reactionViewTrailingMargin == reactionViewTrailingMargin
                 && attributes.reactionViewSize == reactionViewSize
                 && attributes.messageEditedStatus == messageEditedStatus
+                && attributes.messageReaction == messageReaction
+                && attributes.messageReplied == messageReplied
+                && attributes.editImageIcon == editImageIcon
+                && attributes.replyImageIcon == replyImageIcon
+                && attributes.editIconSize == editIconSize
+                && attributes.messageSelectionImageSize == messageSelectionImageSize
+
         } else {
             return false
         }
