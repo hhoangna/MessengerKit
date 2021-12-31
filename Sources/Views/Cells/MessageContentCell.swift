@@ -271,6 +271,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         let touchLocation = gesture.location(in: self)
 
         if messageContentMode == .multiSelect {
+            let inTouch = convert(touchLocation, to: messageContainerView)
             delegate?.didTapCell(in: self, at: inTouch)
             return
         }
