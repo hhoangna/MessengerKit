@@ -176,6 +176,8 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
     }
     
     public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        perform(#selector(hightlightCacheIndexPathIfNeed), with: nil, afterDelay: 0.2)
+        /*
         isScrolledToCacheIndexPath = true
         if let indexPath = cachedIndexPath,
            let cell = messagesCollectionView.cellForItem(at: indexPath) as? MessageContentCell,
@@ -184,18 +186,23 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
 
             cachedIndexPath = nil
         }
+        */
     }
     
     public func scrollToCacheIndexPath() {
         if let indexPath = cachedIndexPath {
             self.isScrolledToCacheIndexPath = false
             self.messagesCollectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
-            perform(#selector(hightlightCacheIndexPathIfNeed), with: nil, afterDelay: 0.35)
+            if self.messagesCollectionView.indexPathsForVisibleItems.contains(indexPath) {
+                perform(#selector(hightlightCacheIndexPathIfNeed), with: nil, afterDelay: 0.35)
+            }
         }
     }
     
     @objc func hightlightCacheIndexPathIfNeed() {
         if messagesCollectionView.layer.animation(forKey: "bounds") != nil {
+            cachedIndexPath = nil
+            isScrolledToCacheIndexPath = true
             return
         }
         if !isScrolledToCacheIndexPath {
