@@ -108,7 +108,7 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
             scrollToCacheIndexPath()
         }
     }
-    var isScrolledToCacheIndexPath: Bool = false
+    public var isScrolledToCacheIndexPath: Bool = false
 
     public var isFirstLayout: Bool = true
     
@@ -192,7 +192,7 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
     public func scrollToCacheIndexPath() {
         if let indexPath = cachedIndexPath {
             self.isScrolledToCacheIndexPath = false
-            self.messagesCollectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
+            self.messagesCollectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
             if self.messagesCollectionView.indexPathsForVisibleItems.contains(indexPath) {
                 perform(#selector(hightlightCacheIndexPathIfNeed), with: nil, afterDelay: 0.35)
             }
