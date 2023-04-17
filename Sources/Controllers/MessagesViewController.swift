@@ -193,8 +193,11 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
         if let indexPath = cachedIndexPath {
             self.isScrolledToCacheIndexPath = false
             self.messagesCollectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
-            if self.messagesCollectionView.indexPathsForVisibleItems.contains(indexPath) {
-                perform(#selector(hightlightCacheIndexPathIfNeed), with: nil, afterDelay: 0.35)
+            if let layoutAttribute = self.messagesCollectionView.layoutAttributesForItem(at: indexPath) {
+                let cellFrame = layoutAttribute.frame
+                if self.messagesCollectionView.bounds.contains(CGPoint(x: cellFrame.midX, y: cellFrame.midY)) {
+                    perform(#selector(hightlightCacheIndexPathIfNeed), with: nil, afterDelay: 0.1)
+                }
             }
         }
     }
