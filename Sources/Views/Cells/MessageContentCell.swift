@@ -279,6 +279,8 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         }
         
         switch true {
+        case accessoryView.frame.contains(touchLocation):
+            delegate?.didTapAccessoryView(in: self)
         case messageContainerView.frame.contains(touchLocation) && !cellContentView(canHandle: convert(touchLocation, to: messageContainerView)):
             let inTouch = convert(touchLocation, to: messageContainerView)
             if replyContainerView.frame.contains(inTouch) {
@@ -301,8 +303,6 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             delegate?.didTapAnywhere()
         case messageBottomLabel.frame.contains(touchLocation):
             delegate?.didTapMessageBottomLabel(in: self)
-        case accessoryView.frame.contains(touchLocation):
-            delegate?.didTapAccessoryView(in: self)
         case statusView.frame.contains(touchLocation):
             delegate?.didTapStatusView(in: self)
         default:
