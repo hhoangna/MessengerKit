@@ -124,7 +124,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
         attributes.messageReplied = message.isReplied
         attributes.messageSelectionImageSize = messageSelectionViewSize(for: message, at: indexPath)
 
-        if message.hasReaction > 0 {
+        if message.hasReaction {
             attributes.reactionViewTrailingMargin = trailingReactionViewMargin
             attributes.reactionViewTopMargin = topReactionViewMargin
             attributes.reactionViewLeadingMargin = leadingReactionViewMargin
@@ -153,7 +153,7 @@ open class MessageSizeCalculator: CellSizeCalculator {
         let avatarVerticalPosition = avatarPosition(for: message).vertical
         let accessoryViewHeight = accessoryViewSize(for: message).height
         let statusViewHeight = statusViewSize(for: message, at: indexPath).height
-        let reactionViewHeight = message.hasReaction > 0 ? reactionViewSize(for: message, at: indexPath).height - topReactionViewMargin : 0
+        let reactionViewHeight = message.hasReaction ? reactionViewSize(for: message, at: indexPath).height - topReactionViewMargin : 0
         let repliedViewHeight = message.isReplied ? messageReplySize(for: message).height - topMessageContainerViewMargin : 0
 
         switch avatarVerticalPosition {

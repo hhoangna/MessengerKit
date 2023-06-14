@@ -83,7 +83,7 @@ struct MockMessage: MessageType {
     
     var isEdited: Bool
     
-    var hasReaction: Int
+    var hasReaction: Bool
     
     var isReplied: Bool
     

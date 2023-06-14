@@ -232,7 +232,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         
         displayDelegate.configureStatusView(statusView, for: message, at: indexPath, in: messagesCollectionView)
 
-        if message.hasReaction > 0 {
+        if message.hasReaction {
             displayDelegate.configureReactionView(reactionView, for: message, at: indexPath, in: messagesCollectionView)
         }
         

@@ -104,7 +104,7 @@ struct MockLinkItem: LinkItem {
 internal struct MockMessage: MessageType {
     
     /// The reaction of message
-    var hasReaction: Int { return 0 }
+    var hasReaction: Bool { return false }
     
     /// The replied of message
     var isReplied: Bool { return false }
