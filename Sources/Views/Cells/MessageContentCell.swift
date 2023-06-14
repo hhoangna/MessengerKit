@@ -162,13 +162,13 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
     }
 
     open func setupSubviews() {
-        contentView.addSubview(accessoryView)
         contentView.addSubview(sparateTopLine)
         contentView.addSubview(cellTopLabel)
         contentView.addSubview(messageTopLabel)
         contentView.addSubview(messageBottomLabel)
         contentView.addSubview(cellBottomLabel)
         contentView.addSubview(messageContainerView)
+        contentView.addSubview(accessoryView)
         messageContainerView.addSubview(replyContainerView)
         messageContainerView.addSubview(contentContainerView)
         contentView.addSubview(avatarView)
