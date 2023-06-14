@@ -327,16 +327,13 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         switch true {
         case messageContainerView.frame.contains(touchLocation):
             if gesture.state == .began {
-                UIView.animate(withDuration: 0.25) {
-                    self.messageContainerView.transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
-                    self.editIconImage.transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
-                } completion: { (done) in
-                    self.delegate?.didHoldMessage(in: self, at: touchLocation)
-                    UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.4, options: [.allowUserInteraction]) {
-                        self.messageContainerView.transform = .identity
-                        self.editIconImage.transform = .identity
-                    }
-                }
+                self.delegate?.didHoldMessage(in: self, at: touchLocation)
+            } else {
+                return
+            }
+        case accessoryView.frame.contains(touchLocation):
+            if gesture.state == .began {
+                self.delegate?.didHoldAccessoryView(in: self, at: touchLocation)
             } else {
                 return
             }
@@ -615,7 +612,7 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
         if !isReaction {
             reactionView.frame = .zero
             reactionView.isHidden = true
-            contentContainerView.uncut()
+//            contentContainerView.uncut()
         } else {
             var origin: CGPoint = .zero
             let reactionSize = attributes.reactionViewSize
@@ -644,8 +641,8 @@ open class MessageContentCell: MessageCollectionViewCell, UIGestureRecognizerDel
             
             reactionView.frame = CGRect(origin: origin, size: reactionSize)
             reactionView.layer.cornerRadius = reactionView.frame.height / 2
-            reactionView.clipsToBounds = true
-            contentContainerView.cut(by: reactionView, margin: 3)
+//            reactionView.clipsToBounds = true
+//            contentContainerView.cut(by: reactionView, margin: 3)
         }
     }
     
